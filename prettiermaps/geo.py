@@ -42,10 +42,11 @@ def get_aoi_from_user_input(
 
     # buffer in meter
     df = gpd.GeoDataFrame(
-        pd.DataFrame([0], columns=["id"]), crs="EPSG:4326", geometry=[Point(lat, lon)]
+        pd.DataFrame([0], columns=["id"]), crs="EPSG:4326", geometry=[Point(lon, lat)]
     )
     df = df.to_crs(df.estimate_utm_crs())
     df.geometry = df.geometry.buffer(radius)
+    df = df.to_crs(crs=4326)
     poly = df.iloc[0].geometry
     return poly
 
