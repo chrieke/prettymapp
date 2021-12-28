@@ -1,4 +1,4 @@
-from typing import Tuple
+from typing import Tuple, Optional
 
 import osmnx as ox
 import geopandas as gpd
@@ -15,16 +15,16 @@ def validate_coordinates(lat, lon):
 
 
 def get_aoi_from_user_input(
-    address: str = None,
-    coordinates: Tuple[float, float] = None,
+    address: Optional[str] = None,
+    coordinates: Optional[Tuple[float, float]] = None,
     radius=100,
 ) -> Polygon:
     """
     Gets shapely Polygon from input address or coordinates.
     Args:
-            address: Address string
-            coordinates: lat, lon
-            radius: Radius in meter
+        address: Address string
+        coordinates: lat, lon
+        radius: Radius in meter
 
     Returns:
             shapely Polygon
@@ -37,7 +37,7 @@ def get_aoi_from_user_input(
             )
         lat, lon = ox.geocode(address)
     else:
-        lat, lon = coordinates
+        lat, lon = coordinates  # type: ignore
     validate_coordinates(lat, lon)
 
     # buffer in meter
@@ -56,7 +56,8 @@ def query_osm_data(aoi: Polygon, custom_filter=None) -> gpd.GeoDataFrame:
 
     Args:
         custom_filters:Passthrough from osmnx. Filters specific subtypes of e.g. street. Example:
-                '["highway"~"motorway|trunk|primary|secondary|tertiary|residential|service|unclassified|pedestrian|footway"]'
+                '["highway"~"motorway|trunk|primary|secondary|tertiary|residential
+                |service|unclassified|pedestrian|footway"]'
 
     Returns:
         GeodataFrame
