@@ -3,6 +3,7 @@ from typing import Tuple
 import osmnx as ox
 import geopandas as gpd
 from shapely.geometry import Polygon, Point
+import pandas as pd
 
 
 def validate_coordinates(lat, lon):
@@ -39,5 +40,29 @@ def get_aoi_from_user_input(
         lat, lon = coordinates
     validate_coordinates(lat, lon)
 
-    poly = Point(lat, lon).buffer(radius)
+    # buffer in meter
+    df = gpd.GeoDataFrame(
+        pd.DataFrame([0], columns=["id"]), crs="EPSG:4326", geometry=[Point(lat, lon)]
+    )
+    df = df.to_crs(df.estimate_utm_crs())
+    df.geometry = df.geometry.buffer(radius)
+    poly = df.iloc[0].geometry
     return poly
+
+
+def query_osm_data(aoi: Polygon, custom_filter=None) -> gpd.GeoDataFrame:
+    """
+    Query OSM data for aoi.
+
+    Args:
+        custom_filters:Passthrough from osmnx. Filters specific subtypes of e.g. street. Example:
+                '["highway"~"motorway|trunk|primary|secondary|tertiary|residential|service|unclassified|pedestrian|footway"]'
+
+    Returns:
+        GeodataFrame
+    """
+    graph = ox.graph_from_polygon(
+        aoi, network_type="all", custom_filter=custom_filter, truncate_by_edge=True
+    )
+    df = ox.graph_to_gdfs(graph, nodes=False)
+    return df
