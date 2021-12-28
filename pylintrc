@@ -1,0 +1,45 @@
+[MASTER]
+init-hook='import glob; [sys.path.append(d) for d in glob.glob("*/") if not d.startswith("_")]'
+
+[MESSAGE CONTROL]
+disable=
+    missing-docstring,
+    no-else-return,
+    too-few-public-methods,
+    missing-final-newline,
+    too-many-boolean-expressions,
+    bad-continuation,
+    invalid-name,
+    super-init-not-called,
+    inconsistent-return-statements,
+    too-many-arguments,
+    too-many-locals,
+    protected-access,
+    redefined-outer-name,
+    too-many-instance-attributes,
+    fixme,
+    duplicate-code,
+    logging-fstring-interpolation,
+    logging-format-interpolation,
+    too-many-lines
+    
+[FORMAT]
+max-line-length=120
+single-line-if-stmt=yes
+include-naming-hint=yes
+function-rgx=[a-z_][a-z0-9_]*$
+argument-rgx=[a-z_][a-z0-9_]*$
+variable-rgx=[a-z_][a-z0-9_]*$
+# "logger" and "api" are common module-level globals, and not true 'constants'
+const-rgx=(([A-Z_][A-Z0-9_]*)|(__.*__)|logger|api|_api)$
+
+[DESIGN]
+max-args=6
+ignored-argument-names=_.*|self
+
+[SIMILARITIES]
+# Minimum lines number of a similarity.
+min-similarity-lines=20   # TODO: Reset lower when pylint bug fixed #214.
+ignore-comments=yes
+ignore-docstrings=yes
+ignore-imports=no
