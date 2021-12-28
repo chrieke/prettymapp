@@ -61,12 +61,12 @@ def test_get_aoi_from_user_input_live():
 
 
 @pytest.mark.live
-def test_query_osm_data_live():
+def test_query_osm_streets_live():
     custom_filter = (
         '["highway"~"motorway|trunk|primary|secondary|tertiary|'
         'residential|service|unclassified|pedestrian|footway"]'
     )
     aoi = Point(13.380972146987915, 52.51517622886228).buffer(0.001)
-    df = geo.query_osm_data(aoi=aoi, custom_filter=custom_filter)
+    df = geo.query_osm_streets(aoi=aoi, custom_filter=custom_filter)
     isinstance(df, GeoDataFrame)
     assert not all(df.is_empty)

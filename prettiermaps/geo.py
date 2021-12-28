@@ -51,7 +51,11 @@ def get_aoi_from_user_input(
     return poly
 
 
-def query_osm_data(aoi: Polygon, custom_filter=None) -> gpd.GeoDataFrame:
+def query_osm_streets(
+    aoi: Polygon,
+    custom_filter='["highway"~"motorway|trunk|primary|secondary|tertiary|'
+    'residential|service|unclassified|pedestrian|footway"]',
+) -> gpd.GeoDataFrame:
     """
     Query OSM data for aoi.
 
@@ -63,6 +67,7 @@ def query_osm_data(aoi: Polygon, custom_filter=None) -> gpd.GeoDataFrame:
     Returns:
         GeodataFrame
     """
+    # TODO: Make custom filter selectable via templates etc.?
     graph = ox.graph_from_polygon(
         aoi, network_type="all", custom_filter=custom_filter, truncate_by_edge=True
     )
