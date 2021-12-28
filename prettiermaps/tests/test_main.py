@@ -1,13 +1,14 @@
-import geopandas as gpd
-import osmnx as ox
-import matplotlib.pyplot as plt
-from descartes import PolygonPatch
-
-from prettiermaps import main
+# import geopandas as gpd
+# import osmnx as ox
+# import matplotlib.pyplot as plt
+# from descartes import PolygonPatch
+#
+# from prettiermaps import main
 
 
 custom_filters = {
-    "streets": '["highway"~"motorway|trunk|primary|secondary|tertiary|residential|service|unclassified|pedestrian|footway"]'
+    "streets": '["highway"~"motorway|trunk|primary|secondary|tertiary|'
+    'residential|service|unclassified|pedestrian|footway"]'
 }
 
 

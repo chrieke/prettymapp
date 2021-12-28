@@ -1,7 +1,7 @@
 import pytest
-from shapely.geometry import Polygon
+from shapely.geometry import Polygon, Point
 from geopandas import GeoDataFrame
-from shapely.geometry import Point
+
 
 from prettiermaps import geo
 
