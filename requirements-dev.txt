@@ -1,0 +1,13 @@
+black
+requests-mock
+pylint==2.8.3
+pytest
+pytest-pylint
+pytest-sugar
+mypy==0.902
+mypy-extensions
+pytest-cov
+pytest-mypy
+coverage-badge
+mock
+twine
