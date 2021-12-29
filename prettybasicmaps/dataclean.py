@@ -25,3 +25,15 @@ def cleanup_df(df, landcover):
     df = df[~df["landcover_class"].isnull()]
 
     return df
+
+
+def osm_tags_from_settings(settings):
+    osm_tags = {}
+    for element in settings.values():
+        for k, v in element.items():
+            try:
+                osm_tags.setdefault(k, []).extend(v)
+            except TypeError:
+                osm_tags[k] = v
+
+    return osm_tags
