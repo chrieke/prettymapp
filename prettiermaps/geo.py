@@ -92,8 +92,11 @@ def adjust_street_width(df_streets: GeoDataFrame) -> GeoDataFrame:
         "motorway": 5,
         "trunk": 5,
         "primary": 4.5,
+        "primary_link": 4.5,
         "secondary": 4,
+        "secondary_link": 4,
         "tertiary": 3.5,
+        "tertiary_link": 3.5,
         "residential": 3,
         "service": 2,
         "unclassified": 2,
@@ -102,7 +105,10 @@ def adjust_street_width(df_streets: GeoDataFrame) -> GeoDataFrame:
     }
 
     def _dilate(row):
-        dilation = streets_width[row["highway"]]
+        try:
+            dilation = streets_width[row["highway"]]
+        except TypeError:
+            dilation = streets_width[row["highway"][0]]
         row.geometry = row.geometry.buffer(dilation)
         return row
 
