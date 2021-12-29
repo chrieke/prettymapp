@@ -71,5 +71,33 @@ def query_osm_streets(
     graph = ox.graph_from_polygon(
         aoi, network_type="all", custom_filter=custom_filter, truncate_by_edge=True
     )
+    graph = ox.project_graph(graph)  # UTM  #TODO: Check if faster with geopandas
     df = ox.graph_to_gdfs(graph, nodes=False)
+    # TODO: Intersection with aoi circle?
     return df
+
+
+def adjust_street_width(df_streets):
+    streets_width = {
+        "motorway": 5,
+        "trunk": 5,
+        "primary": 4.5,
+        "secondary": 4,
+        "tertiary": 3.5,
+        "residential": 3,
+        "service": 2,
+        "unclassified": 2,
+        "pedestrian": 2,
+        "footway": 1,
+    }
+
+    def _dilate(row):
+        dilation = streets_width[row["highway"]]
+        row.geometry = row.geometry.buffer(dilation)
+        return row
+
+    df_streets = df_streets.apply(_dilate, axis=1)
+
+    return df_streets
+
+    # TODO: unary union?

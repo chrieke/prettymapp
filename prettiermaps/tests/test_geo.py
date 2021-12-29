@@ -70,3 +70,19 @@ def test_query_osm_streets_live():
     df = geo.query_osm_streets(aoi=aoi, custom_filter=custom_filter)
     isinstance(df, GeoDataFrame)
     assert not all(df.is_empty)
+
+
+def test_adjust_street_width():
+    # TODO: Replace via pickle
+    custom_filter = (
+        '["highway"~"motorway|trunk|primary|secondary|tertiary|'
+        'residential|service|unclassified|pedestrian|footway"]'
+    )
+    aoi = Point(13.380972146987915, 52.51517622886228).buffer(0.001)
+    streets_df = geo.query_osm_streets(aoi=aoi, custom_filter=custom_filter)
+
+    streets_df_adjusted = geo.adjust_street_width(streets_df)
+
+    isinstance(streets_df_adjusted, GeoDataFrame)
+    assert not all(streets_df_adjusted.is_empty)
+    assert streets_df_adjusted.iloc[0].geometry != streets_df.iloc[0].geometry
