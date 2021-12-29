@@ -1,4 +1,6 @@
 from mock import patch
+from pathlib import Path
+import pickle
 
 import pytest
 from shapely.geometry import Polygon, Point
@@ -73,13 +75,9 @@ def test_query_osm_streets_live():
 
 
 def test_adjust_street_width():
-    # TODO: Replace via pickle
-    custom_filter = (
-        '["highway"~"motorway|trunk|primary|secondary|tertiary|'
-        'residential|service|unclassified|pedestrian|footway"]'
-    )
-    aoi = Point(13.380972146987915, 52.51517622886228).buffer(0.001)
-    streets_df = geo.query_osm_streets(aoi=aoi, custom_filter=custom_filter)
+    _location_ = Path(__file__).resolve().parent
+    with open(_location_ / "mock_data/streets_df.pickle", "rb") as handle:
+        streets_df = pickle.load(handle)
 
     streets_df_adjusted = geo.adjust_street_width(streets_df)
 
