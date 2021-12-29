@@ -62,21 +62,9 @@ def test_get_aoi_from_user_input_live():
     )
 
 
-@pytest.mark.live
-def test_query_osm_streets_live():
-    custom_filter = (
-        '["highway"~"motorway|trunk|primary|secondary|tertiary|'
-        'residential|service|unclassified|pedestrian|footway"]'
-    )
-    aoi = Point(13.380972146987915, 52.51517622886228).buffer(0.001)
-    df = geo.query_osm_streets(aoi=aoi, custom_filter=custom_filter)
-    isinstance(df, GeoDataFrame)
-    assert not all(df.is_empty)
-
-
 def test_adjust_street_width():
     _location_ = Path(__file__).resolve().parent
-    with open(_location_ / "mock_data/streets_df.pickle", "rb") as handle:
+    with open(_location_ / "mock_data/df_pre_adjusting.pickle", "rb") as handle:
         streets_df = pickle.load(handle)
 
     streets_df_adjusted = geo.adjust_street_width(streets_df)

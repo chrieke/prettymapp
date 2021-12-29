@@ -21,6 +21,7 @@ def get_aoi_from_user_input(
 ) -> Polygon:
     """
     Gets shapely Polygon from input address or coordinates.
+
     Args:
         address: Address string
         coordinates: lat, lon
@@ -51,33 +52,34 @@ def get_aoi_from_user_input(
     return poly
 
 
-def query_osm_streets(
-    aoi: Polygon,
-    custom_filter='["highway"~"motorway|trunk|primary|secondary|tertiary|'
-    'residential|service|unclassified|pedestrian|footway"]',
-) -> GeoDataFrame:
-    """
-    Query OSM data for aoi.
+# def query_osm_streets(
+#     aoi: Polygon,
+#     custom_filter='["highway"~"motorway|trunk|primary|secondary|tertiary|'
+#     'residential|service|unclassified|pedestrian|footway"]',
+# ) -> GeoDataFrame:
+#     """
+#     Query OSM data for aoi.
+#
+#     Args:
+#         custom_filters:Passthrough from osmnx. Filters specific subtypes of e.g. street. Example:
+#                 '["highway"~"motorway|trunk|primary|secondary|tertiary|residential
+#                 |service|unclassified|pedestrian|footway"]'
+#
+#     Returns:
+#         GeodataFrame
+#     """
+#     # TODO: Make custom filter selectable via templates etc.?
+#     graph = ox.graph_from_polygon(
+#         aoi, network_type="all", custom_filter=custom_filter, truncate_by_edge=True
+#     )
+#     graph = ox.project_graph(graph)  # UTM  #TODO: Check if faster with geopandas
+#     df = ox.graph_to_gdfs(graph, nodes=False)
+#     # TODO: Intersection with aoi circle?
+#     # df.clip(aoi)
+#     return df
 
-    Args:
-        custom_filters:Passthrough from osmnx. Filters specific subtypes of e.g. street. Example:
-                '["highway"~"motorway|trunk|primary|secondary|tertiary|residential
-                |service|unclassified|pedestrian|footway"]'
 
-    Returns:
-        GeodataFrame
-    """
-    # TODO: Make custom filter selectable via templates etc.?
-    graph = ox.graph_from_polygon(
-        aoi, network_type="all", custom_filter=custom_filter, truncate_by_edge=True
-    )
-    graph = ox.project_graph(graph)  # UTM  #TODO: Check if faster with geopandas
-    df = ox.graph_to_gdfs(graph, nodes=False)
-    # TODO: Intersection with aoi circle?
-    return df
-
-
-def adjust_street_width(df_streets: GeoDataFrame) -> GeoDataFrame:
+def adjust_street_width(df: GeoDataFrame) -> GeoDataFrame:
     """
     Adjusts the street Linestrings to thicker Polygons (better visible when plotted).
 
@@ -104,13 +106,18 @@ def adjust_street_width(df_streets: GeoDataFrame) -> GeoDataFrame:
         "footway": 1,
     }
 
-    def _dilate(row):
-        try:
-            dilation = streets_width[row["highway"]]
-        except TypeError:
-            dilation = streets_width[row["highway"][0]]
-        row.geometry = row.geometry.buffer(dilation)
-        return row
+    def _find_buffer_strength(row):
+        if row["osm_type"] == "highway":
+            try:
+                dilation = streets_width[row["highway"]]
+            except TypeError:
+                dilation = streets_width[row["highway"][0]]
+        else:
+            dilation = 0
+        return dilation
 
-    df_streets_adjusted = df_streets.apply(_dilate, axis=1)
-    return df_streets_adjusted
+    df = df.to_crs(df.estimate_utm_crs())
+    df["buffer_strength"] = df.apply(_find_buffer_strength, axis=1)
+    df.geometry = df.geometry.buffer(df["buffer_strength"])
+    df = df.to_crs(crs=4326)
+    return df
