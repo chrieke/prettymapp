@@ -128,4 +128,6 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-prettiermaps/old.py
+cache/
+prettiermaps/cache
+prettiermaps/tests/cache
