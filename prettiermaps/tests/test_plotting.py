@@ -2,14 +2,17 @@ import pickle
 from pathlib import Path
 
 import pytest
+import matplotlib.pyplot as plt
 
 from prettiermaps import plotting
+from prettiermaps.main import DRAWING_KWARGS
 
 
-@pytest.mark.skip
 def test_plot():
     _location_ = Path(__file__).resolve().parent
     with open(_location_ / "mock_data/df_pre_dissolve.pickle", "rb") as handle:
-        streets_df = pickle.load(handle)
+        df = pickle.load(handle)
 
-    plotting.plot(streets_df)
+    ax = plotting.plot(df, DRAWING_KWARGS)
+    assert ax
+    # plt.show()

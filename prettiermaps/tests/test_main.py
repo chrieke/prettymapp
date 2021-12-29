@@ -1,10 +1,11 @@
 import pytest
-from geopandas import GeoDataFrame
+import matplotlib.pyplot as plt
 
 from prettiermaps import main
 
 
 @pytest.mark.live
 def test_main():
-    df = main.main()
-    assert isinstance(df, GeoDataFrame)
+    ax = main.main()
+    assert ax
+    plt.show()

@@ -3,7 +3,7 @@ import pickle
 
 from mock import patch
 import pytest
-from shapely.geometry import Polygon, Point
+from shapely.geometry import Polygon
 from geopandas import GeoDataFrame
 import osmnx as ox
 
