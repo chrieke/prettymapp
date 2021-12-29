@@ -9,26 +9,28 @@ def plot(df, drawing_kwargs):
     """
 
     Args:
-            df ():
+        df ():
 
     Returns:
 
     """
     _, ax = plt.subplots(1, 1, figsize=(12, 12))
-    # ax.axis("off")
-    # ax.axis("equal")
-    ax.set_facecolor("#F2F4CB")  # background
+    ax.axis("off")
+    ax.axis("equal")
+    # ax.set_facecolor("#F2F4CB")  # background
 
-    for object_type in df.osm_type.unique():
-        if object_type == "building":
-            df_buildings = df[df.osm_type == object_type]
-            df_buildings["rand"] = np.random.randint(0, 3, df_buildings.shape[0])
-            drawing_kwargs[object_type]["cmap"] = ListedColormap(
-                drawing_kwargs[object_type]["cmap"]
+    for lc_class in df["landcover_class"].unique():
+        if lc_class == "urban":
+            drawing_kwargs[lc_class]["cmap"] = ListedColormap(
+                drawing_kwargs[lc_class]["cmap"]
             )
-            df_buildings.plot(ax=ax, column="rand", **drawing_kwargs[object_type])
+            df_urban = df[df["landcover_class"] == lc_class]
+            df_urban["randint"] = np.random.randint(0, 3, df_urban.shape[0])
+            df_urban.plot(ax=ax, column="randint", **drawing_kwargs[lc_class])
         else:
-            df[df.osm_type == object_type].plot(ax=ax, **drawing_kwargs[object_type])
+            df[df["landcover_class"] == lc_class].plot(
+                ax=ax, **drawing_kwargs[lc_class]
+            )
     # ax.add_patch(PolygonPatch(geom, **kwargs_streets))
 
     return ax

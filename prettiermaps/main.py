@@ -5,51 +5,50 @@ from prettiermaps import geo
 from prettiermaps import plotting
 from prettiermaps import prep
 
-TAGS = {
-    "building": True,
-    # "landuse": True,
-    # "water": True,
-    "highway": [
-        "motorway",
-        "trunk",
-        "primary",
-        "secondary",
-        "tertiary",
-        "residential",
-        "service",
-        "unclassified",
-        "pedestrian",
-        "footway",
-    ],
+LANDCOVER = {
+    "urban": {"building": True, "landuse": ["construction"]},
+    "water": {"natural": ["water", "bay"]},
+    "woodland": {"landuse": ["forest"]},
+    "grassland": {
+        "landuse": ["grass"],
+        "natural": ["island", "wood"],
+        "leisure": ["park"],
+    },
+    "streets": {
+        "highway": [
+            "motorway",
+            "trunk",
+            "primary",
+            "secondary",
+            "tertiary",
+            "residential",
+            "service",
+            "unclassified",
+            "pedestrian",
+            "footway",
+        ]
+    },
+    "parking": {"amenity": ["parking"], "man_made": ["pier"]},
 }
 
-DRAWING_KWARGS = {
-    "background": {"fc": "#F2F4CB", "ec": "#dadbc1", "hatch": "ooo...", "zorder": -1},
-    "perimeter": {
-        "fc": "#F2F4CB",
-        "ec": "#dadbc1",
-        "lw": 0,
-        "hatch": "ooo...",
-        "zorder": 0,
-    },
-    "green": {"fc": "#D0F1BF", "ec": "#2F3737", "lw": 1, "zorder": 1},
-    "forest": {"fc": "#64B96A", "ec": "#2F3737", "lw": 1, "zorder": 1},
-    "water": {
-        "fc": "#a1e3ff",
-        "ec": "#2F3737",
-        "hatch": "ooo...",
-        "hatch_c": "#85c9e6",
-        "lw": 1,
-        "zorder": 2,
-    },
-    "parking": {"fc": "#F2F4CB", "ec": "#2F3737", "lw": 1, "zorder": 3},
-    "highway": {"fc": "#2F3737", "ec": "#475657", "alpha": 1, "lw": 0, "zorder": 3},
-    "building": {
+DRAW_SETTINGS = {
+    "urban": {
         "cmap": ["#FFC857", "#E9724C", "#C5283D"],
         "ec": "#2F3737",
         "lw": 0.5,
         "zorder": 4,
     },
+    "water": {
+        "fc": "#a1e3ff",
+        "ec": "#2F3737",
+        "hatch": "ooo...",
+        "lw": 1,
+        "zorder": 2,
+    },  #'hatch_c': '#85c9e6',
+    "grassland": {"fc": "#D0F1BF", "ec": "#2F3737", "lw": 1, "zorder": 1},
+    "woodland": {"fc": "#64B96A", "ec": "#2F3737", "lw": 1, "zorder": 1},
+    "streets": {"fc": "#2F3737", "ec": "#475657", "alpha": 1, "lw": 0, "zorder": 3},
+    "parking": {"fc": "#F2F4CB", "ec": "#2F3737", "lw": 1, "zorder": 3},
 }
 
 
@@ -57,15 +56,26 @@ def main():
     address = "Praça Ferreira do Amaral, Macau"
     radius = 1100
 
-    aoi = geo.get_aoi_from_user_input(address=address, radius=radius)
     # aoi = bbox_to_poly(*bbox_from_point(geocode(query=address), dist=radius)) # Might be faster
-    df = geometries_from_polygon(polygon=aoi, tags=TAGS)
+    aoi = geo.get_aoi_from_user_input(address=address, radius=radius)
 
-    df = prep.cleanup_df(df=df, tags=TAGS)
-    df = geo.adjust_street_width(df=df)
+    osm_tags = {}
+    for element in LANDCOVER.values():
+        for k, v in element.items():
+            try:
+                osm_tags.setdefault(k, []).extend(v)
+            except TypeError:
+                osm_tags[k] = v
+
+    # TODO: Maybe independent queries that merge together, parallelized.
+    # Or define all elements in query, and then
+    df = geometries_from_polygon(polygon=aoi, tags=osm_tags)
     df = gpd.clip(df, aoi)
+
+    df = prep.cleanup_df(df=df, landcover=LANDCOVER)
+    df = geo.adjust_street_width(df=df)
 
     # df = df.dissolve(by="osm_type")
 
-    ax = plotting.plot(df, drawing_kwargs=DRAWING_KWARGS)
+    ax = plotting.plot(df, drawing_kwargs=DRAW_SETTINGS)
     return ax

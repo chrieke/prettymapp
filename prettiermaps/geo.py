@@ -107,7 +107,7 @@ def adjust_street_width(df: GeoDataFrame) -> GeoDataFrame:
     }
 
     def _find_buffer_strength(row):
-        if row["osm_type"] == "highway":
+        if row["landcover_class"] == "streets":
             try:
                 dilation = streets_width[row["highway"]]
             except TypeError:
