@@ -7,7 +7,7 @@ from shapely.geometry import Polygon
 from geopandas import GeoDataFrame
 import osmnx as ox
 
-from prettiermaps import geo
+from prettybasicmaps import geo
 
 
 def test_validate_coordinates():

@@ -1,15 +1,13 @@
 from osmnx.geometries import geometries_from_polygon
 import geopandas as gpd
 
-from prettiermaps import geo
-from prettiermaps import plotting
-from prettiermaps import dataclean
-from prettiermaps.settings import LANDCOVER, DRAW_SETTINGS
+from prettybasicmaps import geo
+from prettybasicmaps import plotting
+from prettybasicmaps import dataclean
+from prettybasicmaps.settings import LANDCOVER, DRAW_SETTINGS
 
 
-def main():
-    address = "Praça Ferreira do Amaral, Macau"
-    radius = 1100
+def main(address = "Praça Ferreira do Amaral, Macau", radius = 1100):
 
     # aoi = bbox_to_poly(*bbox_from_point(geocode(query=address), dist=radius)) # Might be faster
     aoi = geo.get_aoi_from_user_input(address=address, radius=radius)
@@ -34,3 +32,8 @@ def main():
 
     ax = plotting.plot(df, drawing_kwargs=DRAW_SETTINGS)
     return ax
+
+
+if __name__ == "__main__":
+    ax = main()
+    #plt.show()

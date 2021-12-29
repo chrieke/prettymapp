@@ -129,5 +129,5 @@ dmypy.json
 .pyre/
 
 cache/
-prettiermaps/cache
-prettiermaps/tests/cache
+prettybasicmaps/cache
+prettybasicmaps/tests/cache

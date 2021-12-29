@@ -1,7 +1,7 @@
 import pytest
 import matplotlib.pyplot as plt
 
-from prettiermaps import main
+from prettybasicmaps import main
 
 
 @pytest.mark.live
