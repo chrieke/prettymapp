@@ -1,6 +1,3 @@
-import numpy as np
-
-
 def cleanup_df(df, landcover):
     # Drop point geometries
     df = df[df.geometry.geom_type != "Point"]
