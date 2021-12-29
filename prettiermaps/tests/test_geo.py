@@ -1,7 +1,7 @@
-from mock import patch
 from pathlib import Path
 import pickle
 
+from mock import patch
 import pytest
 from shapely.geometry import Polygon, Point
 from geopandas import GeoDataFrame

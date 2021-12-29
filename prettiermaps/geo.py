@@ -1,7 +1,7 @@
 from typing import Tuple, Optional
 
 import osmnx as ox
-import geopandas as gpd
+from geopandas import GeoDataFrame
 from shapely.geometry import Polygon, Point
 import pandas as pd
 
@@ -41,7 +41,7 @@ def get_aoi_from_user_input(
     validate_coordinates(lat, lon)
 
     # buffer in meter
-    df = gpd.GeoDataFrame(
+    df = GeoDataFrame(
         pd.DataFrame([0], columns=["id"]), crs="EPSG:4326", geometry=[Point(lon, lat)]
     )
     df = df.to_crs(df.estimate_utm_crs())
@@ -55,7 +55,7 @@ def query_osm_streets(
     aoi: Polygon,
     custom_filter='["highway"~"motorway|trunk|primary|secondary|tertiary|'
     'residential|service|unclassified|pedestrian|footway"]',
-) -> gpd.GeoDataFrame:
+) -> GeoDataFrame:
     """
     Query OSM data for aoi.
 
@@ -77,7 +77,17 @@ def query_osm_streets(
     return df
 
 
-def adjust_street_width(df_streets):
+def adjust_street_width(df_streets: GeoDataFrame) -> GeoDataFrame:
+    """
+    Adjusts the street Linestrings to thicker Polygons (better visible when plotted).
+
+    Args:
+        df_streets: Geodataframe with street linestrings.
+
+    Returns:
+        Geodataframe with street Polygons
+    """
+    # TODO: As parameters?
     streets_width = {
         "motorway": 5,
         "trunk": 5,
@@ -96,8 +106,5 @@ def adjust_street_width(df_streets):
         row.geometry = row.geometry.buffer(dilation)
         return row
 
-    df_streets = df_streets.apply(_dilate, axis=1)
-
-    return df_streets
-
-    # TODO: unary union?
+    df_streets_adjusted = df_streets.apply(_dilate, axis=1)
+    return df_streets_adjusted
