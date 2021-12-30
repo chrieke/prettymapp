@@ -12,13 +12,14 @@ def plot(df, drawing_kwargs):
     Returns:
 
     """
-    _, ax = subplots(1, 1, figsize=(12, 12))
+    fig, ax = subplots(1, 1, figsize=(12, 12), constrained_layout=True)
     ax.axis("off")
     ax.axis("equal")
     # ax.set_facecolor("#F2F4CB")  # background
 
     for lc_class in df["landcover_class"].unique():
         if lc_class == "urban":
+            print("aa", drawing_kwargs[lc_class]["cmap"])
             drawing_kwargs[lc_class]["cmap"] = ListedColormap(
                 drawing_kwargs[lc_class]["cmap"]
             )
@@ -30,4 +31,4 @@ def plot(df, drawing_kwargs):
                 ax=ax, **drawing_kwargs[lc_class]
             )
 
-    return ax
+    return fig

@@ -131,3 +131,4 @@ dmypy.json
 cache/
 prettybasicmaps/cache
 prettybasicmaps/tests/cache
+streamlit-prettybasicmaps/prints

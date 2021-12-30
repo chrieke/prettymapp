@@ -43,8 +43,8 @@ def main(
     df = pd.concat(df_list, axis=0)
     df = df[df.geometry.geom_type != "Point"]
     df = clip(df, aoi)
-    ax = plotting.plot(df, drawing_kwargs=DRAW_SETTINGS)
-    return ax
+    fig = plotting.plot(df, drawing_kwargs=DRAW_SETTINGS)
+    return fig
 
 
 if __name__ == "__main__":

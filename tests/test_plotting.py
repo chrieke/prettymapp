@@ -10,5 +10,5 @@ def test_plot():
     with open(_location_ / "mock_data/df_pre_adjusting.pickle", "rb") as handle:
         df = pickle.load(handle)
 
-    ax = plotting.plot(df, DRAW_SETTINGS)
-    assert ax
+    fig = plotting.plot(df, DRAW_SETTINGS)
+    assert fig

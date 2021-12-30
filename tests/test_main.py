@@ -6,6 +6,6 @@ from prettybasicmaps import main
 
 @pytest.mark.live
 def test_main():
-    ax = main.main()
-    assert ax
+    fig = main.main()
+    assert fig
     #plt.show()
