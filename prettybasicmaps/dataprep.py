@@ -1,10 +1,25 @@
-def cleanup_df(df, landcover):
+from geopandas import GeoDataFrame
+
+
+def osm_tags_from_settings(settings: dict) -> dict:
+    osm_tags = {}
+    for element in settings.values():
+        for k, v in element.items():
+            try:
+                osm_tags.setdefault(k, []).extend(v)
+            except TypeError:
+                osm_tags[k] = v
+
+    return osm_tags
+
+
+def cleanup_df(df: GeoDataFrame, lc_settings: dict) -> GeoDataFrame:
     # Drop point geometries
     df = df[df.geometry.geom_type != "Point"]
 
     # Summarize to lc_classes
     df["landcover_class"] = None
-    for lc_class, osm_tags in landcover.items():
+    for lc_class, osm_tags in lc_settings.items():
         mask_lc_class = df[list(osm_tags.keys())].notna().sum(axis=1) != 0
 
         # Remove mask elements that belong to other subtag
@@ -25,15 +40,3 @@ def cleanup_df(df, landcover):
     df = df[~df["landcover_class"].isnull()]
 
     return df
-
-
-def osm_tags_from_settings(settings):
-    osm_tags = {}
-    for element in settings.values():
-        for k, v in element.items():
-            try:
-                osm_tags.setdefault(k, []).extend(v)
-            except TypeError:
-                osm_tags[k] = v
-
-    return osm_tags

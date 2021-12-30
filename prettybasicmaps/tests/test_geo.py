@@ -23,7 +23,7 @@ def test_validate_coordinates():
 def test_get_aoi_from_user_input(ox_geocode):
     ox_geocode.return_value = 52.52, 13.4
 
-    poly = geo.get_aoi_from_user_input("Unter den Linden 37, 10117 Berlin")
+    poly = geo.get_aoi("Unter den Linden 37, 10117 Berlin")
     assert isinstance(poly, Polygon)
     assert poly.bounds == (
         13.398526785769196,
@@ -32,7 +32,7 @@ def test_get_aoi_from_user_input(ox_geocode):
         52.52089866529106,
     )
 
-    poly = geo.get_aoi_from_user_input(coordinates=(52.52, 13.4))
+    poly = geo.get_aoi(coordinates=(52.52, 13.4))
     assert isinstance(poly, Polygon)
     assert poly.bounds == (
         13.398526785769196,
@@ -44,7 +44,7 @@ def test_get_aoi_from_user_input(ox_geocode):
 
 @pytest.mark.live
 def test_get_aoi_from_user_input_live():
-    poly = geo.get_aoi_from_user_input("Unter den Linden 37, 10117 Berlin")
+    poly = geo.get_aoi("Unter den Linden 37, 10117 Berlin")
     assert isinstance(poly, Polygon)
     assert poly.bounds == (
         13.386879704802922,
@@ -52,7 +52,7 @@ def test_get_aoi_from_user_input_live():
         13.389825896934692,
         52.51759116066997,
     )
-    poly = geo.get_aoi_from_user_input(coordinates=(52.52, 13.4))
+    poly = geo.get_aoi(coordinates=(52.52, 13.4))
     assert isinstance(poly, Polygon)
     assert poly.bounds == (
         13.398526785769196,

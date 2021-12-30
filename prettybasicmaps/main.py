@@ -1,26 +1,33 @@
 from osmnx.geometries import geometries_from_polygon
-import geopandas as gpd
+from osmnx.utils import config
+from geopandas import clip
 
 from prettybasicmaps import geo
 from prettybasicmaps import plotting
 from prettybasicmaps import dataprep
-from prettybasicmaps.settings import LANDCOVER, DRAW_SETTINGS
+from prettybasicmaps.settings import LC_SETTINGS, DRAW_SETTINGS
 
 
-def main(address="Praça Ferreira do Amaral, Macau", radius=1100):
+# TODO: Activate
+config(use_cache=False)
 
-    osm_tags = dataprep.osm_tags_from_settings(settings=LANDCOVER)
 
-    # aoi = bbox_to_poly(*bbox_from_point(geocode(query=address), dist=radius)) # Might be faster
-    aoi = geo.get_aoi_from_user_input(address=address, radius=radius)
+def main(
+    address: str = "Praça Ferreira do Amaral, Macau",
+    radius: int = 1100,
+    rectangle: bool = False,
+):
+    aoi, utm_crs = geo.get_aoi(address=address, distance=radius, rectangle=rectangle)
 
+    # TODO: Maybe iterative query and st plot?
+    osm_tags = dataprep.osm_tags_from_settings(settings=LC_SETTINGS)
     df = geometries_from_polygon(polygon=aoi, tags=osm_tags)
-    df = gpd.clip(df, aoi)
 
-    df = dataprep.cleanup_df(df=df, landcover=LANDCOVER)
-    df = geo.adjust_street_width(df=df)
+    df = clip(df, aoi)
+    df = dataprep.cleanup_df(df=df, lc_settings=LC_SETTINGS)
+    df_utm = geo.adjust_street_width(df=df, utm_crs=utm_crs)
 
-    ax = plotting.plot(df, drawing_kwargs=DRAW_SETTINGS)
+    ax = plotting.plot(df_utm, drawing_kwargs=DRAW_SETTINGS)
     return ax
 
 

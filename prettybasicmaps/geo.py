@@ -1,12 +1,12 @@
-from typing import Tuple, Optional
+from typing import Tuple, Optional, Any
 
-import osmnx as ox
+from osmnx.geocoder import geocode
 from geopandas import GeoDataFrame
-from shapely.geometry import Polygon, Point
-import pandas as pd
+from pandas import DataFrame
+from shapely.geometry import Polygon, Point, box
 
 
-def validate_coordinates(lat, lon):
+def validate_coordinates(lat: float, lon: float) -> None:
     if lat < -90 or lat > 90 or lon < -180 or lon > 180:
         raise ValueError(
             "longitude (-90 to 90) and latitude (-180 to 180) coordinates "
@@ -14,21 +14,23 @@ def validate_coordinates(lat, lon):
         )
 
 
-def get_aoi_from_user_input(
+def get_aoi(
     address: Optional[str] = None,
     coordinates: Optional[Tuple[float, float]] = None,
-    radius=100,
-) -> Polygon:
+    distance: int = 1000,
+    rectangle: bool = False,
+) -> Tuple[Polygon, Any]:
     """
-    Gets shapely Polygon from input address or coordinates.
+    Gets round or rectangular shapely Polygon in in 4326 from input address or coordinates.
 
     Args:
         address: Address string
         coordinates: lat, lon
-        radius: Radius in meter
+        distance: Radius in meter
+        rectangle: Optionally return aoi as rectangular polygon, default False.
 
     Returns:
-            shapely Polygon
+        shapely Polygon in 4326 crs
     """
     if address is not None:
         if coordinates is not None:
@@ -36,20 +38,24 @@ def get_aoi_from_user_input(
                 "Both address and latlon coordinates were provided, please "
                 "select only one!"
             )
-        lat, lon = ox.geocode(address)
+        lat, lon = geocode(address)
     else:
         lat, lon = coordinates  # type: ignore
     validate_coordinates(lat, lon)
 
-    # buffer in meter
     df = GeoDataFrame(
-        pd.DataFrame([0], columns=["id"]), crs="EPSG:4326", geometry=[Point(lon, lat)]
+        DataFrame([0], columns=["id"]), crs="EPSG:4326", geometry=[Point(lon, lat)]
     )
-    df = df.to_crs(df.estimate_utm_crs())
-    df.geometry = df.geometry.buffer(radius)
+    utm_crs = df.estimate_utm_crs()
+    df = df.to_crs(utm_crs)
+    df.geometry = df.geometry.buffer(distance)
     df = df.to_crs(crs=4326)
     poly = df.iloc[0].geometry
-    return poly
+
+    if rectangle:
+        poly = box(*poly.bounds)
+
+    return poly, utm_crs
 
 
 # def query_osm_streets(
@@ -79,7 +85,9 @@ def get_aoi_from_user_input(
 #     return df
 
 
-def adjust_street_width(df: GeoDataFrame) -> GeoDataFrame:
+def adjust_street_width(
+    df: GeoDataFrame, utm_crs: Optional[Any] = None
+) -> GeoDataFrame:
     """
     Adjusts the street Linestrings to thicker Polygons (better visible when plotted).
 
@@ -116,8 +124,10 @@ def adjust_street_width(df: GeoDataFrame) -> GeoDataFrame:
             dilation = 0
         return dilation
 
-    df = df.to_crs(df.estimate_utm_crs())
+    if utm_crs is None:
+        utm_crs = df.estimate_utm_crs()
+
+    df = df.to_crs(utm_crs)
     df["buffer_strength"] = df.apply(_find_buffer_strength, axis=1)
     df.geometry = df.geometry.buffer(df["buffer_strength"])
-    df = df.to_crs(crs=4326)
     return df

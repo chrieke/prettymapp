@@ -1,4 +1,4 @@
-LANDCOVER = {
+LC_SETTINGS = {
     "urban": {"building": True, "landuse": ["construction"]},
     "water": {"natural": ["water", "bay"]},
     "woodland": {"landuse": ["forest"]},

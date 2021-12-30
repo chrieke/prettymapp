@@ -1,6 +1,5 @@
-import matplotlib.pyplot as plt
+from matplotlib.pyplot import subplots
 
-# from descartes import PolygonPatch
 import numpy as np
 from matplotlib.colors import ListedColormap
 
@@ -14,7 +13,7 @@ def plot(df, drawing_kwargs):
     Returns:
 
     """
-    _, ax = plt.subplots(1, 1, figsize=(12, 12))
+    _, ax = subplots(1, 1, figsize=(12, 12))
     ax.axis("off")
     ax.axis("equal")
     # ax.set_facecolor("#F2F4CB")  # background
@@ -31,6 +30,5 @@ def plot(df, drawing_kwargs):
             df[df["landcover_class"] == lc_class].plot(
                 ax=ax, **drawing_kwargs[lc_class]
             )
-    # ax.add_patch(PolygonPatch(geom, **kwargs_streets))
 
     return ax
