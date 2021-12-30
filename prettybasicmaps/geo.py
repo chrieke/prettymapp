@@ -58,30 +58,6 @@ def get_aoi(
     return poly, utm_crs
 
 
-# def query_osm(
-#     aoi: Polygon,
-#     custom_filter='["highway"~"motorway|trunk|primary|secondary|tertiary|residential|service|unclassified|pedestrian|footway"]',
-# ) -> GeoDataFrame:
-#     """
-#     Query OSM data for aoi.
-#
-#     Args:
-#         custom_filters:Passthrough from osmnx. Filters specific subtypes of e.g. street. Example:
-#                 '["highway"~"motorway|trunk|primary|secondary|tertiary|residential
-#                 |service|unclassified|pedestrian|footway"]'
-#
-#     Returns:
-#         GeodataFrame
-#     """
-#     import osmnx as ox
-#     # TODO: Make custom filter selectable via templates etc.?
-#     graph = ox.graph_from_polygon(aoi, network_type="all", truncate_by_edge=True, custom_filter=custom_filter)# UTM  #TODO: Check if faster with geopandas
-#     df = ox.graph_to_gdfs(graph, nodes=False)
-#     # TODO: Intersection with aoi circle?
-#     # df.clip(aoi)
-#     return df
-
-
 def adjust_street_width(
     df: GeoDataFrame, utm_crs: Optional[Any] = None
 ) -> GeoDataFrame:
@@ -112,13 +88,10 @@ def adjust_street_width(
     }
 
     def _find_buffer_strength(row):
-        if row["landcover_class"] == "streets":
-            try:
-                dilation = streets_width[row["highway"]]
-            except TypeError:
-                dilation = streets_width[row["highway"][0]]
-        else:
-            dilation = 0
+        try:
+            dilation = streets_width[row["highway"]]
+        except TypeError:
+            dilation = streets_width[row["highway"][0]]
         return dilation
 
     if utm_crs is None:
@@ -128,5 +101,4 @@ def adjust_street_width(
     df["buffer_strength"] = df.apply(_find_buffer_strength, axis=1)
     df.geometry = df.geometry.buffer(df["buffer_strength"])
     df = df.to_crs(crs=4326)
-    df = df.drop(["buffer_strength", "highway"], axis=1)
     return df
