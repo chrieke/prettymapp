@@ -1,7 +1,6 @@
-from matplotlib.pyplot import subplots
-
 import numpy as np
 from matplotlib.colors import ListedColormap
+from matplotlib.pyplot import subplots
 
 
 def plot(df, drawing_kwargs):

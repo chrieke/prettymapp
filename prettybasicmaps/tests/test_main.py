@@ -8,4 +8,4 @@ from prettybasicmaps import main
 def test_main():
     ax = main.main()
     assert ax
-    plt.show()
+    #plt.show()
