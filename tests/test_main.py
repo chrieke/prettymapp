@@ -1,11 +1,11 @@
 import pytest
-import matplotlib.pyplot as plt
 
-from prettybasicmaps import main
+from .context import main
 
 
 @pytest.mark.live
 def test_main():
-    fig = main.main()
+    fig = main()
     assert fig
-    #plt.show()
+    # import matplotlib.pyplot as plt
+    # plt.show()

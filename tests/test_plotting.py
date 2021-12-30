@@ -1,8 +1,7 @@
 import pickle
 from pathlib import Path
 
-from prettybasicmaps import plotting
-from prettybasicmaps.settings import DRAW_SETTINGS
+from .context import plot, DRAW_SETTINGS
 
 
 def test_plot():
@@ -10,5 +9,5 @@ def test_plot():
     with open(_location_ / "mock_data/df_pre_adjusting.pickle", "rb") as handle:
         df = pickle.load(handle)
 
-    fig = plotting.plot(df, DRAW_SETTINGS)
+    fig = plot(df, DRAW_SETTINGS)
     assert fig

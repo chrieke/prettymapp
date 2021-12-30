@@ -1,8 +1,6 @@
 import streamlit as st
-from prettybasicmaps import main
-from matplotlib import pyplot as plt
-import json
 
+from prettybasicmaps import main
 
 
 st.title("🌇 Artsymaps")
@@ -25,10 +23,11 @@ button_ex5 = ex5.button("Cidadebaixa")
 st.write("")
 form = st.form(key="form_params")
 form.markdown("**Or select your own location & style**")
-col1, col2, col3 = form.columns([1.5,1, 0.5])
+col1, col2, col3 = form.columns([1.5, 1, 0.5])
 
 address = col1.text_input(
-    "Enter address or location", "Praça Ferreira do Amaral, Macau" #"Matthias-Ehrenfried-Str. 16, 97074, Wuerzburg"
+    "Enter address or location",
+    "Praça Ferreira do Amaral, Macau",  # "Matthias-Ehrenfried-Str. 16, 97074, Wuerzburg"
 )
 radius = col1.slider("Select radius", 1, 1500, 1100)
 
@@ -39,7 +38,7 @@ expander.checkbox("Add location name", True)
 expander.checkbox("Add coordinates")
 expander.color_picker("Background color")
 
-submit_button = form.form_submit_button(label='Submit')
+submit_button = form.form_submit_button(label="Submit")
 
 st.markdown("---")
 

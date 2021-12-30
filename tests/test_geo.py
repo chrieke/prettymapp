@@ -7,23 +7,23 @@ from shapely.geometry import Polygon
 from geopandas import GeoDataFrame
 import osmnx as ox
 
-from prettybasicmaps import geo
+from .context import validate_coordinates, get_aoi, adjust_street_width
 
 
 def test_validate_coordinates():
-    geo.validate_coordinates(lat=-89.3, lon=178.2)
-    geo.validate_coordinates(lat=89.3, lon=-178.2)
+    validate_coordinates(lat=-89.3, lon=178.2)
+    validate_coordinates(lat=89.3, lon=-178.2)
     with pytest.raises(ValueError):
-        geo.validate_coordinates(lat=-92.3, lon=237.2)
+        validate_coordinates(lat=-92.3, lon=237.2)
     with pytest.raises(ValueError):
-        geo.validate_coordinates(lat=92.3, lon=-237.2)
+        validate_coordinates(lat=92.3, lon=-237.2)
 
 
 @patch.object(ox, "geocode")
 def test_get_aoi_from_user_input_address(ox_geocode):
     ox_geocode.return_value = 52.52, 13.4
 
-    poly, utm_crs = geo.get_aoi("Unter den Linden 37, 10117 Berlin")
+    poly, utm_crs = get_aoi("Unter den Linden 37, 10117 Berlin")
     assert isinstance(poly, Polygon)
     assert poly.bounds == (
         13.373621926483281,
@@ -39,7 +39,7 @@ def test_get_aoi_from_user_input_address(ox_geocode):
 def test_get_aoi_from_user_input_coordinates(ox_geocode):
     ox_geocode.return_value = 52.52, 13.4
 
-    poly, utm_crs = geo.get_aoi(coordinates=(52.52, 13.4))
+    poly, utm_crs = get_aoi(coordinates=(52.52, 13.4))
     assert isinstance(poly, Polygon)
     assert poly.bounds == (
         13.38526793559592,
@@ -54,7 +54,7 @@ def test_get_aoi_from_user_input_coordinates(ox_geocode):
 def test_get_aoi_from_user_input_rectangle(ox_geocode):
     ox_geocode.return_value = 52.52, 13.4
 
-    poly, utm_crs = geo.get_aoi("Unter den Linden 37, 10117 Berlin", rectangle=True)
+    poly, utm_crs = get_aoi("Unter den Linden 37, 10117 Berlin", rectangle=True)
     assert isinstance(poly, Polygon)
     assert poly.bounds == (
         13.373621926483281,
@@ -68,7 +68,7 @@ def test_get_aoi_from_user_input_rectangle(ox_geocode):
 
 @pytest.mark.live
 def test_get_aoi_from_user_input_address_live():
-    poly, _ = geo.get_aoi("Unter den Linden 37, 10117 Berlin")
+    poly, _ = get_aoi("Unter den Linden 37, 10117 Berlin")
     assert isinstance(poly, Polygon)
     assert poly.bounds == (
         13.373621926483281,
@@ -80,7 +80,7 @@ def test_get_aoi_from_user_input_address_live():
 
 @pytest.mark.live
 def test_get_aoi_from_user_input_coordinates_live():
-    poly, _ = geo.get_aoi(coordinates=(52.52, 13.4))
+    poly, _ = get_aoi(coordinates=(52.52, 13.4))
     assert isinstance(poly, Polygon)
     assert poly.bounds == (
         13.38526793559592,
@@ -95,7 +95,7 @@ def test_adjust_street_width():
     with open(_location_ / "mock_data/df_pre_adjusting.pickle", "rb") as handle:
         streets_df = pickle.load(handle)
 
-    streets_df_adjusted = geo.adjust_street_width(streets_df)
+    streets_df_adjusted = adjust_street_width(streets_df)
 
     isinstance(streets_df_adjusted, GeoDataFrame)
     assert not all(streets_df_adjusted.is_empty)
