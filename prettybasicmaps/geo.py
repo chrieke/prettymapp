@@ -58,10 +58,9 @@ def get_aoi(
     return poly, utm_crs
 
 
-# def query_osm_streets(
+# def query_osm(
 #     aoi: Polygon,
-#     custom_filter='["highway"~"motorway|trunk|primary|secondary|tertiary|'
-#     'residential|service|unclassified|pedestrian|footway"]',
+#     custom_filter='["highway"~"motorway|trunk|primary|secondary|tertiary|residential|service|unclassified|pedestrian|footway"]',
 # ) -> GeoDataFrame:
 #     """
 #     Query OSM data for aoi.
@@ -74,11 +73,9 @@ def get_aoi(
 #     Returns:
 #         GeodataFrame
 #     """
+#     import osmnx as ox
 #     # TODO: Make custom filter selectable via templates etc.?
-#     graph = ox.graph_from_polygon(
-#         aoi, network_type="all", custom_filter=custom_filter, truncate_by_edge=True
-#     )
-#     graph = ox.project_graph(graph)  # UTM  #TODO: Check if faster with geopandas
+#     graph = ox.graph_from_polygon(aoi, network_type="all", truncate_by_edge=True, custom_filter=custom_filter)# UTM  #TODO: Check if faster with geopandas
 #     df = ox.graph_to_gdfs(graph, nodes=False)
 #     # TODO: Intersection with aoi circle?
 #     # df.clip(aoi)
@@ -130,4 +127,6 @@ def adjust_street_width(
     df = df.to_crs(utm_crs)
     df["buffer_strength"] = df.apply(_find_buffer_strength, axis=1)
     df.geometry = df.geometry.buffer(df["buffer_strength"])
+    df = df.to_crs(crs=4326)
+    df = df.drop(["buffer_strength", "highway"], axis=1)
     return df

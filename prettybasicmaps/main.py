@@ -1,6 +1,7 @@
 from osmnx.geometries import geometries_from_polygon
 from osmnx.utils import config
 from geopandas import clip
+import pandas as pd
 
 from prettybasicmaps import geo
 from prettybasicmaps import plotting
@@ -21,13 +22,19 @@ def main(
 
     # TODO: Maybe iterative query and st plot?
     osm_tags = dataprep.osm_tags_from_settings(settings=LC_SETTINGS)
-    df = geometries_from_polygon(polygon=aoi, tags=osm_tags)
+    # df = geo.query_osm(aoi=aoi, utm_crs=utm_crs)
 
+    df_list = []
+    for lc_class, osm_tags in LC_SETTINGS.items():
+        df = geometries_from_polygon(polygon=aoi, tags=osm_tags)
+        df = dataprep.cleanup_df(df=df, lc_class=lc_class, osm_tags=osm_tags)
+        if lc_class == "streets":
+            df = geo.adjust_street_width(df=df, utm_crs=utm_crs)
+        df_list.append(df)
+
+    df = pd.concat(df_list, axis=0)
     df = clip(df, aoi)
-    df = dataprep.cleanup_df(df=df, lc_settings=LC_SETTINGS)
-    df_utm = geo.adjust_street_width(df=df, utm_crs=utm_crs)
-
-    ax = plotting.plot(df_utm, drawing_kwargs=DRAW_SETTINGS)
+    ax = plotting.plot(df, drawing_kwargs=DRAW_SETTINGS)
     return ax
 
 

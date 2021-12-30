@@ -13,27 +13,29 @@ def osm_tags_from_settings(settings: dict) -> dict:
     return osm_tags
 
 
-def cleanup_df(df: GeoDataFrame, lc_settings: dict) -> GeoDataFrame:
+def cleanup_df(df: GeoDataFrame, lc_class: str, osm_tags: dict) -> GeoDataFrame:
     # Drop point geometries
     df = df[df.geometry.geom_type != "Point"]
 
     # Summarize to lc_classes
-    df["landcover_class"] = None
-    for lc_class, osm_tags in lc_settings.items():
-        mask_lc_class = df[list(osm_tags.keys())].notna().sum(axis=1) != 0
+    # TODO: Simpler
+    df["landcover_class"] = lc_class
 
-        # Remove mask elements that belong to other subtag
-        # TODO: Easier if positive selection always?
-        listed_osm_tags = {k: v for k, v in osm_tags.items() if isinstance(v, list)}
-        for tag, subtags in listed_osm_tags.items():
-            mask_from_different_subtag = ~df[tag].isin(subtags) & df[tag].notna()
-            mask_lc_class[mask_from_different_subtag] = False
+    # mask_lc_class = df[list(osm_tags.keys())].notna().sum(axis=1) != 0
 
-        df["landcover_class"][mask_lc_class] = lc_class
+    # # Remove mask elements that belong to other subtag
+    # # TODO: Easier if positive selection always?
+    # listed_osm_tags = {k: v for k, v in osm_tags.items() if isinstance(v, list)}
+    # for tag, subtags in listed_osm_tags.items():
+    #     mask_from_different_subtag = ~df[tag].isin(subtags) & df[tag].notna()
+    #     mask_lc_class[mask_from_different_subtag] = False
 
-    df = df.drop(
-        df.columns.difference(["landcover_class", "geometry", "highway"]), axis=1
-    )
+    if lc_class == "streets":
+        df = df.drop(
+            df.columns.difference(["landcover_class", "geometry", "highway"]), axis=1
+        )
+    else:
+        df = df.drop(df.columns.difference(["landcover_class", "geometry"]), axis=1)
 
     # Drop not assigned elements (part of multiple classes)
     # TODO: Better solution?
