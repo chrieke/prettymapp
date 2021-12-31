@@ -1,23 +1,29 @@
 import streamlit as st
+from pathlib import Path
 
 from prettybasicmaps import main
 
+# TODO: Empty container so that old content isnt shown while updating
+
+EXAMPLES = {
+    "Macau": "macao.png",
+    "Palma Nova": "palmanova.png",
+    "Barcelona": "barcelona.png",
+    "Erbil": "erbil.png",
+    "Cidadebaixa": "bomfim-farroupilha-cidadebaixa.png",
+}
+
+_location_ = Path(__file__).resolve().parent
+
 
 st.title("🌇 Artsymaps")
-
 st.write("")
 
-ex1, ex2, ex3, ex4, ex5 = st.columns(5)
-ex1.image("./prints/macao.png")
-button_ex1 = ex1.button("Macau")
-ex2.image("./prints/palmanova.png")
-button_ex2 = ex2.button("Palma Nova")
-ex3.image("./prints/barcelona.png")
-button_ex3 = ex3.button("Barcelona")
-ex4.image("./prints/erbil.png")
-button_ex4 = ex4.button("Erbil")
-ex5.image("./prints/bomfim-farroupilha-cidadebaixa.png")
-button_ex5 = ex5.button("Cidadebaixa")
+example_buttons = []
+example_cols = st.columns(5)
+for example_name, example_col in zip(EXAMPLES.keys(), example_cols):
+    example_col.image(str(_location_ / "prints" / EXAMPLES[example_name]))
+    example_buttons.append(example_col.button(example_name))
 
 
 st.write("")
@@ -43,19 +49,15 @@ submit_button = form.form_submit_button(label="Submit")
 st.markdown("---")
 
 if submit_button:
+    # Activated exampled
     with st.spinner("Creating new map..."):
         ax = main.main(address, radius=radius)
-
         st.pyplot(ax)
-
-elif any([button_ex1, button_ex2, button_ex3, button_ex4, button_ex5]):
-    if button_ex1:
-        st.image("./prints/macao.png")
-        st.write("Macau")
-    elif button_ex2:
-        st.image("./prints/palmanova.png")
-        st.write("Palma Nova")
-
 else:
-    st.image("./prints/erbil.png")
-    st.write("Macau")
+    # Prerendered examples
+    if not any(example_buttons):
+        active_example_name = "Macau"
+    else:
+        active_example_name = list(EXAMPLES.keys())[example_buttons.index(True)]
+    st.image(str(_location_ / "prints" / EXAMPLES[active_example_name]))
+    st.write(active_example_name)
