@@ -3,7 +3,7 @@ LC_SETTINGS = {
     "water": {"natural": ["water", "bay"]},
     "woodland": {"landuse": ["forest"]},
     "grassland": {
-        "landuse": ["grass"],
+        "landuse": ["grass", "vineyard"],
         "natural": ["island", "wood"],
         "leisure": ["park"],
     },

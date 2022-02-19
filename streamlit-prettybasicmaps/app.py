@@ -16,7 +16,7 @@ EXAMPLES = {
 _location_ = Path(__file__).resolve().parent
 
 
-st.title("🌇 Artsymaps")
+st.title("🌆 Pretty(basic)maps")
 st.write("")
 
 example_buttons = []
@@ -33,16 +33,17 @@ col1, col2, col3 = form.columns([1.5, 1, 0.5])
 
 address = col1.text_input(
     "Enter address or location",
-    "Praça Ferreira do Amaral, Macau",  # "Matthias-Ehrenfried-Str. 16, 97074, Wuerzburg"
+    "Praça Ferreira do Amaral, Macau",
 )
 radius = col1.slider("Select radius", 1, 1500, 1100)
 
 style = col2.selectbox("Select style", ["1", "2", "3"])
 
 expander = col2.expander("More styling options")
-expander.checkbox("Add location name", True)
-expander.checkbox("Add coordinates")
-expander.color_picker("Background color")
+rectangular = expander.checkbox("Rectangular map", False)
+#= expander.checkbox("Location text")
+description=False
+background_color = expander.color_picker("Background color")
 
 submit_button = form.form_submit_button(label="Submit")
 
@@ -51,8 +52,9 @@ st.markdown("---")
 if submit_button:
     # Activated exampled
     with st.spinner("Creating new map..."):
-        ax = main.main(address, radius=radius)
-        st.pyplot(ax)
+        result_container = st.container()
+        fig = main.main(address, radius=radius, rectangular=rectangular) #show_description=description, background_color=background_color
+        result_container.pyplot(fig)
 else:
     # Prerendered examples
     if not any(example_buttons):

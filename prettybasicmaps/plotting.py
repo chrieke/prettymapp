@@ -12,7 +12,7 @@ def plot(df, drawing_kwargs):
     Returns:
 
     """
-    fig, ax = subplots(1, 1, figsize=(12, 12), constrained_layout=True)
+    fig, ax = subplots(1, 1, figsize=(12, 12), constrained_layout=True, dpi=1200)
     ax.axis("off")
     ax.axis("equal")
     # ax.set_facecolor("#F2F4CB")  # background

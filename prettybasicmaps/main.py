@@ -14,7 +14,6 @@ from prettybasicmaps.settings import LC_SETTINGS, DRAW_SETTINGS
 
 config(use_cache=False)
 
-
 def query_osm(aoi: Polygon, lc_class: str, osm_tags: dict, utm_crs: Any):
     df = geometries_from_polygon(polygon=aoi, tags=osm_tags)
     df["landcover_class"] = lc_class
@@ -29,9 +28,9 @@ def query_osm(aoi: Polygon, lc_class: str, osm_tags: dict, utm_crs: Any):
 def main(
     address: str = "Praça Ferreira do Amaral, Macau",
     radius: int = 1100,
-    rectangle: bool = False,
+    rectangular: bool = False,
 ):
-    aoi, utm_crs = geo.get_aoi(address=address, distance=radius, rectangle=rectangle)
+    aoi, utm_crs = geo.get_aoi(address=address, distance=radius, rectangular=rectangular)
 
     parallel_pool = Parallel(n_jobs=cpu_count())
     delayed_funcs = [

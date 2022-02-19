@@ -18,7 +18,7 @@ def get_aoi(
     address: Optional[str] = None,
     coordinates: Optional[Tuple[float, float]] = None,
     distance: int = 1000,
-    rectangle: bool = False,
+    rectangular: bool = False,
 ) -> Tuple[Polygon, Any]:
     """
     Gets round or rectangular shapely Polygon in in 4326 from input address or coordinates.
@@ -27,7 +27,7 @@ def get_aoi(
         address: Address string
         coordinates: lat, lon
         distance: Radius in meter
-        rectangle: Optionally return aoi as rectangular polygon, default False.
+        rectangular: Optionally return aoi as rectangular polygon, default False.
 
     Returns:
         shapely Polygon in 4326 crs
@@ -52,7 +52,7 @@ def get_aoi(
     df = df.to_crs(crs=4326)
     poly = df.iloc[0].geometry
 
-    if rectangle:
+    if rectangular:
         poly = box(*poly.bounds)
 
     return poly, utm_crs
