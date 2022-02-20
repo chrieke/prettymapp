@@ -6,8 +6,7 @@ import pytest
 from shapely.geometry import Polygon
 from geopandas import GeoDataFrame
 import osmnx as ox
-
-from .context import validate_coordinates, get_aoi, adjust_street_width
+from prettybasicmaps.geo import validate_coordinates, get_aoi, adjust_street_width
 
 
 def test_validate_coordinates():
@@ -54,7 +53,7 @@ def test_get_aoi_from_user_input_coordinates(ox_geocode):
 def test_get_aoi_from_user_input_rectangle(ox_geocode):
     ox_geocode.return_value = 52.52, 13.4
 
-    poly, utm_crs = get_aoi("Unter den Linden 37, 10117 Berlin", rectangle=True)
+    poly, utm_crs = get_aoi("Unter den Linden 37, 10117 Berlin", rectangular=True)
     assert isinstance(poly, Polygon)
     assert poly.bounds == (
         13.373621926483281,

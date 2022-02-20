@@ -1,7 +1,8 @@
 import pickle
 from pathlib import Path
 
-from .context import plot, DRAW_SETTINGS
+from prettybasicmaps.plotting import plot
+from prettybasicmaps.settings import DRAW_SETTINGS
 
 
 def test_plot():

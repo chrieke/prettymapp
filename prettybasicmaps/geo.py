@@ -1,5 +1,6 @@
 from typing import Tuple, Optional, Any
 
+import streamlit as st
 from osmnx.geocoder import geocode
 from geopandas import GeoDataFrame
 from pandas import DataFrame
@@ -14,6 +15,7 @@ def validate_coordinates(lat: float, lon: float) -> None:
         )
 
 
+# @st.cache()
 def get_aoi(
     address: Optional[str] = None,
     coordinates: Optional[Tuple[float, float]] = None,
@@ -59,18 +61,17 @@ def get_aoi(
 
 
 def adjust_street_width(
-    df: GeoDataFrame, utm_crs: Optional[Any] = None
+    df: GeoDataFrame, aoi_utm_crs: Optional[Any] = None
 ) -> GeoDataFrame:
     """
     Adjusts the street Linestrings to thicker Polygons (better visible when plotted).
 
     Args:
-        df_streets: Geodataframe with street linestrings.
+        df_streets: Geodataframe with street linestrings, requires "street" column.
 
     Returns:
         Geodataframe with street Polygons
     """
-    # TODO: As parameters?
     streets_width = {
         "motorway": 5,
         "trunk": 5,
@@ -94,10 +95,10 @@ def adjust_street_width(
             dilation = streets_width[row["highway"][0]]
         return dilation
 
-    if utm_crs is None:
-        utm_crs = df.estimate_utm_crs()
+    if aoi_utm_crs is None:
+        aoi_utm_crs = df.estimate_utm_crs()
 
-    df = df.to_crs(utm_crs)
+    df = df.to_crs(aoi_utm_crs)
     df["buffer_strength"] = df.apply(_find_buffer_strength, axis=1)
     df.geometry = df.geometry.buffer(df["buffer_strength"])
     df = df.to_crs(crs=4326)
