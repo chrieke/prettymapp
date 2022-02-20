@@ -1,9 +1,25 @@
 import streamlit as st
 
+from prettybasicmaps.main import get_geometries
+from prettybasicmaps.plotting import plot
+import matplotlib
+
+
+@st.cache(show_spinner=False)
+def st_get_geometries(address, radius, rectangular, **kwargs):
+    df = get_geometries(address, radius=radius, rectangular=rectangular)
+    return df
+
+
+@st.cache(hash_funcs={matplotlib.figure.Figure: lambda _: None}, show_spinner=False)
+def st_plot(df, drawing_kwargs, **kwargs):
+    fig = plot(df, drawing_kwargs=drawing_kwargs)
+    return fig
+
 
 def image_button_config():
-	st.write(
-		"""
+    st.write(
+        """
 		<style>
 			[data-testid="stHorizontalBlock"] button {
 				width: 130px !important;
@@ -60,5 +76,5 @@ def image_button_config():
 	
 		</style>
 		""",
-		unsafe_allow_html=True,
-	)
+        unsafe_allow_html=True,
+    )

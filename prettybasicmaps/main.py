@@ -8,9 +8,6 @@ from prettybasicmaps.geo import get_aoi, adjust_street_width
 from prettybasicmaps.settings import LC_SETTINGS, DRAW_SETTINGS
 
 
-#from pyinstrument import Profiler
-
-
 config(use_cache=True, log_console=False)
 
 
@@ -19,9 +16,6 @@ def get_geometries(
     radius: int = 1100,
     rectangular: bool = False,
 ):
-    # profiler = Profiler()
-    # profiler.start()
-
     aoi, aoi_utm_crs = get_aoi(
         address=address, distance=radius, rectangular=rectangular
     )
@@ -43,15 +37,11 @@ def get_geometries(
         # for tag, subtags in listed_osm_tags.items():
         #     mask_from_different_subtag = ~df[tag].isin(subtags) & df[tag].notna()
         #     mask_lc_class[mask_from_different_subtag] = False
-        df["landcover_class"][mask_lc_class] = lc_class
+        df.loc[mask_lc_class, "landcover_class"] = lc_class
     # Drop not assigned elements (part of multiple classes)
     df = df[~df["landcover_class"].isnull()]
 
     df = df.drop(df.columns.difference(["geometry", "landcover_class"]), axis=1)
-
-    # profiler.stop()
-    # #print(profiler.output_text(unicode=True, color=True))
-    # profiler.open_in_browser()
 
     return df
 
