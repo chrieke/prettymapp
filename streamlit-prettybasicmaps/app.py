@@ -32,8 +32,10 @@ style = col3.selectbox("Map Style", [1, 2, 3], st.session_state.settings["style"
 
 expander = form.expander("More map style options")
 col1style, col2style, col3style = expander.columns(3)
-rectangular = col1style.checkbox(
-    "Rectangular map", st.session_state.settings["rectangular"]
+shape = col1style.radio(
+    "Map Shape",
+    options=["circle", "rectangle"],
+    index=["circle", "rectangle"].index(st.session_state.settings["shape"]),
 )
 # = expander.checkbox("Location text")
 description = False
@@ -46,12 +48,12 @@ if submit_button:
     st.session_state.settings["address"] = address
     st.session_state.settings["radius"] = radius
     st.session_state.settings["style"] = style
-    st.session_state.settings["rectangular"] = rectangular
+    st.session_state.settings["shape"] = shape
 
 result_container = st.empty()
 with st.spinner("Creating new map...(may take up to a minute)"):
     df = st_get_geometries(
-        address=address, radius=radius, rectangular=rectangular
+        address=address, radius=radius, shape=shape
     )  # show_description=description, background_color=background_color
     fig = st_plot(df=df, drawing_kwargs=DRAW_SETTINGS)
 

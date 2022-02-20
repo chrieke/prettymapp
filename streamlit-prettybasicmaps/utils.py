@@ -6,7 +6,12 @@ import matplotlib
 
 
 @st.cache(show_spinner=False)
-def st_get_geometries(address, radius, rectangular, **kwargs):
+def st_get_geometries(address, radius, shape, **kwargs):
+    if shape == "circle":
+        rectangular = False
+    else:
+        rectangular = True
+
     df = get_geometries(address, radius=radius, rectangular=rectangular)
     return df
 
