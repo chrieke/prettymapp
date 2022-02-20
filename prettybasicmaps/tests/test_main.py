@@ -18,6 +18,6 @@ def test_main_live():
     df = get_geometries()
     fig = plot(df, drawing_kwargs=DRAW_SETTINGS)
     assert fig is not None
-    assert isinstance(fig, None)
+    #assert isinstance(fig, int)
     # import matplotlib.pyplot as plt
     # plt.show()

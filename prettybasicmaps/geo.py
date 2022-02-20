@@ -1,6 +1,5 @@
 from typing import Tuple, Optional, Any
 
-import streamlit as st
 from osmnx.geocoder import geocode
 from geopandas import GeoDataFrame
 from pandas import DataFrame

@@ -8,7 +8,7 @@ from prettybasicmaps.geo import get_aoi, adjust_street_width
 from prettybasicmaps.settings import LC_SETTINGS, DRAW_SETTINGS
 
 
-from pyinstrument import Profiler
+#from pyinstrument import Profiler
 
 
 config(use_cache=True, log_console=False)
@@ -25,8 +25,8 @@ def get_geometries(
     aoi, aoi_utm_crs = get_aoi(
         address=address, distance=radius, rectangular=rectangular
     )
-    osm_tags = {k: v for d in LC_SETTINGS.values() for k, v in d.items()}
-    df = geometries_from_polygon(polygon=aoi, tags=osm_tags)
+    tags = {k: v for d in LC_SETTINGS.values() for k, v in d.items()}  # type: ignore
+    df = geometries_from_polygon(polygon=aoi, tags=tags)
     df = df.droplevel(level=0)
     df = df[df.geometry.geom_type != "Point"]
     # df = df.drop(df.columns.difference(["geometry"] + list(osm_tags.keys())), axis=1)

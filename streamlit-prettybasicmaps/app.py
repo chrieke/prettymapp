@@ -2,7 +2,8 @@ import streamlit as st
 from pathlib import Path
 
 from utils import image_button_config
-from prettybasicmaps import main
+from prettybasicmaps.main import get_geometries
+from prettybasicmaps.plotting import plot
 
 
 # TODO: Empty container so that old content isnt shown while updating
@@ -61,9 +62,10 @@ if submit_button:
     # Activated exampled
     with st.spinner("Creating new map..."):
         result_container = st.container()
-        fig = main.main(
+        df = get_geometries(
             address, radius=radius, rectangular=rectangular
         )  # show_description=description, background_color=background_color
+        fig = plot(df, drawing_kwargs=DRAW_SETTINGS)
         result_container.pyplot(fig)
 else:
     # Prerendered examples
