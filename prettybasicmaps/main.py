@@ -5,7 +5,7 @@ from osmnx.utils import config
 
 from prettybasicmaps.plotting import plot
 from prettybasicmaps.geo import get_aoi, adjust_street_width
-from prettybasicmaps.settings import LC_SETTINGS, DRAW_SETTINGS
+from prettybasicmaps.settings import LC_SETTINGS, DRAW_SETTINGS_1
 
 
 config(use_cache=True, log_console=False)
@@ -48,5 +48,5 @@ def get_geometries(
 
 if __name__ == "__main__":
     df = get_geometries()
-    fig = plot(df, drawing_kwargs=DRAW_SETTINGS)
+    fig = plot(df, drawing_kwargs=DRAW_SETTINGS_1)
     # plt.show()

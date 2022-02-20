@@ -4,7 +4,7 @@ from geopandas import GeoDataFrame
 
 from prettybasicmaps.main import get_geometries
 from prettybasicmaps.plotting import plot
-from prettybasicmaps.settings import DRAW_SETTINGS
+from prettybasicmaps.settings import DRAW_SETTINGS_1
 
 
 @pytest.mark.live
@@ -16,7 +16,7 @@ def test_get_geometries_live():
 @pytest.mark.live
 def test_main_live():
     df = get_geometries()
-    fig = plot(df, drawing_kwargs=DRAW_SETTINGS)
+    fig = plot(df, drawing_kwargs=DRAW_SETTINGS_1)
     assert fig is not None
     # assert isinstance(fig, int)
     # import matplotlib.pyplot as plt

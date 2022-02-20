@@ -2,7 +2,7 @@ import streamlit as st
 
 from examples import EXAMPLES
 from utils import image_button_config, st_get_geometries, st_plot
-from prettybasicmaps.settings import DRAW_SETTINGS
+from prettybasicmaps.settings import DRAW_SETTINGS_1, DRAW_SETTINGS_2
 
 
 if "settings" not in st.session_state:
@@ -28,7 +28,10 @@ col1, col2, col3 = form.columns([3, 1, 1])
 
 address = col1.text_input("Address or Location", st.session_state.settings["address"])
 radius = col2.slider("Radius Size", 1, 1500, st.session_state.settings["radius"])
-style = col3.selectbox("Map Style", [1, 2, 3], st.session_state.settings["style"])
+style_options = ["peach", "auburn", "third"]
+style = col3.selectbox(
+    "Map Style", style_options, style_options.index(st.session_state.settings["style"])
+)
 
 expander = form.expander("More map style options")
 col1style, col2style, col3style = expander.columns(3)
@@ -55,6 +58,13 @@ with st.spinner("Creating new map...(may take up to a minute)"):
     df = st_get_geometries(
         address=address, radius=radius, shape=shape
     )  # show_description=description, background_color=background_color
-    fig = st_plot(df=df, drawing_kwargs=DRAW_SETTINGS)
+    if style == "peach":
+        drawing_kwargs = DRAW_SETTINGS_1
+    elif style == "auburn":
+        drawing_kwargs = DRAW_SETTINGS_2
+    else:
+        drawing_kwargs = DRAW_SETTINGS_1
+
+    fig = st_plot(df=df, drawing_kwargs=drawing_kwargs)
 
     result_container.pyplot(fig)
