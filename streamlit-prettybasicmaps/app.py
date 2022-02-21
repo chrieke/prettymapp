@@ -27,31 +27,37 @@ form.markdown("**Or choose your own location & map style**")
 col1, col2, col3 = form.columns([3, 1, 1])
 
 address = col1.text_input("Address or Location", st.session_state.settings["address"])
-radius = col2.slider("Radius Size", 1, 1500, st.session_state.settings["radius"])
 style_options = ["peach", "auburn", "third"]
-style = col3.selectbox(
+style = col2.selectbox(
     "Map Style", style_options, style_options.index(st.session_state.settings["style"])
 )
+radius = col3.slider("Radius Size", 1, 1500, st.session_state.settings["radius"])
+
 
 expander = form.expander("More map style options")
-col1style, col2style, col3style = expander.columns(3)
+col1style, col2style, col3style, col4style = expander.columns(4)
 shape = col1style.radio(
     "Map Shape",
     options=["circle", "rectangle"],
     index=["circle", "rectangle"].index(st.session_state.settings["shape"]),
 )
-# = expander.checkbox("Location text")
-description = False
-background_color = col2style.color_picker("Background color")
+name_on = col2style.checkbox("Location Name", st.session_state.settings["name_on"])
+font_size = col2style.slider("Font Size", 1, 50, st.session_state.settings["font_size"])
+font_color = col2style.color_picker(
+    "Font Color", st.session_state.settings["font_color"]
+)
 
 submit_button = form.form_submit_button(label="Submit")
-st.markdown("---")
 
 if submit_button:
     st.session_state.settings["address"] = address
     st.session_state.settings["radius"] = radius
     st.session_state.settings["style"] = style
     st.session_state.settings["shape"] = shape
+    st.session_state.settings["name_on"] = name_on
+    st.session_state.settings["font_size"] = font_size
+    st.session_state.settings["font_color"] = font_color
+
 
 result_container = st.empty()
 with st.spinner("Creating new map...(may take up to a minute)"):
@@ -65,6 +71,12 @@ with st.spinner("Creating new map...(may take up to a minute)"):
     else:
         drawing_kwargs = DRAW_SETTINGS_1
 
-    fig = st_plot(df=df, drawing_kwargs=drawing_kwargs)
+    fig = st_plot(
+        df=df,
+        drawing_kwargs=drawing_kwargs,
+        name_on=name_on,
+        font_size=font_size,
+        font_color=font_color,
+    )
 
     result_container.pyplot(fig)

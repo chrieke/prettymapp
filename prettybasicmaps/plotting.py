@@ -1,9 +1,12 @@
+from pathlib import Path
+
 import numpy as np
 from matplotlib.colors import ListedColormap
 from matplotlib.pyplot import subplots
+import matplotlib.font_manager as fm
 
 
-def plot(df, drawing_kwargs):
+def plot(df, drawing_kwargs, name_on=False, font_size=24, font_color="#2F3737"):
     """
 
     Args:
@@ -28,5 +31,24 @@ def plot(df, drawing_kwargs):
             df[df["landcover_class"] == lc_class].plot(
                 ax=ax, **drawing_kwargs[lc_class]
             )
+
+    if name_on:
+        xmin, ymin, xmax, ymax = df.total_bounds
+        xmid = (xmin + xmax) / 2
+        dify = ymax - ymin
+        _location_ = Path(__file__).resolve().parent
+        ax.text(
+            x=xmid,
+            y=ymin + 0.305 * dify,
+            s="Stad van de Zon,\nHeerhugowaard, Netherlands",
+            color=font_color,
+            zorder=6,
+            ha="center",
+            # rotation = +1.75,
+            fontproperties=fm.FontProperties(
+                fname=_location_ / "fonts/PermanentMarker-Regular.ttf"
+            ),
+            size=font_size,
+        )
 
     return fig
