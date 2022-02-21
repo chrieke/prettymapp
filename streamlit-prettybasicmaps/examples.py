@@ -1,7 +1,7 @@
 EXAMPLES = {
     "Macau": {
         "address": "Praça Ferreira do Amaral, Macau",
-        "radius": 1500,
+        "radius": 1100,
         "style": "Peach",
         "shape": "circle",
         "image": "macao.png",

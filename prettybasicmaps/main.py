@@ -19,7 +19,14 @@ def get_geometries(
     aoi, aoi_utm_crs = get_aoi(
         address=address, distance=radius, rectangular=rectangular
     )
-    tags = {k: v for d in LC_SETTINGS.values() for k, v in d.items()}  # type: ignore
+    tags = {}
+    for d in LC_SETTINGS.values():
+        for k, v in d.items():
+            try:
+                tags.setdefault(k, []).extend(v)
+            except TypeError:  # e.g. "building": True
+                tags[k] = v
+
     df = geometries_from_polygon(polygon=aoi, tags=tags)
     df = df.droplevel(level=0)
     df = df[df.geometry.geom_type != "Point"]
@@ -29,6 +36,7 @@ def get_geometries(
     )
     df = clip(df, aoi)
 
+    # todo: somehow water gets mixed with grassland, e.g. osm id 7588101
     df["landcover_class"] = None
     for lc_class, osm_tags in LC_SETTINGS.items():
         mask_lc_class = df[list(osm_tags.keys())].notna().sum(axis=1) != 0

@@ -24,7 +24,6 @@ example_buttons = []
 image_button_config()
 example_cols = st.columns(5)
 for example_name, example_col in zip(EXAMPLES.keys(), example_cols):
-    # example_col.image(str(_location_ / "prints" / EXAMPLES[example_name]))
     example_buttons.append(example_col.button(example_name))
 if any(example_buttons):
     selected_example = EXAMPLES[list(EXAMPLES.keys())[example_buttons.index(True)]]
