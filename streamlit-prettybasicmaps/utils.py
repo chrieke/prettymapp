@@ -1,8 +1,7 @@
 import streamlit as st
-
+from matplotlib.figure import Figure
 from prettybasicmaps.main import get_geometries
 from prettybasicmaps.plotting import plot
-import matplotlib
 
 
 @st.cache(show_spinner=False)
@@ -16,7 +15,7 @@ def st_get_geometries(address, radius, shape, **kwargs):
     return df
 
 
-@st.cache(hash_funcs={matplotlib.figure.Figure: lambda _: None}, show_spinner=False)
+@st.cache(hash_funcs={Figure: lambda _: None}, show_spinner=False)
 def st_plot(
     df,
     drawing_kwargs,

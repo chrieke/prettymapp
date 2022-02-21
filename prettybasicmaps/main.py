@@ -36,15 +36,14 @@ def get_geometries(
     )
     df = clip(df, aoi)
 
-    # todo: somehow water gets mixed with grassland, e.g. osm id 7588101
     df["landcover_class"] = None
     for lc_class, osm_tags in LC_SETTINGS.items():
         mask_lc_class = df[list(osm_tags.keys())].notna().sum(axis=1) != 0
-        # # Remove mask elements that belong to other subtag
-        # listed_osm_tags = {k: v for k, v in osm_tags.items() if isinstance(v, list)}
-        # for tag, subtags in listed_osm_tags.items():
-        #     mask_from_different_subtag = ~df[tag].isin(subtags) & df[tag].notna()
-        #     mask_lc_class[mask_from_different_subtag] = False
+        # Remove mask elements that belong to other subtag
+        listed_osm_tags = {k: v for k, v in osm_tags.items() if isinstance(v, list)}
+        for tag, subtags in listed_osm_tags.items():
+            mask_from_different_subtag = ~df[tag].isin(subtags) & df[tag].notna()
+            mask_lc_class[mask_from_different_subtag] = False
         df.loc[mask_lc_class, "landcover_class"] = lc_class
     # Drop not assigned elements (part of multiple classes)
     df = df[~df["landcover_class"].isnull()]
