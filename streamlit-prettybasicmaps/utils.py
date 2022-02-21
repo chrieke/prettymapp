@@ -17,13 +17,26 @@ def st_get_geometries(address, radius, shape, **kwargs):
 
 
 @st.cache(hash_funcs={matplotlib.figure.Figure: lambda _: None}, show_spinner=False)
-def st_plot(df, drawing_kwargs, name_on, font_size, font_color, **kwargs):
+def st_plot(
+    df,
+    drawing_kwargs,
+    name_on,
+    font_size,
+    font_color,
+    text_x,
+    text_y,
+    text_rotation,
+    **kwargs
+):
     fig = plot(
         df,
         drawing_kwargs=drawing_kwargs,
         name_on=name_on,
         font_size=font_size,
         font_color=font_color,
+        text_x=text_x,
+        text_y=text_y,
+        text_rotation=text_rotation,
     )
     return fig
 
