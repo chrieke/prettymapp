@@ -51,6 +51,17 @@ shape = col1style.radio(
     options=["circle", "rectangle"],
     index=["circle", "rectangle"].index(st.session_state.settings["shape"]),
 )
+background_shape = col1style.radio(
+    "Background",
+    options=["rectangle", "circle", None],
+    index=["rectangle", "circle", None].index(
+        st.session_state.settings["background_shape"]
+    ),
+)
+background_color = col1style.color_picker(
+    "Background Color", st.session_state.settings["background_color"]
+)
+
 name_on = col2style.checkbox("Add Location Name", st.session_state.settings["name_on"])
 font_size = col2style.slider("Font Size", 1, 50, st.session_state.settings["font_size"])
 font_color = col2style.color_picker(
@@ -80,6 +91,8 @@ if submit_button:
     st.session_state.settings["text_x"] = text_x
     st.session_state.settings["text_y"] = text_y
     st.session_state.settings["text_rotation"] = text_rotation
+    st.session_state.settings["background_shape"] = background_shape
+    st.session_state.settings["background_color"] = background_color
 
 
 result_container = st.empty()
@@ -97,6 +110,8 @@ with st.spinner("Creating new map...(may take up to a minute)"):
         text_x=text_x,
         text_y=text_y,
         text_rotation=text_rotation,
+        background_shape=background_shape,
+        background_color=background_color,
     )
 
     result_container.pyplot(fig)

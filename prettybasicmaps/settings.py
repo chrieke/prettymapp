@@ -1,5 +1,5 @@
 LC_SETTINGS = {
-    "urban": {"building": True, "landuse": ["construction"]},
+    "urban": {"building": True, "landuse": ["construction", "commercial"]},
     "water": {"natural": ["water", "bay"]},
     "woodland": {"landuse": ["forest"]},
     "grassland": {
@@ -34,7 +34,7 @@ DRAW_SETTINGS_1 = {
     },
     "water": {
         "fc": "#a1e3ff",
-        "ec": "#2F3737",
+        "ec": "#85c9e6",
         "hatch": "ooo...",
         "lw": 1,
         "zorder": 2,

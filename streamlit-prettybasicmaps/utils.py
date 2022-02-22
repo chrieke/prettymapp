@@ -25,6 +25,8 @@ def st_plot(
     text_x,
     text_y,
     text_rotation,
+    background_shape,
+    background_color,
     **kwargs
 ):
     fig = plot(
@@ -36,6 +38,8 @@ def st_plot(
         text_x=text_x,
         text_y=text_y,
         text_rotation=text_rotation,
+        background_shape=background_shape,
+        background_color=background_color,
     )
     return fig
 
