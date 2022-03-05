@@ -36,6 +36,7 @@ DRAW_SETTINGS_1 = {
         "fc": "#a1e3ff",
         "ec": "#85c9e6",
         "hatch": "ooo...",
+        "hatch_c": "#2F3737",
         "lw": 1,
         "zorder": 2,
     },

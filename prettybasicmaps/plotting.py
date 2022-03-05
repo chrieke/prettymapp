@@ -39,7 +39,6 @@ def plot(
     Returns:
 
     """
-    # todo water black outline etc?
     fig, ax = subplots(1, 1, figsize=(12, 12), constrained_layout=True, dpi=1200)
     ax.axis("off")
 
@@ -81,19 +80,26 @@ def plot(
             ax.add_artist(ellipse)
         ax.patch.set_zorder(
             -1
-        )  # re-enable patch for background color that is deactivated with axis
+        )  # re-enables patch for background color that is deactivated with axis
 
     for lc_class in df["landcover_class"].unique():
-        if lc_class == "urban":
-            urban_drawing_kwargs = drawing_kwargs[lc_class].copy()
-            urban_drawing_kwargs["cmap"] = ListedColormap(urban_drawing_kwargs["cmap"])
-            df_urban = df[df["landcover_class"] == lc_class]
-            df_urban["randint"] = np.random.randint(0, 3, df_urban.shape[0])
-            df_urban.plot(ax=ax, column="randint", **urban_drawing_kwargs)
-        else:
-            df[df["landcover_class"] == lc_class].plot(
-                ax=ax, **drawing_kwargs[lc_class]
+        df_class = df[df["landcover_class"] == lc_class]
+        draw_settings_class = drawing_kwargs[lc_class].copy()
+
+        if "hatch_c" in draw_settings_class:
+            # Matplotlib hatch color is set via ec. To have different edge color plot just the outlines again above.
+            df_class.plot(
+                ax=ax, fc="None", ec=draw_settings_class["hatch_c"], lw=1, zorder=6
             )
+            draw_settings_class.pop("hatch_c")
+
+        if lc_class == "urban":
+            # Colormap formatting and random assignment
+            draw_settings_class["cmap"] = ListedColormap(draw_settings_class["cmap"])
+            df_class["randint"] = np.random.randint(0, 3, df_class.shape[0])
+            df_class.plot(ax=ax, column="randint", **draw_settings_class)
+        else:
+            df_class.plot(ax=ax, **draw_settings_class)
 
     if name_on:
         x_text = xmid + text_x / 10 * xdif
