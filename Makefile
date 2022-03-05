@@ -4,11 +4,15 @@ test:
 test[live]:
 	bash test.sh --live
 
-e2e:
-	rm -rf project_20abe*/
-	python $(SRC)/tests/test_e2e_30sec.py
-	python $(SRC)/tests/test_e2e_catalog.py
-	rm -rf project_20abe*/
+setup:
+	pip install -r requirements.txt
+	pip install -r streamlit-prettybasicmaps/requirements.txt
+
+setup-dev:
+	pip install -r requirements.txt
+	pip install -r requirements-dev.txt
+	pip install -e .
+	pip install streamlit
 
 package:
 	python setup.py sdist bdist_wheel

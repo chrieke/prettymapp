@@ -128,6 +128,7 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
+.idea/
 cache/
 prettybasicmaps/cache
 prettybasicmaps/tests/cache
