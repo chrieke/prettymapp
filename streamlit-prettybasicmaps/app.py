@@ -53,7 +53,7 @@ radius = col3.slider("Radius Size", 1, 1500, stss["radius"])
 
 
 expander = form.expander("More map style options")
-col1style, col2style, col3style, col4style = expander.columns(4)
+col1style, col2style, col3style = expander.columns(3)
 shape_options = ["circle", "rectangle"]
 shape = col1style.radio(
     "Map Shape",
@@ -71,9 +71,9 @@ bg_color = col1style.color_picker("Background Color", stss["bg_color"])
 name_on = col2style.checkbox("Add Location Name", stss["name_on"])
 font_size = col2style.slider("Font Size", 1, 50, stss["font_size"])
 font_color = col2style.color_picker("Font Color", stss["font_color"])
-text_x = col2style.slider("Text left/right", -10, 10, stss["text_x"])
-text_y = col2style.slider("Text top/bottom", -10, 10, stss["text_y"])
-text_rotation = col2style.slider("Text rotation", -180, 180, stss["text_rotation"])
+text_x = col2style.slider("Text left/right", -100, 100, stss["text_x"])
+text_y = col2style.slider("Text top/bottom", -100, 100, stss["text_y"])
+text_rotation = col2style.slider("Text rotation", -90, 90, stss["text_rotation"])
 
 vars = [
     address,

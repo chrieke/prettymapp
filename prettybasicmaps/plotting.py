@@ -61,6 +61,7 @@ class Plot:
         if self.name_on:
             self.set_name()
         self.set_credits(add_package_credit=True)
+
         return self.fig
 
     def set_geometries(self):
@@ -126,16 +127,16 @@ class Plot:
         self.ax.patch.set_zorder(-1)
 
     def set_name(self):
-        x_text = self.xmid + text_x / 10 * self.xdif
-        y_text = self.ymid + text_y / 10 * self.ydif
+        x = self.xmid + self.text_x / 100 * self.xdif
+        y = self.ymid + self.text_y / 100 * self.ydif
 
         _location_ = Path(__file__).resolve().parent
         fontproperties = fm.FontProperties(
             fname=_location_ / "fonts/PermanentMarker-Regular.ttf"
         )
         self.ax.text(
-            x=x_text,
-            y=y_text,
+            x=x,
+            y=y,
             s=self.name,
             color=self.font_color,
             zorder=6,
