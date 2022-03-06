@@ -77,30 +77,32 @@ text_rotation = col2style.slider(
     "Text rotation", -180, 180, st.session_state.settings["text_rotation"]
 )
 
+vars = [
+    address,
+    radius,
+    style,
+    shape,
+    name_on,
+    font_size,
+    font_color,
+    text_x,
+    text_y,
+    text_rotation,
+    background_shape,
+    background_color,
+]
+
 submit_button = form.form_submit_button(label="Submit")
-
 if submit_button:
+    # Submit saves to session state from where the values are used.
     # TODO: second submit button click does not update session state?
-    st.session_state.settings["address"] = address
-    st.session_state.settings["radius"] = radius
-    st.session_state.settings["style"] = style
-    st.session_state.settings["shape"] = shape
-    st.session_state.settings["name_on"] = name_on
-    st.session_state.settings["font_size"] = font_size
-    st.session_state.settings["font_color"] = font_color
-    st.session_state.settings["text_x"] = text_x
-    st.session_state.settings["text_y"] = text_y
-    st.session_state.settings["text_rotation"] = text_rotation
-    st.session_state.settings["background_shape"] = background_shape
-    st.session_state.settings["background_color"] = background_color
-
+    for var in vars:
+        var_name = f"{var=}".split("=")[0]
+        stss[var_name] = var
 
 result_container = st.empty()
 with st.spinner("Creating new map...(may take up to a minute)"):
-    df = st_get_geometries(
-        address=address, radius=radius, shape=shape
-    )  # show_description=description, background_color=background_color
-
+    df = st_get_geometries(address=address, radius=radius, shape=shape)
     fig = st_plot(
         df=df,
         drawing_kwargs=STYLE_OPTIONS[style],
@@ -113,7 +115,6 @@ with st.spinner("Creating new map...(may take up to a minute)"):
         background_shape=background_shape,
         background_color=background_color,
     )
-
     result_container.pyplot(fig)
 
 st.write("")
