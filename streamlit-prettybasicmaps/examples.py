@@ -11,8 +11,8 @@ EXAMPLES = {
         "text_x": 0,
         "text_y": 0,
         "text_rotation": 0,
-        "background_shape": "rectangle",
-        "background_color": "#F2F4CB",
+        "bg_shape": "rectangle",  # background
+        "bg_color": "#F2F4CB",
     },
     "Heerhugowaard": {
         "address": "Keerkring 49, 1705 Heerhugowaard, Netherlands",
@@ -26,8 +26,8 @@ EXAMPLES = {
         "text_x": 0,
         "text_y": -2,
         "text_rotation": 0,
-        "background_shape": "rectangle",
-        "background_color": "#F2F4CB",
+        "bg_shape": "rectangle",
+        "bg_color": "#F2F4CB",
     },
     "Barcelona": "barcelona.png",
     "Erbil": "erbil.png",

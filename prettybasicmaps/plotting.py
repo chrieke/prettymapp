@@ -59,7 +59,7 @@ def set_name(
     )
 
 
-def set_background(ax, bounds, background_shape: str, background_color: str):
+def set_background(ax, bounds, bg_shape: str, bg_color: str):
     xmin, ymin, xmax, ymax = bounds
     xmid = (xmin + xmax) / 2
     ymid = (ymin + ymax) / 2
@@ -67,19 +67,19 @@ def set_background(ax, bounds, background_shape: str, background_color: str):
     ydif = ymax - ymin
 
     overhang = 0.02
-    if background_shape == "rectangle":
+    if bg_shape == "rectangle":
         patch = Rectangle(
             (xmin - (xdif * overhang), ymin - (ydif * overhang)),
             xdif * (1 + 2 * overhang),
             ydif * (1 + 2 * overhang),
-            color=background_color,
-            ec=adjust_lightness(background_color, 0.78),  # todo: correct value?
+            color=bg_color,
+            ec=adjust_lightness(bg_color, 0.78),  # todo: correct value?
             hatch="ooo...",
             zorder=-1,
             clip_on=True,
         )
         ax.add_patch(patch)
-    elif background_shape == "circle":
+    elif bg_shape == "circle":
         # axis aspect ratio no equal so ellipse required to display as circle
         maxd = max(xdif, ydif)
         width_ellipse = xdif / maxd * maxd * (1 + overhang)
@@ -88,8 +88,8 @@ def set_background(ax, bounds, background_shape: str, background_color: str):
             (xmid, ymid),
             width_ellipse,
             height_ellipse,
-            facecolor=background_color,
-            ec=adjust_lightness(background_color, 0.78),
+            facecolor=bg_color,
+            ec=adjust_lightness(bg_color, 0.78),
             hatch="ooo...",
             zorder=-1,
             clip_on=True,
@@ -109,8 +109,8 @@ def plot(
     text_x: int = 0,
     text_y: int = 0,
     text_rotation: int = 0,
-    background_shape: str = "rectangle",
-    background_color: str = "F2F4CB",
+    bg_shape: str = "rectangle",
+    bg_color: str = "F2F4CB",
 ):
     """
 
@@ -125,12 +125,12 @@ def plot(
 
     bounds = df.total_bounds
 
-    if background_shape is not None:
+    if bg_shape is not None:
         set_background(
             ax=ax,
             bounds=bounds,
-            background_shape=background_shape,
-            background_color=background_color,
+            bg_shape=bg_shape,
+            bg_color=bg_color,
         )
 
     for lc_class in df["landcover_class"].unique():
