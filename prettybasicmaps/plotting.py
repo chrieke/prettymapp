@@ -104,6 +104,7 @@ def plot(
     df,
     drawing_kwargs,
     name_on: bool = False,
+    name: str = "",
     font_size: int = 24,
     font_color: str = "#2F3737",
     text_x: int = 0,

@@ -1,12 +1,16 @@
 import streamlit as st
+from matplotlib.figure import Figure
 
 from examples import EXAMPLES
-from utils import image_button_config, st_get_geometries, st_plot
+from utils import image_button_config
+from prettybasicmaps.main import get_geometries
+from prettybasicmaps.plotting import plot
 from prettybasicmaps.settings import DRAW_SETTINGS_1, DRAW_SETTINGS_2
 
-st.set_page_config(
-    page_title="prettybasicmaps", page_icon="🚀", initial_sidebar_state="collapsed"
-)
+
+# Enabling streamlit caching for imports
+plot = st.cache(hash_funcs={Figure: lambda _: None}, show_spinner=False)(plot)
+get_geometries = st.cache(show_spinner=False)(get_geometries)
 
 STYLE_OPTIONS = {
     "Peach": DRAW_SETTINGS_1,
@@ -16,8 +20,11 @@ STYLE_OPTIONS = {
 
 if "settings" not in st.session_state:
     st.session_state.settings = EXAMPLES["Macau"]
-    stss = st.session_state.settings
+stss = st.session_state.settings
 
+st.set_page_config(
+    page_title="prettybasicmaps", page_icon="🚀", initial_sidebar_state="collapsed"
+)
 st.markdown("# Pretty(basic)maps")
 st.write("")
 
@@ -93,11 +100,14 @@ if submit_button:
 
 result_container = st.empty()
 with st.spinner("Creating new map...(may take up to a minute)"):
-    df = st_get_geometries(address=address, radius=radius, shape=shape)
-    fig = st_plot(
+    rectangular = shape != "circle"
+    df = get_geometries(address=address, radius=radius, rectangular=rectangular)
+
+    fig = plot(
         df=df,
         drawing_kwargs=STYLE_OPTIONS[style],
         name_on=name_on,
+        name=address,
         font_size=font_size,
         font_color=font_color,
         text_x=text_x,

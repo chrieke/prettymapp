@@ -1,47 +1,4 @@
 import streamlit as st
-from matplotlib.figure import Figure
-from prettybasicmaps.main import get_geometries
-from prettybasicmaps.plotting import plot
-
-
-@st.cache(show_spinner=False)
-def st_get_geometries(address, radius, shape, **kwargs):
-    if shape == "circle":
-        rectangular = False
-    else:
-        rectangular = True
-
-    df = get_geometries(address, radius=radius, rectangular=rectangular)
-    return df
-
-
-@st.cache(hash_funcs={Figure: lambda _: None}, show_spinner=False)
-def st_plot(
-    df,
-    drawing_kwargs,
-    name_on,
-    font_size,
-    font_color,
-    text_x,
-    text_y,
-    text_rotation,
-    bg_shape,
-    bg_color,
-    **kwargs
-):
-    fig = plot(
-        df,
-        drawing_kwargs=drawing_kwargs,
-        name_on=name_on,
-        font_size=font_size,
-        font_color=font_color,
-        text_x=text_x,
-        text_y=text_y,
-        text_rotation=text_rotation,
-        bg_shape=bg_shape,
-        bg_color=bg_color,
-    )
-    return fig
 
 
 def image_button_config():
