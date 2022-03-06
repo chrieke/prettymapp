@@ -4,12 +4,12 @@ from matplotlib.figure import Figure
 from examples import EXAMPLES
 from utils import image_button_config
 from prettybasicmaps.main import get_geometries
-from prettybasicmaps.plotting import plot
+from prettybasicmaps.plotting import Plot
 from prettybasicmaps.settings import DRAW_SETTINGS_1, DRAW_SETTINGS_2
 
 
 # Enabling streamlit caching for imports
-plot = st.cache(hash_funcs={Figure: lambda _: None}, show_spinner=False)(plot)
+# plot = st.cache(hash_funcs={Figure: lambda _: None}, show_spinner=False)(plot)  #todo
 get_geometries = st.cache(show_spinner=False)(get_geometries)
 
 STYLE_OPTIONS = {
@@ -103,7 +103,7 @@ with st.spinner("Creating new map...(may take up to a minute)"):
     rectangular = shape != "circle"
     df = get_geometries(address=address, radius=radius, rectangular=rectangular)
 
-    fig = plot(
+    fig = Plot(
         df=df,
         drawing_kwargs=STYLE_OPTIONS[style],
         name_on=name_on,
@@ -115,7 +115,8 @@ with st.spinner("Creating new map...(may take up to a minute)"):
         text_rotation=text_rotation,
         bg_shape=bg_shape,
         bg_color=bg_color,
-    )
+    ).plot_all()
+
     result_container.pyplot(fig)
 
 st.write("")
