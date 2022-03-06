@@ -55,7 +55,7 @@ class Plot:
         self.ax.set_ylim(self.ymin, self.ymax)
 
     def plot_all(self):
-        self.plot_geometries()
+        self.set_geometries()
         if self.bg_shape is not None:
             self.set_background()
         if self.name_on:
@@ -63,7 +63,7 @@ class Plot:
         self.set_credits(add_package_credit=True)
         return self.fig
 
-    def plot_geometries(self):
+    def set_geometries(self):
         for lc_class in self.df["landcover_class"].unique():
             df_class = self.df[self.df["landcover_class"] == lc_class]
             draw_settings_class = self.drawing_kwargs[lc_class].copy()
