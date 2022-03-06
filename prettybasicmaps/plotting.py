@@ -122,7 +122,6 @@ def plot(
 
     """
     fig, ax = subplots(1, 1, figsize=(12, 12), constrained_layout=True, dpi=1200)
-    ax.axis("off")
 
     bounds = df.total_bounds
 
@@ -156,4 +155,5 @@ def plot(
     if name_on:
         set_name(ax, bounds, name, font_size, font_color, text_x, text_y, text_rotation)
 
+    ax.axis("off")
     return fig

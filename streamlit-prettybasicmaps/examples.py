@@ -9,7 +9,7 @@ EXAMPLES = {
         "font_size": 24,
         "font_color": "#2F3737",
         "text_x": 0,
-        "text_y": 0,
+        "text_y": -5,
         "text_rotation": 0,
         "bg_shape": "rectangle",  # background
         "bg_color": "#F2F4CB",
