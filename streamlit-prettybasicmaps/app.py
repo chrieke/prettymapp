@@ -9,8 +9,15 @@ from prettybasicmaps.settings import DRAW_SETTINGS_1, DRAW_SETTINGS_2
 
 
 # Enabling streamlit caching for imports
-# plot = st.cache(hash_funcs={Figure: lambda _: None}, show_spinner=False)(plot)  #todo
-get_geometries = st.cache(show_spinner=False)(get_geometries)
+get_geometries = st.experimental_memo(show_spinner=False)(get_geometries)
+# todo: effect?
+st.experimental_memo(show_spinner=False)
+
+
+def st_plot_all(**kwargs):
+    fig = Plot(**kwargs).plot_all()
+    return fig
+
 
 STYLE_OPTIONS = {
     "Peach": DRAW_SETTINGS_1,
@@ -69,6 +76,9 @@ bg_shape = col1style.radio(
 bg_color = col1style.color_picker("Background Color", stss["bg_color"])
 
 name_on = col2style.checkbox("Add Location Name", stss["name_on"])
+custom_title = col2style.text_input(
+    "Use custom title instead", stss["custom_title"], max_chars=30
+)
 font_size = col2style.slider("Font Size", 1, 50, stss["font_size"])
 font_color = col2style.color_picker("Font Color", stss["font_color"])
 text_x = col2style.slider("Text left/right", -100, 100, stss["text_x"])
@@ -81,6 +91,7 @@ vars = [
     style,
     shape,
     name_on,
+    custom_title,
     font_size,
     font_color,
     text_x,
@@ -103,11 +114,11 @@ with st.spinner("Creating new map...(may take up to a minute)"):
     rectangular = shape != "circle"
     df = get_geometries(address=address, radius=radius, rectangular=rectangular)
 
-    fig = Plot(
+    fig = st_plot_all(
         df=df,
         drawing_kwargs=STYLE_OPTIONS[style],
         name_on=name_on,
-        name=address,
+        name=address if custom_title == "" else custom_title,
         font_size=font_size,
         font_color=font_color,
         text_x=text_x,
@@ -115,7 +126,7 @@ with st.spinner("Creating new map...(may take up to a minute)"):
         text_rotation=text_rotation,
         bg_shape=bg_shape,
         bg_color=bg_color,
-    ).plot_all()
+    )
 
     result_container.pyplot(fig)
 

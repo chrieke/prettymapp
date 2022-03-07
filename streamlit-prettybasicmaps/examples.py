@@ -1,6 +1,7 @@
 EXAMPLES = {
     "Macau": {
         "address": "Praça Ferreira do Amaral, Macau",
+        "custom_title": "",
         "radius": 1100,
         "style": "Peach",
         "shape": "circle",
@@ -14,8 +15,25 @@ EXAMPLES = {
         "bg_shape": "rectangle",  # background
         "bg_color": "#F2F4CB",
     },
+    "Barcelona": {
+        "address": "Plaça Tetuan, 08010 Barcelona, Spain",
+        "custom_title": "Barcelona, Spain",
+        "radius": 500,
+        "style": "Peach",
+        "shape": "rectangle",
+        "image": "barcelona.png",
+        "name_on": True,
+        "font_size": 24,
+        "font_color": "#2F3737",
+        "text_x": 0,
+        "text_y": -2,
+        "text_rotation": 0,
+        "bg_shape": "rectangle",
+        "bg_color": "#F2F4CB",
+    },
     "Heerhugowaard": {
         "address": "Keerkring 49, 1705 Heerhugowaard, Netherlands",
+        "custom_title": "",
         "radius": 550,
         "style": "Auburn",
         "shape": "rectangle",
@@ -29,7 +47,6 @@ EXAMPLES = {
         "bg_shape": "rectangle",
         "bg_color": "#F2F4CB",
     },
-    "Barcelona": "barcelona.png",
     "Erbil": "erbil.png",
     "Cidadebaixa": "bomfim-farroupilha-cidadebaixa.png",
 }

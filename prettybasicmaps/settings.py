@@ -3,7 +3,7 @@ LC_SETTINGS = {
     "water": {"natural": ["water", "bay"]},
     "woodland": {"landuse": ["forest"]},
     "grassland": {
-        "landuse": ["grass", "vineyard"],
+        "landuse": ["grass", "vineyard", "village_green"],
         "natural": ["island", "wood"],
         "leisure": ["park"],
     },
@@ -46,18 +46,19 @@ DRAW_SETTINGS_1 = {
     "parking": {"fc": "#F2F4CB", "ec": "#2F3737", "lw": 1, "zorder": 3},
 }
 
-# spain
+# Barcelona
 DRAW_SETTINGS_2 = {
     "urban": {
         "cmap": ["#433633", "#FF5E5B"],
-        "ec": "#dadbc1",
+        "ec": "#2F3737",
         "lw": 0.5,
-        "zorder": -1,
+        "zorder": 5,
     },
     "water": {
         "fc": "#a8e1e6",
         "ec": "#2F3737",
         "hatch": "ooo...",
+        "hatch_c": "#9bc3d4",
         "lw": 1,
         "zorder": 3,
     },
