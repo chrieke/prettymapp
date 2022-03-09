@@ -4,7 +4,7 @@ from examples import EXAMPLES
 from utils import image_button_config
 from prettybasicmaps.main import get_geometries
 from prettybasicmaps.plotting import Plot
-from prettybasicmaps.settings import DRAW_SETTINGS_1, DRAW_SETTINGS_2
+from prettybasicmaps.settings import DRAW_SETTINGS
 
 
 # Enabling streamlit caching for imports
@@ -17,12 +17,6 @@ def st_plot_all(**kwargs):
     fig = Plot(**kwargs).plot_all()
     return fig
 
-
-STYLE_OPTIONS = {
-    "Peach": DRAW_SETTINGS_1,
-    "Auburn": DRAW_SETTINGS_2,
-    "Third": DRAW_SETTINGS_1,
-}
 
 if "settings" not in st.session_state:
     st.session_state.settings = EXAMPLES["Macau"]
@@ -51,8 +45,8 @@ address = col1.text_input("Address or Location", st.session_state.settings["addr
 
 style = col2.selectbox(
     "Map Style",
-    list(STYLE_OPTIONS.keys()),
-    list(STYLE_OPTIONS.keys()).index(st.session_state.settings["style"]),
+    list(DRAW_SETTINGS.keys()),
+    list(DRAW_SETTINGS.keys()).index(st.session_state.settings["style"]),
 )
 radius = col3.slider("Radius Size", 1, 1500, st.session_state.settings["radius"])
 
@@ -124,7 +118,7 @@ with st.spinner("Creating new map...(may take up to a minute)"):
 
     fig = st_plot_all(
         df=df,
-        drawing_kwargs=STYLE_OPTIONS[style],
+        drawing_kwargs=DRAW_SETTINGS[style],
         name_on=name_on,
         name=address if custom_title == "" else custom_title,
         font_size=font_size,
