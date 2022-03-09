@@ -80,6 +80,7 @@ def adjust_street_width(
         "secondary_link": 4,
         "tertiary": 3.5,
         "tertiary_link": 3.5,
+        "cycleway": 3.5,
         "residential": 3,
         "service": 2,
         "unclassified": 2,
@@ -92,6 +93,9 @@ def adjust_street_width(
             dilation = streets_width[row["highway"]]
         except TypeError:
             dilation = streets_width[row["highway"][0]]
+        except KeyError:
+            # Undesired street types
+            dilation = 1
         return dilation
 
     if aoi_utm_crs is None:
