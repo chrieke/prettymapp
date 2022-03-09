@@ -4,8 +4,7 @@ from osmnx.geometries import geometries_from_polygon
 from osmnx.utils import config
 
 from prettybasicmaps.geo import get_aoi, adjust_street_width
-from prettybasicmaps.settings import LC_SETTINGS, DRAW_SETTINGS_1
-
+from prettybasicmaps.settings import LC_SETTINGS, DRAW_SETTINGS
 
 config(use_cache=True, log_console=False)
 
@@ -37,9 +36,14 @@ def get_geometries(
 
     df["landcover_class"] = None
     for lc_class, osm_tags in LC_SETTINGS.items():
-        mask_lc_class = df[list(osm_tags.keys())].notna().sum(axis=1) != 0
+        tags_in_columns = set(osm_tags.keys()).intersection(list(df.columns))
+        mask_lc_class = df[tags_in_columns].notna().sum(axis=1) != 0
         # Remove mask elements that belong to other subtag
-        listed_osm_tags = {k: v for k, v in osm_tags.items() if isinstance(v, list)}
+        listed_osm_tags = {
+            k: v
+            for k, v in osm_tags.items()
+            if isinstance(v, list) and k in tags_in_columns
+        }
         for tag, subtags in listed_osm_tags.items():
             mask_from_different_subtag = ~df[tag].isin(subtags) & df[tag].notna()
             mask_lc_class[mask_from_different_subtag] = False
