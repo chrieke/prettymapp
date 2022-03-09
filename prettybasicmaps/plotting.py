@@ -55,9 +55,9 @@ class Plot:
         self.ax.set_ylim(self.ymin, self.ymax)
 
     def plot_all(self):
-        self.set_geometries()
         if self.bg_shape is not None:
             self.set_background()
+        self.set_geometries()
         if self.name_on:
             self.set_name()
         self.set_credits(add_package_credit=True)
@@ -91,15 +91,14 @@ class Plot:
                 df_class.plot(ax=self.ax, **draw_settings_class)
 
     def set_background(self):
-        overhang = 0.02
         if self.bg_shape == "rectangle":
             patch = Rectangle(
-                (
-                    self.xmin - (self.xdif * overhang),
-                    self.ymin - (self.ydif * overhang),
+                xy=(
+                    self.xmin,
+                    self.ymin,
                 ),
-                self.xdif * (1 + 2 * overhang),
-                self.ydif * (1 + 2 * overhang),
+                width=self.xdif,
+                height=self.ydif,
                 color=self.bg_color,
                 ec=adjust_lightness(self.bg_color, 0.78),  # todo: correct value?
                 hatch="ooo...",
@@ -109,13 +108,10 @@ class Plot:
             self.ax.add_patch(patch)
         elif self.bg_shape == "circle":
             # axis aspect ratio no equal so ellipse required to display as circle
-            maxd = max(self.xdif, self.ydif)
-            width_ellipse = self.xdif / maxd * maxd * (1 + overhang)
-            height_ellipse = self.ydif / maxd * maxd * (1 + overhang)
             ellipse = Ellipse(
-                (self.xmid, self.ymid),
-                width_ellipse,
-                height_ellipse,
+                xy=(self.xmid, self.ymid),
+                width=self.xdif,
+                height=self.ydif,
                 facecolor=self.bg_color,
                 ec=adjust_lightness(self.bg_color, 0.78),
                 hatch="ooo...",
