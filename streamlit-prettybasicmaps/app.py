@@ -65,6 +65,9 @@ bg_shape = col1style.radio(
     options=bg_shape_options,
     index=bg_shape_options.index(st.session_state.settings["bg_shape"]),
 )
+bg_buffer = col1style.slider(
+    "Background Buffer", 0, 50, st.session_state.settings["bg_buffer"]
+)
 bg_color = col1style.color_picker(
     "Background Color", st.session_state.settings["bg_color"]
 )
@@ -100,6 +103,7 @@ vars = [
     text_y,
     text_rotation,
     bg_shape,
+    bg_buffer,
     bg_color,
 ]
 
@@ -127,10 +131,11 @@ with st.spinner("Creating new map...(may take up to a minute)"):
         text_y=text_y,
         text_rotation=text_rotation,
         bg_shape=bg_shape,
+        bg_buffer=bg_buffer,
         bg_color=bg_color,
     )
 
-    result_container.pyplot(fig)
+    result_container.pyplot(fig, pad_inches=0, bbox_inches="tight", transparent=True)
 
 st.write("")
 st.markdown("Share your map on social media using the hashtag **#prettymaps**")

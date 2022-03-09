@@ -13,6 +13,7 @@ EXAMPLES = {
         "text_y": 26,
         "text_rotation": -45,
         "bg_shape": "rectangle",  # background
+        "bg_buffer": 2,
         "bg_color": "#F2F4CB",
     },
     "Barcelona": {
@@ -29,6 +30,7 @@ EXAMPLES = {
         "text_y": 20,
         "text_rotation": -90,
         "bg_shape": "rectangle",
+        "bg_buffer": 2,
         "bg_color": "#F2F4CB",
     },
     "Heerhugowaard": {
@@ -45,6 +47,7 @@ EXAMPLES = {
         "text_y": -2,
         "text_rotation": 0,
         "bg_shape": "rectangle",
+        "bg_buffer": 2,
         "bg_color": "#F2F4CB",
     },
     "Edinburgh": {
@@ -61,6 +64,7 @@ EXAMPLES = {
         "text_y": 26,
         "text_rotation": -45,
         "bg_shape": "rectangle",  # background
+        "bg_buffer": 2,
         "bg_color": "#F2F4CB",
     },
     "Erbil": "erbil.png",

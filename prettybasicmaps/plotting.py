@@ -38,6 +38,7 @@ class Plot:
     text_y: int = 0
     text_rotation: int = 0
     bg_shape: str = "rectangle"
+    bg_buffer: int = 2
     bg_color: str = "F2F4CB"
 
     def __post_init__(self):
@@ -47,12 +48,16 @@ class Plot:
         self.xdif = self.xmax - self.xmin
         self.ydif = self.ymax - self.ymin
 
+        self.bg_buffer_x = (self.bg_buffer / 100) * self.xdif
+        self.bg_buffer_y = (self.bg_buffer / 100) * self.ydif
+
         self.fig, self.ax = subplots(
             1, 1, figsize=(12, 12), constrained_layout=True, dpi=1200
         )
+        self.ax.set_aspect("equal")
         self.ax.axis("off")
-        self.ax.set_xlim(self.xmin, self.xmax)
-        self.ax.set_ylim(self.ymin, self.ymax)
+        self.ax.set_xlim(self.xmin - self.bg_buffer_x, self.xmax + self.bg_buffer_x)
+        self.ax.set_ylim(self.ymin - self.bg_buffer_y, self.ymax + self.bg_buffer_y)
 
     def plot_all(self):
         if self.bg_shape is not None:
@@ -93,12 +98,9 @@ class Plot:
     def set_background(self):
         if self.bg_shape == "rectangle":
             patch = Rectangle(
-                xy=(
-                    self.xmin,
-                    self.ymin,
-                ),
-                width=self.xdif,
-                height=self.ydif,
+                xy=(self.xmin - self.bg_buffer_x, self.ymin - self.bg_buffer_y),
+                width=self.xdif + 2 * self.bg_buffer_x,
+                height=self.ydif + 2 * self.bg_buffer_y,
                 color=self.bg_color,
                 ec=adjust_lightness(self.bg_color, 0.78),  # todo: correct value?
                 hatch="ooo...",
@@ -109,9 +111,9 @@ class Plot:
         elif self.bg_shape == "circle":
             # axis aspect ratio no equal so ellipse required to display as circle
             ellipse = Ellipse(
-                xy=(self.xmid, self.ymid),
-                width=self.xdif,
-                height=self.ydif,
+                xy=(self.xmid, self.ymid),  # centroid
+                width=self.xdif + 2 * self.bg_buffer_x,
+                height=self.ydif + 2 * self.bg_buffer_y,
                 facecolor=self.bg_color,
                 ec=adjust_lightness(self.bg_color, 0.78),
                 hatch="ooo...",
