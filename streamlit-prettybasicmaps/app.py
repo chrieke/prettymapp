@@ -1,7 +1,9 @@
+from pathlib import Path
+
 import streamlit as st
 from matplotlib.figure import Figure
 from examples import EXAMPLES
-from utils import image_button_config
+from utils import image_button_config, plt_to_svg, svg_to_html, plt_to_href, slugify
 from prettybasicmaps.main import get_geometries
 from prettybasicmaps.plotting import Plot
 from prettybasicmaps.settings import DRAW_SETTINGS
@@ -9,8 +11,6 @@ from prettybasicmaps.settings import DRAW_SETTINGS
 
 # Enabling streamlit caching for imports
 get_geometries = st.experimental_memo(show_spinner=False)(get_geometries)
-# todo: effect?
-st.experimental_memo(show_spinner=False)
 
 
 def st_plot_all(**kwargs):
@@ -110,7 +110,6 @@ vars = [
 submit_button = form.form_submit_button(label="Submit")
 if submit_button:
     # Submit saves to session state from where the values are used.
-    # TODO: second submit button click does not update session state?
     for var in vars:
         var_name = f"{var=}".split("=")[0]
         st.session_state.settings[var_name] = var
@@ -135,7 +134,22 @@ with st.spinner("Creating new map...(may take up to a minute)"):
         bg_color=bg_color,
     )
 
-    result_container.pyplot(fig, pad_inches=0, bbox_inches="tight", transparent=True)
+    svg_string = plt_to_svg(fig)
+    html = svg_to_html(svg_string)
+    result_container.write(html, unsafe_allow_html=True)
+    # st.pyplot(fig, pad_inches=0, bbox_inches="tight", transparent=True)
 
 st.write("")
+
+download_expander = st.expander("Download")
+if download_expander:
+    st.download_button(
+        label="SVG", data=svg_string, file_name=f"{slugify(address)}.svg"
+    )
+
+    # resolution = st.selectbox("Resolution", ["720", "1080"])
+    # a = plt_to_href(fig, resolution, f"{slugify(address)}.svg", "PNG")
+    # print(a)
+    # st.markdown(a, unsafe_allow_html=True)
+
 st.markdown("Share your map on social media using the hashtag **#prettymaps**")
