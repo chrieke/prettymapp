@@ -14,7 +14,6 @@ def validate_coordinates(lat: float, lon: float) -> None:
         )
 
 
-# @st.cache()
 def get_aoi(
     address: Optional[str] = None,
     coordinates: Optional[Tuple[float, float]] = None,
@@ -106,3 +105,25 @@ def adjust_street_width(
     df.geometry = df.geometry.buffer(df["buffer_strength"])
     df = df.to_crs(crs=4326)
     return df
+
+
+def explode_mp(df: GeoDataFrame) -> GeoDataFrame:
+    """
+    Explode all multi-polygon geometries in a geodataframe into individual polygon
+    geometries.
+    Adds exploded polygons as rows at the end of the geodataframe and resets its index.
+    Args:
+        df: Input GeoDataFrame
+    """
+    outdf = df[df.geom_type != "MultiPolygon"]
+
+    df_mp = df[df.geom_type == "MultiPolygon"]
+    for _, row in df_mp.iterrows():
+        df_temp = GeoDataFrame(columns=df_mp.columns)
+        df_temp = df_temp.append([row] * len(row.geometry), ignore_index=True)
+        for i in range(len(row.geometry)):
+            df_temp.loc[i, "geometry"] = row.geometry[i]
+        outdf = outdf.append(df_temp, ignore_index=True)
+
+    outdf = outdf.reset_index(drop=True)
+    return outdf

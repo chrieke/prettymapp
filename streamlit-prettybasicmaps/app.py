@@ -1,6 +1,7 @@
 from pathlib import Path
 
 import streamlit as st
+from streamlit_profiler import Profiler
 from matplotlib.figure import Figure
 from examples import EXAMPLES
 from utils import image_button_config, plt_to_svg, svg_to_html, plt_to_href, slugify
@@ -8,6 +9,8 @@ from prettybasicmaps.main import get_geometries
 from prettybasicmaps.plotting import Plot
 from prettybasicmaps.settings import STYLES
 
+p = Profiler()
+p.start()
 
 # Enabling streamlit caching for imports
 get_geometries = st.experimental_memo(show_spinner=False)(get_geometries)
@@ -205,3 +208,5 @@ if download_expander:
     # st.markdown(a, unsafe_allow_html=True)
 
 st.markdown("Share your map on social media using the hashtag **#prettymaps**")
+
+p.stop()

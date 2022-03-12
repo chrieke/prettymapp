@@ -3,7 +3,7 @@ from geopandas import clip
 from osmnx.geometries import geometries_from_polygon
 from osmnx.utils import config
 
-from prettybasicmaps.geo import get_aoi, adjust_street_width
+from prettybasicmaps.geo import get_aoi, adjust_street_width, explode_mp
 from prettybasicmaps.settings import LC_SETTINGS, STYLES
 
 config(use_cache=True, log_console=False)
@@ -28,11 +28,12 @@ def get_geometries(
     df = geometries_from_polygon(polygon=aoi, tags=tags)
     df = df.droplevel(level=0)
     df = df[df.geometry.geom_type != "Point"]
-    # df = df.drop(df.columns.difference(["geometry"] + list(osm_tags.keys())), axis=1)
+
     df[df["highway"].notna()] = adjust_street_width(
         df=df[df["highway"].notna()], aoi_utm_crs=aoi_utm_crs
     )
     df = clip(df, aoi)
+    df = explode_mp(df)  # Simpler Polygonpatch plotting
 
     df["landcover_class"] = None
     for lc_class, osm_tags in LC_SETTINGS.items():

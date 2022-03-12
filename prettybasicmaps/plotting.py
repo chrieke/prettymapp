@@ -9,6 +9,8 @@ from matplotlib.pyplot import subplots
 import matplotlib.font_manager as fm
 from matplotlib.patches import Ellipse
 from matplotlib.pyplot import Rectangle
+from matplotlib.collections import PatchCollection
+from matplotlib.patches import Polygon
 
 
 def adjust_lightness(color: str, amount=0.5):
@@ -24,6 +26,48 @@ def adjust_lightness(color: str, amount=0.5):
         c = color
     c = colorsys.rgb_to_hls(*to_rgb(c))
     return colorsys.hls_to_rgb(c[0], max(0, min(1, amount * c[1])), c[2])
+
+
+def plot_polygon_collection(
+    ax,
+    geoms,
+    values=None,
+    colormap="Set1",
+    facecolor=None,
+    edgecolor=None,
+    alpha=0.5,
+    linewidth=1.0,
+    **kwargs
+):
+    """
+    Plot a collection of Polygon geometries
+
+    Faster then df.plot() as does not plot individual Polygons.
+
+    Args:
+        geoms: Iteratble of shapely objects, not MultiPolgon.
+    """
+    patches = []
+    for poly in geoms:
+        # if poly.has_z:
+        #     poly = shapely.geometry.Polygon(zip(*poly.exterior.xy))
+        patches.append(Polygon(np.asarray(poly.exterior)))
+    patches = PatchCollection(
+        patches,
+        facecolor=facecolor,
+        linewidth=linewidth,
+        edgecolor=edgecolor,
+        alpha=alpha,
+        **kwargs
+    )
+
+    if values is not None:
+        patches.set_array(values)
+        patches.set_cmap(colormap)
+
+    ax.add_collection(patches, autolim=True)
+    ax.autoscale_view()
+    return patches
 
 
 @dataclass
@@ -72,7 +116,10 @@ class Plot:
     def set_geometries(self):
         for lc_class in self.df["landcover_class"].unique():
             df_class = self.df[self.df["landcover_class"] == lc_class]
-            draw_settings_class = self.draw_settings[lc_class].copy()
+            try:
+                draw_settings_class = self.draw_settings[lc_class].copy()
+            except KeyError:
+                continue
 
             if "hatch_c" in draw_settings_class:
                 # Matplotlib hatch color is set via ec. hatch_c is used as the edge color here by plotting the outlines
@@ -91,10 +138,29 @@ class Plot:
                 draw_settings_class["cmap"] = ListedColormap(
                     draw_settings_class["cmap"]
                 )
-                df_class["randint"] = np.random.randint(0, 3, df_class.shape[0])
-                df_class.plot(ax=self.ax, column="randint", **draw_settings_class)
+                # Slower
+                # df_class["randint"] = np.random.randint(0, 3, df_class.shape[0])
+                # df_class.plot(ax=self.ax, column="randint", **draw_settings_class)
+                # plot_polygon_collection(
+                #     ax=self.ax,
+                #     column="randint",
+                #     geoms=df_class.geometry,
+                #     **draw_settings_class
+                # )
+                values = np.random.randint(0, 3, df_class.shape[0])
+                plot_polygon_collection(
+                    ax=self.ax,
+                    values=values,
+                    colormap=draw_settings_class["cmap"],
+                    geoms=df_class.geometry,
+                    **draw_settings_class
+                )
             else:
-                df_class.plot(ax=self.ax, **draw_settings_class)
+                # TODO: fix colors
+                plot_polygon_collection(
+                    ax=self.ax, geoms=df_class.geometry, **draw_settings_class
+                )
+                # df_class.plot(ax=self.ax, **draw_settings_class) # much slower
 
     def set_background(self):
         if self.bg_shape == "rectangle":
