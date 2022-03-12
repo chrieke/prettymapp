@@ -22,12 +22,12 @@ LC_SETTINGS = {
             "footway",
         ]
     },
-    "parking": {"amenity": ["parking"], "man_made": ["pier"]},
+    "other": {"amenity": ["parking"], "man_made": ["pier"]},
 }
 
 # Macau peach
 # Barcelona auburn
-DRAW_SETTINGS = {
+STYLES = {
     "Peach": {
         "urban": {
             "cmap": ["#FFC857", "#E9724C", "#C5283D"],
@@ -46,11 +46,11 @@ DRAW_SETTINGS = {
         "grassland": {"fc": "#D0F1BF", "ec": "#2F3737", "lw": 1, "zorder": 1},
         "woodland": {"fc": "#64B96A", "ec": "#2F3737", "lw": 1, "zorder": 1},
         "streets": {"fc": "#2F3737", "ec": "#475657", "alpha": 1, "lw": 0, "zorder": 3},
-        "parking": {"fc": "#F2F4CB", "ec": "#2F3737", "lw": 1, "zorder": 3},
+        "other": {"fc": "#F2F4CB", "ec": "#2F3737", "lw": 1, "zorder": 3},
     },
     "Auburn": {
         "urban": {
-            "cmap": ["#433633", "#FF5E5B"],
+            "cmap": ["#433633", "#FF5E5B", "#FF5E5B"],
             "ec": "#2F3737",
             "lw": 0.5,
             "zorder": 5,
@@ -73,6 +73,6 @@ DRAW_SETTINGS = {
         },
         "woodland": {"fc": "#64B96A", "ec": "#2F3737", "lw": 1, "zorder": 2},
         "streets": {"fc": "#2F3737", "ec": "#475657", "alpha": 1, "lw": 0, "zorder": 4},
-        "parking": {"fc": "#F2F4CB", "ec": "#2F3737", "lw": 1, "zorder": 3},
+        "other": {"fc": "#F2F4CB", "ec": "#2F3737", "lw": 1, "zorder": 3},
     },
 }

@@ -29,7 +29,7 @@ def adjust_lightness(color: str, amount=0.5):
 @dataclass
 class Plot:
     df: GeoDataFrame
-    drawing_kwargs: dict
+    draw_settings: dict
     name_on: bool = False
     name: str = ""
     font_size: int = 24
@@ -72,10 +72,11 @@ class Plot:
     def set_geometries(self):
         for lc_class in self.df["landcover_class"].unique():
             df_class = self.df[self.df["landcover_class"] == lc_class]
-            draw_settings_class = self.drawing_kwargs[lc_class].copy()
+            draw_settings_class = self.draw_settings[lc_class].copy()
 
             if "hatch_c" in draw_settings_class:
-                # Matplotlib hatch color is set via ec. To have different edge color plot just the outlines again above.
+                # Matplotlib hatch color is set via ec. hatch_c is used as the edge color here by plotting the outlines
+                # again above.
                 df_class.plot(
                     ax=self.ax,
                     fc="None",
@@ -85,7 +86,7 @@ class Plot:
                 )
                 draw_settings_class.pop("hatch_c")
 
-            if lc_class == "urban":
+            if "cmap" in draw_settings_class:
                 # Colormap formatting and random assignment
                 draw_settings_class["cmap"] = ListedColormap(
                     draw_settings_class["cmap"]

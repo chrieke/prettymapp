@@ -4,7 +4,7 @@ from osmnx.geometries import geometries_from_polygon
 from osmnx.utils import config
 
 from prettybasicmaps.geo import get_aoi, adjust_street_width
-from prettybasicmaps.settings import LC_SETTINGS, DRAW_SETTINGS
+from prettybasicmaps.settings import LC_SETTINGS, STYLES
 
 config(use_cache=True, log_console=False)
 
