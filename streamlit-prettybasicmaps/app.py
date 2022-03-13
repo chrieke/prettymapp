@@ -12,12 +12,13 @@ from prettybasicmaps.settings import STYLES
 p = Profiler()
 p.start()
 
-# Enabling streamlit caching for imports
+# Enable streamlit caching
 get_geometries = st.experimental_memo(show_spinner=False)(get_geometries)
 
 
-def st_plot_all(**kwargs):
-    fig = Plot(**kwargs).plot_all()
+@st.experimental_memo(show_spinner=False)
+def st_plot_all(_df, **kwargs):
+    fig = Plot(_df, **kwargs).plot_all()
     return fig
 
 
@@ -43,16 +44,14 @@ if any(example_buttons):
     st.session_state.settings["draw_settings"] = STYLES[
         EXAMPLES[selected_example]["style"]
     ]
-st.write("")
 
+st.write("")
 form = st.form(key="form_params")
 form.markdown("**Or choose your own location & map style**")
 col1, col2, col3 = form.columns([3, 1, 1])
 
 address = col1.text_input("Address or Location", st.session_state.settings["address"])
-
 radius = col2.slider("Radius Size", 1, 1500, st.session_state.settings["radius"])
-
 style = col3.selectbox(
     "Color theme",
     list(STYLES.keys()),
@@ -111,36 +110,21 @@ text_rotation = col2style.slider(
 )
 
 col3style.write("Custom Colors")
-
-
 if style != st.session_state.settings["style"]:
     # Ignore & reset custom colors if style changes
     desired_drawing_settings = STYLES[style]
 else:
     desired_drawing_settings = st.session_state.settings["draw_settings"]
-
 for lc_class, class_style in desired_drawing_settings.items():
     if "cmap" in class_style:
         for idx, color in enumerate(class_style.get("cmap")):
-            picked_color = col3style.color_picker(f"{lc_class} {idx}", color)
+            picked_color = col3style.color_picker(f"{lc_class} {idx+1}", color)
             st.session_state.settings["draw_settings"][lc_class]["cmap"][
                 idx
             ] = picked_color
     else:
         picked_color = col3style.color_picker(f"{lc_class}", class_style.get("fc"))
         st.session_state.settings["draw_settings"][lc_class]["fc"] = picked_color
-
-    # if "hatch_c" in class_style:
-    #     # hatch is actually used as the edge color, relabel here
-    #     picked_hatch_c = col4style.color_picker("", class_style.get("hatch_c"), key=f"ec_{lc_class}")
-    #     st.session_state.settings["draw_settings"][lc_class]["hatch_c"] = picked_hatch_c
-    #
-    #     picked_ec = col5style.color_picker("", class_style.get("ec"), key=f"hatch_{lc_class}")
-    #     st.session_state.settings["draw_settings"][lc_class]["ec"] = picked_ec
-    # else:
-    #     picked_ec = col4style.color_picker("", class_style.get("ec"), key=f"edge_{lc_class}")
-    #     st.session_state.settings["draw_settings"][lc_class]["ec"] = picked_ec
-
 
 vars = [
     address,
@@ -166,14 +150,13 @@ if submit_button:
         var_name = f"{var=}".split("=")[0]
         st.session_state.settings[var_name] = var
 
-
 result_container = st.empty()
 with st.spinner("Creating new map...(may take up to a minute)"):
     rectangular = shape != "circle"
     df = get_geometries(address=address, radius=radius, rectangular=rectangular)
 
     fig = st_plot_all(
-        df=df,
+        _df=df,
         draw_settings=st.session_state.settings["draw_settings"],
         name_on=name_on,
         name=address if custom_title == "" else custom_title,
@@ -193,18 +176,16 @@ with st.spinner("Creating new map...(may take up to a minute)"):
     # st.pyplot(fig, pad_inches=0, bbox_inches="tight", transparent=True)
 
 st.write("")
-
 download_expander = st.expander("Download")
 if download_expander:
     st.download_button(
         label="SVG", data=svg_string, file_name=f"{slugify(address)}.svg"
     )
-
     # resolution = st.selectbox("Resolution", ["720", "1080"])
     # a = plt_to_href(fig, resolution, f"{slugify(address)}.svg", "PNG")
     # print(a)
     # st.markdown(a, unsafe_allow_html=True)
 
-st.markdown("Share your map on social media using the hashtag **#prettymaps**")
+st.markdown("Share your map on social media!")
 
 p.stop()
