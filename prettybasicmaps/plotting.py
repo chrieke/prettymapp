@@ -28,17 +28,7 @@ def adjust_lightness(color: str, amount=0.5):
     return colorsys.hls_to_rgb(c[0], max(0, min(1, amount * c[1])), c[2])
 
 
-def plot_polygon_collection(
-    ax,
-    geoms,
-    values=None,
-    colormap="Set1",
-    facecolor=None,
-    edgecolor=None,
-    alpha=0.5,
-    linewidth=1.0,
-    **kwargs
-):
+def plot_polygon_collection(ax, geoms, values=None, colormap=None, **kwargs):
     """
     Plot a collection of Polygon geometries
 
@@ -52,21 +42,14 @@ def plot_polygon_collection(
         # if poly.has_z:
         #     poly = shapely.geometry.Polygon(zip(*poly.exterior.xy))
         patches.append(Polygon(np.asarray(poly.exterior)))
-    patches = PatchCollection(
-        patches,
-        facecolor=facecolor,
-        linewidth=linewidth,
-        edgecolor=edgecolor,
-        alpha=alpha,
-        **kwargs
-    )
+    patches = PatchCollection(patches, **kwargs)
 
     if values is not None:
         patches.set_array(values)
         patches.set_cmap(colormap)
 
     ax.add_collection(patches, autolim=True)
-    ax.autoscale_view()
+    # ax.autoscale_view()
     return patches
 
 
@@ -134,33 +117,22 @@ class Plot:
                 draw_settings_class.pop("hatch_c")
 
             if "cmap" in draw_settings_class:
-                # Colormap formatting and random assignment
                 draw_settings_class["cmap"] = ListedColormap(
                     draw_settings_class["cmap"]
                 )
-                # Slower
-                # df_class["randint"] = np.random.randint(0, 3, df_class.shape[0])
-                # df_class.plot(ax=self.ax, column="randint", **draw_settings_class)
-                # plot_polygon_collection(
-                #     ax=self.ax,
-                #     column="randint",
-                #     geoms=df_class.geometry,
-                #     **draw_settings_class
-                # )
                 values = np.random.randint(0, 3, df_class.shape[0])
+                # Patchcollection much faster than gpd.plot
                 plot_polygon_collection(
                     ax=self.ax,
+                    geoms=df_class.geometry,
                     values=values,
                     colormap=draw_settings_class["cmap"],
-                    geoms=df_class.geometry,
                     **draw_settings_class
                 )
             else:
-                # TODO: fix colors
                 plot_polygon_collection(
                     ax=self.ax, geoms=df_class.geometry, **draw_settings_class
                 )
-                # df_class.plot(ax=self.ax, **draw_settings_class) # much slower
 
     def set_background(self):
         if self.bg_shape == "rectangle":

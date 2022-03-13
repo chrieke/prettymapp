@@ -119,8 +119,6 @@ if style != st.session_state.settings["style"]:
 else:
     desired_drawing_settings = st.session_state.settings["draw_settings"]
 
-# picked_ec = col4style.color_picker("Edge", desired_drawing_settings.get("ec"), key=f"edge_{lc_class}")
-
 for lc_class, class_style in desired_drawing_settings.items():
     if "cmap" in class_style:
         for idx, color in enumerate(class_style.get("cmap")):
