@@ -5,12 +5,10 @@ from dataclasses import dataclass
 import numpy as np
 from geopandas import GeoDataFrame
 from matplotlib.colors import ListedColormap, cnames, to_rgb
-from matplotlib.pyplot import subplots
+from matplotlib.pyplot import subplots, Rectangle
 import matplotlib.font_manager as fm
-from matplotlib.patches import Ellipse
-from matplotlib.pyplot import Rectangle
+from matplotlib.patches import Ellipse, Polygon
 from matplotlib.collections import PatchCollection
-from matplotlib.patches import Polygon
 
 
 def adjust_lightness(color: str, amount=0.5):
@@ -28,20 +26,25 @@ def adjust_lightness(color: str, amount=0.5):
     return colorsys.hls_to_rgb(c[0], max(0, min(1, amount * c[1])), c[2])
 
 
-def plot_polygon_collection(ax, geoms, values=None, colormap=None, **kwargs):
+def plot_geom_collection(ax, geoms, values=None, colormap=None, **kwargs):
     """
-    Plot a collection of Polygon geometries
+    Plot a collection of shapely geometries
 
-    Faster then df.plot() as does not plot individual Polygons.
+    Faster then df.plot() as does not plot Polygons individually.
 
     Args:
         geoms: Iteratble of shapely objects, not MultiPolgon.
+        values: Assignment of colormap, should match length of geoms.
     """
     patches = []
-    for poly in geoms:
-        # if poly.has_z:
-        #     poly = shapely.geometry.Polygon(zip(*poly.exterior.xy))
-        patches.append(Polygon(np.asarray(poly.exterior)))
+    for geom in geoms:
+        try:
+            exterior = geom.exterior  # Polygon
+            # if geom.has_z:
+            #     geom = shapely.geometry.Polygon(zip(*geom.exterior.xy))
+        except Exception:
+            exterior = geom  # Linestring etc.
+        patches.append(Polygon(np.asarray(exterior)))
     patches = PatchCollection(patches, **kwargs)
 
     if values is not None:
@@ -49,7 +52,6 @@ def plot_polygon_collection(ax, geoms, values=None, colormap=None, **kwargs):
         patches.set_cmap(colormap)
 
     ax.add_collection(patches, autolim=True)
-    # ax.autoscale_view()
     return patches
 
 
@@ -64,6 +66,9 @@ class Plot:
     text_x: int = 0
     text_y: int = 0
     text_rotation: int = 0
+    shape: str = "rectangle"
+    contour_width: int = 0
+    contour_color: str = "F2F4CB"
     bg_shape: str = "rectangle"
     bg_buffer: int = 2
     bg_color: str = "F2F4CB"
@@ -90,6 +95,8 @@ class Plot:
         if self.bg_shape is not None:
             self.set_background()
         self.set_geometries()
+        if self.contour_width:
+            self.set_map_contour()
         if self.name_on:
             self.set_name()
         self.set_credits(add_package_credit=True)
@@ -122,7 +129,7 @@ class Plot:
                 )
                 values = np.random.randint(0, 3, df_class.shape[0])
                 # Patchcollection much faster than gpd.plot
-                plot_polygon_collection(
+                plot_geom_collection(
                     ax=self.ax,
                     geoms=df_class.geometry,
                     values=values,
@@ -130,9 +137,38 @@ class Plot:
                     **draw_settings_class
                 )
             else:
-                plot_polygon_collection(
+                plot_geom_collection(
                     ax=self.ax, geoms=df_class.geometry, **draw_settings_class
                 )
+
+    def set_map_contour(self):
+        if self.shape == "rectangle":
+            patch = Rectangle(
+                xy=(self.xmin, self.ymin),
+                width=self.xdif,
+                height=self.ydif,
+                color="None",
+                lw=self.contour_width,
+                ec=self.contour_color,
+                zorder=6,
+                clip_on=True,
+            )
+            self.ax.add_patch(patch)
+        elif self.shape == "circle":
+            # axis aspect ratio no equal so ellipse required to display as circle
+            ellipse = Ellipse(
+                xy=(self.xmid, self.ymid),  # centroid
+                width=self.xdif,
+                height=self.ydif,
+                color="None",
+                lw=self.contour_width,
+                ec=self.contour_color,
+                zorder=6,
+                clip_on=True,
+            )
+            self.ax.add_artist(ellipse)
+            # re-enable patch for background color that is deactivated with axis
+        self.ax.patch.set_zorder(6)
 
     def set_background(self):
         if self.bg_shape == "rectangle":
@@ -185,7 +221,7 @@ class Plot:
 
     def set_credits(self, add_package_credit=False):
         credit_text = "© OpenStreetMap"
-        package_credit_text = "\n prettymaps | pretty(basic)maps"
+        package_credit_text = "\n prettymaps | prettymapp"
         if add_package_credit:
             credit_text = credit_text + package_credit_text
 

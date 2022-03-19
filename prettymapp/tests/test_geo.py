@@ -6,7 +6,7 @@ import pytest
 from shapely.geometry import Polygon
 from geopandas import GeoDataFrame
 import osmnx as ox
-from prettybasicmaps.geo import validate_coordinates, get_aoi, adjust_street_width
+from prettymapp.geo import validate_coordinates, get_aoi, adjust_street_width
 
 
 def test_validate_coordinates():

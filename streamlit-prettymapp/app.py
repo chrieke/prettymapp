@@ -1,13 +1,14 @@
 from pathlib import Path
+import copy
 
 import streamlit as st
 from streamlit_profiler import Profiler
 from matplotlib.figure import Figure
 from examples import EXAMPLES
 from utils import image_button_config, plt_to_svg, svg_to_html, plt_to_href, slugify
-from prettybasicmaps.main import get_geometries
-from prettybasicmaps.plotting import Plot
-from prettybasicmaps.settings import STYLES
+from prettymapp.main import get_geometries
+from prettymapp.plotting import Plot
+from prettymapp.settings import STYLES
 
 p = Profiler()
 p.start()
@@ -21,15 +22,15 @@ def st_plot_all(_df, **kwargs):
     fig = Plot(_df, **kwargs).plot_all()
     return fig
 
-
-if "settings" not in st.session_state:
+if "run_id" not in st.session_state:
+    st.session_state.run_id = 0
     st.session_state.settings = EXAMPLES["Macau"]
     st.session_state.settings["draw_settings"] = STYLES["Peach"]
 
 st.set_page_config(
-    page_title="prettybasicmaps", page_icon="🚀", initial_sidebar_state="collapsed"
+    page_title="prettymapp", page_icon="🚀", initial_sidebar_state="collapsed"
 )
-st.markdown("# Pretty(basic)maps")
+st.markdown("# Prettymapp")
 st.write("")
 
 example_buttons = []
@@ -39,11 +40,12 @@ for example_name, example_col in zip(EXAMPLES.keys(), example_cols):
     example_buttons.append(example_col.button(example_name))
 selected_example = None
 if any(example_buttons):
+    # Reset settings for new example
     selected_example = list(EXAMPLES.keys())[example_buttons.index(True)]
-    st.session_state.settings = EXAMPLES[selected_example]
+    st.session_state.settings = EXAMPLES[selected_example].copy()
     st.session_state.settings["draw_settings"] = STYLES[
         EXAMPLES[selected_example]["style"]
-    ]
+    ].copy()
 
 st.write("")
 form = st.form(key="form_params")
@@ -60,11 +62,23 @@ style = col3.selectbox(
 
 expander = form.expander("More map style options")
 col1style, col2style, _, col3style = expander.columns([2, 2, 0.1, 1])
+
 shape_options = ["circle", "rectangle"]
 shape = col1style.radio(
     "Map Shape",
     options=shape_options,
     index=shape_options.index(st.session_state.settings["shape"]),
+)
+contour_width = col1style.slider(
+    "Map contour width",
+    0,
+    20,
+    st.session_state.settings["contour_width"],
+    help="Thickness of contour line sourrounding the map.",
+    key=f"contour_{st.session_state.run_id}"
+)
+contour_color = col1style.color_picker(
+    "Map contour color", st.session_state.settings["contour_color"]
 )
 col1style.markdown("---")
 
@@ -82,7 +96,7 @@ bg_buffer = col1style.slider(
     0,
     50,
     st.session_state.settings["bg_buffer"],
-    help="How much the background extends beyond " "the figure.",
+    help="How much the background extends beyond the figure.",
 )
 
 name_on = col2style.checkbox(
@@ -112,9 +126,9 @@ text_rotation = col2style.slider(
 col3style.write("Custom Colors")
 if style != st.session_state.settings["style"]:
     # Ignore & reset custom colors if style changes
-    desired_drawing_settings = STYLES[style]
+    desired_drawing_settings = copy.deepcopy(STYLES[style])
 else:
-    desired_drawing_settings = st.session_state.settings["draw_settings"]
+    desired_drawing_settings = copy.deepcopy(st.session_state.settings["draw_settings"])
 for lc_class, class_style in desired_drawing_settings.items():
     if "cmap" in class_style:
         for idx, color in enumerate(class_style.get("cmap")):
@@ -131,6 +145,8 @@ vars = [
     radius,
     style,
     shape,
+    contour_width,
+    contour_color,
     name_on,
     custom_title,
     font_size,
@@ -142,6 +158,9 @@ vars = [
     bg_buffer,
     bg_color,
 ]
+
+if st.button("Reset"):
+    st.session_state.run_id += 1
 
 submit_button = form.form_submit_button(label="Submit")
 if submit_button:
@@ -165,6 +184,9 @@ with st.spinner("Creating new map...(may take up to a minute)"):
         text_x=text_x,
         text_y=text_y,
         text_rotation=text_rotation,
+        shape=shape,
+        contour_width=contour_width,
+        contour_color=contour_color,
         bg_shape=bg_shape,
         bg_buffer=bg_buffer,
         bg_color=bg_color,

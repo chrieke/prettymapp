@@ -3,8 +3,8 @@ from geopandas import clip
 from osmnx.geometries import geometries_from_polygon
 from osmnx.utils import config
 
-from prettybasicmaps.geo import get_aoi, adjust_street_width, explode_mp
-from prettybasicmaps.settings import LC_SETTINGS, STYLES
+from prettymapp.geo import get_aoi, adjust_street_width, explode_mp
+from prettymapp.settings import LC_SETTINGS, STYLES
 
 config(use_cache=True, log_console=False)
 
