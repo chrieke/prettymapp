@@ -2,7 +2,7 @@ test:
 	bash test.sh
 
 test[live]:
-	bash test.sh --live
+	bash test.sh --runlive
 
 setup:
 	pip install -r requirements.txt
