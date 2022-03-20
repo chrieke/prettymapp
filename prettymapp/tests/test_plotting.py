@@ -1,22 +1,8 @@
-# import pickle
-from pathlib import Path
-
 from matplotlib.pyplot import subplots
-from shapely.geometry import Polygon
 from matplotlib.collections import PatchCollection
+from shapely.geometry import Polygon, LineString
 
-from prettymapp.plotting import Plot, adjust_lightness, plot_geom_collection
-from prettymapp.settings import STYLES
-
-#
-#
-# def test_plot():
-#     _location_ = Path(__file__).resolve().parent
-#     with open(_location_ / "mock_data/df_pre_adjusting.pickle", "rb") as handle:
-#         df = pickle.load(handle)
-#
-#     fig = plot(df, DRAW_SETTINGS_1)
-#     assert fig
+from prettymapp.plotting import adjust_lightness, plot_geom_collection
 
 
 def test_adjust_lightness():
@@ -27,8 +13,9 @@ def test_adjust_lightness():
 
 
 def test_plot_geom_collection():
-    fig, ax = subplots(1, 1, figsize=(12, 12), constrained_layout=True, dpi=1200)
+    _, ax = subplots(1, 1, figsize=(12, 12), constrained_layout=True, dpi=1200)
     poly = Polygon([[0, 0], [1, 0], [1, 1], [0, 1], [0, 0]])
-    geoms = [poly] * 3
+    linestring = LineString([(0, 0), (1, 1)])
+    geoms = [poly, linestring] * 3
     patches = plot_geom_collection(ax, geoms)
     assert isinstance(patches, PatchCollection)

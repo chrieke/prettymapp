@@ -3,7 +3,7 @@ from osmnx.utils import config
 from geopandas import clip, GeoDataFrame
 
 from prettymapp.geo import get_aoi, adjust_street_width, explode_mp
-from prettymapp.settings import LC_SETTINGS, STYLES
+from prettymapp.settings import LC_SETTINGS
 
 config(use_cache=True, log_console=False)
 
@@ -16,9 +16,9 @@ def get_geometries(
     aoi, aoi_utm_crs = get_aoi(
         address=address, distance=radius, rectangular=rectangular
     )
-    tags = {}
-    for d in LC_SETTINGS.values():
-        for k, v in d.items():
+    tags: dict = {}
+    for d in LC_SETTINGS.values():  # type: ignore
+        for k, v in d.items():  # type: ignore
             try:
                 tags.setdefault(k, []).extend(v)
             except TypeError:  # e.g. "building": True
@@ -36,12 +36,12 @@ def get_geometries(
 
     df["landcover_class"] = None
     for lc_class, osm_tags in LC_SETTINGS.items():
-        tags_in_columns = set(osm_tags.keys()).intersection(list(df.columns))
+        tags_in_columns = set(osm_tags.keys()).intersection(list(df.columns))  # type: ignore
         mask_lc_class = df[tags_in_columns].notna().sum(axis=1) != 0
         # Remove mask elements that belong to other subtag
         listed_osm_tags = {
             k: v
-            for k, v in osm_tags.items()
+            for k, v in osm_tags.items()  # type: ignore
             if isinstance(v, list) and k in tags_in_columns
         }
         for tag, subtags in listed_osm_tags.items():

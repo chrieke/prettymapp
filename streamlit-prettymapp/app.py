@@ -1,11 +1,9 @@
-from pathlib import Path
 import copy
 
 import streamlit as st
 from streamlit_profiler import Profiler
-from matplotlib.figure import Figure
 from examples import EXAMPLES
-from utils import image_button_config, plt_to_svg, svg_to_html, plt_to_href, slugify
+from utils import image_button_config, plt_to_svg, svg_to_html, slugify
 from prettymapp.main import get_geometries
 from prettymapp.plotting import Plot
 from prettymapp.settings import STYLES
@@ -26,7 +24,7 @@ def st_plot_all(_df, **kwargs):
 if "run_id" not in st.session_state:
     st.session_state.run_id = 0
     st.session_state.settings = EXAMPLES["Macau"]
-    st.session_state.settings["draw_settings"] = STYLES["Peach"]
+    st.session_state.settings["draw_settings"] = STYLES["Peach"]  # type: ignore
 
 st.set_page_config(
     page_title="prettymapp", page_icon="🚀", initial_sidebar_state="collapsed"
@@ -42,11 +40,10 @@ for example_name, example_col in zip(EXAMPLES.keys(), example_cols):
 selected_example = None
 if any(example_buttons):
     # Reset settings for new example
-    selected_example = list(EXAMPLES.keys())[example_buttons.index(True)]
-    st.session_state.settings = EXAMPLES[selected_example].copy()
-    st.session_state.settings["draw_settings"] = STYLES[
-        EXAMPLES[selected_example]["style"]
-    ].copy()
+    name_selected_example = list(EXAMPLES.keys())[example_buttons.index(True)]
+    settings: dict = EXAMPLES[name_selected_example]  # type: ignore
+    st.session_state.settings = settings.copy()
+    st.session_state.settings["draw_settings"] = STYLES[settings["style"]].copy()
 
 st.write("")
 form = st.form(key="form_params")
@@ -132,7 +129,7 @@ else:
     desired_drawing_settings = copy.deepcopy(st.session_state.settings["draw_settings"])
 for lc_class, class_style in desired_drawing_settings.items():
     if "cmap" in class_style:
-        for idx, color in enumerate(class_style.get("cmap")):
+        for idx, color in enumerate(class_style["cmap"]):  # type: ignore
             picked_color = col3style.color_picker(f"{lc_class} {idx+1}", color)
             st.session_state.settings["draw_settings"][lc_class]["cmap"][
                 idx
@@ -141,7 +138,7 @@ for lc_class, class_style in desired_drawing_settings.items():
         picked_color = col3style.color_picker(f"{lc_class}", class_style.get("fc"))
         st.session_state.settings["draw_settings"][lc_class]["fc"] = picked_color
 
-vars = [
+variables = [
     address,
     radius,
     style,
@@ -166,7 +163,7 @@ if st.button("Reset"):
 submit_button = form.form_submit_button(label="Submit")
 if submit_button:
     # Submit saves to session state from where the values are used.
-    for var in vars:
+    for var in variables:
         var_name = f"{var=}".split("=")[0]
         st.session_state.settings[var_name] = var
 

@@ -43,19 +43,17 @@ def plot_geom_collection(
     for geom in geoms:
         try:
             exterior = geom.exterior  # Polygon
-            # if geom.has_z:
-            #     geom = shapely.geometry.Polygon(zip(*geom.exterior.xy))
-        except Exception:
+        except AttributeError:
             exterior = geom  # Linestring etc.
         patches.append(Polygon(np.asarray(exterior)))
-    patches = PatchCollection(patches, **kwargs)
+    patchcollection = PatchCollection(patches, **kwargs)
 
     if values is not None:
-        patches.set_array(values)
-        patches.set_cmap(colormap)
+        patchcollection.set_array(values)
+        patchcollection.set_cmap(colormap)
 
-    ax.add_collection(patches, autolim=True)
-    return patches
+    ax.add_collection(patchcollection, autolim=True)
+    return patchcollection
 
 
 @dataclass
