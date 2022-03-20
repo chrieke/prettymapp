@@ -1,7 +1,6 @@
-from geopandas import clip
-
 from osmnx.geometries import geometries_from_polygon
 from osmnx.utils import config
+from geopandas import clip, GeoDataFrame
 
 from prettymapp.geo import get_aoi, adjust_street_width, explode_mp
 from prettymapp.settings import LC_SETTINGS, STYLES
@@ -13,7 +12,7 @@ def get_geometries(
     address: str = "Praça Ferreira do Amaral, Macau",
     radius: int = 1100,
     rectangular: bool = False,
-):
+) -> GeoDataFrame:
     aoi, aoi_utm_crs = get_aoi(
         address=address, distance=radius, rectangular=rectangular
     )

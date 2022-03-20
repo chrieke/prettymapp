@@ -11,7 +11,7 @@ from matplotlib.patches import Ellipse, Polygon
 from matplotlib.collections import PatchCollection
 
 
-def adjust_lightness(color: str, amount=0.5):
+def adjust_lightness(color: str, amount=0.5) -> tuple:
     """
     Helper to avoid having the user background ec color value which is similar to background color.
 
@@ -23,17 +23,20 @@ def adjust_lightness(color: str, amount=0.5):
     except KeyError:
         c = color
     c = colorsys.rgb_to_hls(*to_rgb(c))
-    return colorsys.hls_to_rgb(c[0], max(0, min(1, amount * c[1])), c[2])
+    adjusted_c = colorsys.hls_to_rgb(c[0], max(0, min(1, amount * c[1])), c[2])
+    return adjusted_c
 
 
-def plot_geom_collection(ax, geoms, values=None, colormap=None, **kwargs):
+def plot_geom_collection(
+    ax, geoms, values=None, colormap=None, **kwargs
+) -> PatchCollection:
     """
     Plot a collection of shapely geometries
 
     Faster then df.plot() as does not plot Polygons individually.
 
     Args:
-        geoms: Iteratble of shapely objects, not MultiPolgon.
+        geoms: Iterable of shapely objects, not MultiPolgon.
         values: Assignment of colormap, should match length of geoms.
     """
     patches = []
@@ -59,19 +62,19 @@ def plot_geom_collection(ax, geoms, values=None, colormap=None, **kwargs):
 class Plot:
     df: GeoDataFrame
     draw_settings: dict
+    shape: str = "circle"
+    contour_width: int = 0
+    contour_color: str = "#2F3537"
     name_on: bool = False
-    name: str = ""
-    font_size: int = 24
+    name: str = "some name"
+    font_size: int = 25
     font_color: str = "#2F3737"
     text_x: int = 0
     text_y: int = 0
     text_rotation: int = 0
-    shape: str = "rectangle"
-    contour_width: int = 0
-    contour_color: str = "F2F4CB"
     bg_shape: str = "rectangle"
     bg_buffer: int = 2
-    bg_color: str = "F2F4CB"
+    bg_color: str = "#F2F4CB"
 
     def __post_init__(self):
         self.xmin, self.ymin, self.xmax, self.ymax = self.df.total_bounds
@@ -171,13 +174,14 @@ class Plot:
         self.ax.patch.set_zorder(6)
 
     def set_background(self):
+        ec = adjust_lightness(self.bg_color, 0.78)  # todo: correct value?
         if self.bg_shape == "rectangle":
             patch = Rectangle(
                 xy=(self.xmin - self.bg_buffer_x, self.ymin - self.bg_buffer_y),
                 width=self.xdif + 2 * self.bg_buffer_x,
                 height=self.ydif + 2 * self.bg_buffer_y,
                 color=self.bg_color,
-                ec=adjust_lightness(self.bg_color, 0.78),  # todo: correct value?
+                ec=ec,
                 hatch="ooo...",
                 zorder=-1,
                 clip_on=True,

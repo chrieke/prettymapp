@@ -22,6 +22,7 @@ def st_plot_all(_df, **kwargs):
     fig = Plot(_df, **kwargs).plot_all()
     return fig
 
+
 if "run_id" not in st.session_state:
     st.session_state.run_id = 0
     st.session_state.settings = EXAMPLES["Macau"]
@@ -75,7 +76,7 @@ contour_width = col1style.slider(
     20,
     st.session_state.settings["contour_width"],
     help="Thickness of contour line sourrounding the map.",
-    key=f"contour_{st.session_state.run_id}"
+    key=f"contour_{st.session_state.run_id}",
 )
 contour_color = col1style.color_picker(
     "Map contour color", st.session_state.settings["contour_color"]
