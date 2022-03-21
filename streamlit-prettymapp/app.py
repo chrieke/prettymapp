@@ -7,25 +7,26 @@ from pandas.util import hash_pandas_object
 
 from examples import EXAMPLES
 from utils import image_button_config, plt_to_svg, svg_to_html, slugify
-from prettymapp.main import get_geometries
-from prettymapp.geo import GeoCodingError
+from prettymapp.main import get_osm_geometries
+from prettymapp.geo import GeoCodingError, get_aoi
 from prettymapp.plotting import Plot
 from prettymapp.settings import STYLES
 
 p = Profiler()
 p.start()
 
-# Wrappers for streamlit caching
-get_geometries = st.experimental_memo(show_spinner=False)(get_geometries)
+# Wrappers to enable streamlit caching
+
+
+@st.experimental_memo(show_spinner=False)
+def st_get_osm_geometries(aoi, _aoi_utm_crs):
+    df = get_osm_geometries(aoi=aoi, aoi_utm_crs=_aoi_utm_crs)
+    return df
 
 
 # pylint: disable=unused-argument
 @st.experimental_memo(show_spinner=False)
-def st_plot_all(_df: GeoDataFrame, df_hash: int, **kwargs):
-    """
-    Wrapper to enable streamlit caching. Unused argument df_hash required to have unique value that avoids using cache
-    as streamlit is not able to hash the geodataframe.
-    """
+def st_plot_all(_df: GeoDataFrame, **kwargs):
     fig = Plot(_df, **kwargs).plot_all()
     return fig
 
@@ -180,13 +181,17 @@ result_container = st.empty()
 with st.spinner("Creating new map...(may take up to a minute)"):
     rectangular = shape != "circle"
     try:
-        df = get_geometries(address=address, radius=radius, rectangular=rectangular)
+        aoi, aoi_utm_crs = get_aoi(
+            address=address, distance=radius, rectangular=rectangular
+        )
     except GeoCodingError as e:
         st.error(f"ERROR: {str(e)}")
         st.stop()
+    df = st_get_osm_geometries(aoi=aoi, _aoi_utm_crs=aoi_utm_crs)
+
     fig = st_plot_all(
         _df=df,
-        df_hash=hash_pandas_object(df).sum(),
+        aoi_bounds=aoi.bounds,
         draw_settings=st.session_state.settings["draw_settings"],
         name_on=name_on,
         name=address if custom_title == "" else custom_title,

@@ -59,6 +59,7 @@ def plot_geom_collection(
 @dataclass
 class Plot:
     df: GeoDataFrame
+    aoi_bounds: list  # Not df bounds as could lead to weird plot shapes with unequal geometry distribution.
     draw_settings: dict
     shape: str = "circle"
     contour_width: int = 0
@@ -75,7 +76,13 @@ class Plot:
     bg_color: str = "#F2F4CB"
 
     def __post_init__(self):
-        self.xmin, self.ymin, self.xmax, self.ymax = self.df.total_bounds
+        (
+            self.xmin,
+            self.ymin,
+            self.xmax,
+            self.ymax,
+        ) = self.aoi_bounds  # TODO: dont take from totalbounds,
+        # take from aoi geometry bounds, otherwise if no geometries on one side problematic.
         self.xmid = (self.xmin + self.xmax) / 2
         self.ymid = (self.ymin + self.ymax) / 2
         self.xdif = self.xmax - self.xmin
@@ -84,6 +91,8 @@ class Plot:
         self.bg_buffer_x = (self.bg_buffer / 100) * self.xdif
         self.bg_buffer_y = (self.bg_buffer / 100) * self.ydif
 
+        print("buffer", self.bg_buffer_x, self.bg_buffer_y)
+        print("mid", self.xmid, self.ymid)
         self.fig, self.ax = subplots(
             1, 1, figsize=(12, 12), constrained_layout=True, dpi=1200
         )

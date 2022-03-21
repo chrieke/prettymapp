@@ -1,6 +1,9 @@
+from typing import List
+
 from osmnx.geometries import geometries_from_polygon
 from osmnx.utils import config
 from geopandas import clip, GeoDataFrame
+from shapely.geometry import Polygon
 
 from prettymapp.geo import get_aoi, adjust_street_width, explode_mp
 from prettymapp.settings import LC_SETTINGS
@@ -8,14 +11,7 @@ from prettymapp.settings import LC_SETTINGS
 config(use_cache=True, log_console=False)
 
 
-def get_geometries(
-    address: str = "Praça Ferreira do Amaral, Macau",
-    radius: int = 1100,
-    rectangular: bool = False,
-) -> GeoDataFrame:
-    aoi, aoi_utm_crs = get_aoi(
-        address=address, distance=radius, rectangular=rectangular
-    )
+def get_osm_geometries(aoi: Polygon, aoi_utm_crs) -> GeoDataFrame:
     tags: dict = {}
     for d in LC_SETTINGS.values():  # type: ignore
         for k, v in d.items():  # type: ignore
