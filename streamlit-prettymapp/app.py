@@ -18,6 +18,7 @@ p.start()
 get_geometries = st.experimental_memo(show_spinner=False)(get_geometries)
 
 
+# pylint: disable=unused-argument
 @st.experimental_memo(show_spinner=False)
 def st_plot_all(_df: GeoDataFrame, df_hash: int, **kwargs):
     """
