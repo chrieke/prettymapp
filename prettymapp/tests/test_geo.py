@@ -6,7 +6,12 @@ import pytest
 from shapely.geometry import Polygon
 from geopandas import GeoDataFrame
 import osmnx as ox
-from prettymapp.geo import validate_coordinates, get_aoi, adjust_street_width
+from prettymapp.geo import (
+    validate_coordinates,
+    get_aoi,
+    adjust_street_width,
+    GeoCodingError,
+)
 
 
 def test_validate_coordinates():
@@ -87,6 +92,12 @@ def test_get_aoi_from_user_input_coordinates_live():
         13.414732236942758,
         52.52898664609028,
     )
+
+
+@pytest.mark.live
+def test_get_aoi_invalid_address_raises():
+    with pytest.raises(GeoCodingError):
+        get_aoi("not_an_address")
 
 
 def test_adjust_street_width():

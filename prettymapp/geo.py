@@ -14,6 +14,10 @@ def validate_coordinates(lat: float, lon: float) -> None:
         )
 
 
+class GeoCodingError(Exception):
+    pass
+
+
 def get_aoi(
     address: Optional[str] = None,
     coordinates: Optional[Tuple[float, float]] = None,
@@ -38,7 +42,10 @@ def get_aoi(
                 "Both address and latlon coordinates were provided, please "
                 "select only one!"
             )
-        lat, lon = geocode(address)
+        try:
+            lat, lon = geocode(address)
+        except ValueError as e:
+            raise GeoCodingError(f"Could not geocode address '{address}'") from e
     else:
         lat, lon = coordinates  # type: ignore
     validate_coordinates(lat, lon)

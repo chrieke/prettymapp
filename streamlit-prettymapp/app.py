@@ -8,6 +8,7 @@ from pandas.util import hash_pandas_object
 from examples import EXAMPLES
 from utils import image_button_config, plt_to_svg, svg_to_html, slugify
 from prettymapp.main import get_geometries
+from prettymapp.geo import GeoCodingError
 from prettymapp.plotting import Plot
 from prettymapp.settings import STYLES
 
@@ -58,7 +59,7 @@ form = st.form(key="form_params")
 form.markdown("**Or choose your own location & map style**")
 col1, col2, col3 = form.columns([3, 1, 1])
 
-address = col1.text_input("Address or Location", st.session_state.settings["address"])
+address = col1.text_input("Location Address", st.session_state.settings["address"])
 radius = col2.slider("Radius Size", 1, 1500, st.session_state.settings["radius"])
 style = col3.selectbox(
     "Color theme",
@@ -178,7 +179,11 @@ if submit_button:
 result_container = st.empty()
 with st.spinner("Creating new map...(may take up to a minute)"):
     rectangular = shape != "circle"
-    df = get_geometries(address=address, radius=radius, rectangular=rectangular)
+    try:
+        df = get_geometries(address=address, radius=radius, rectangular=rectangular)
+    except GeoCodingError as e:
+        st.error(f"ERROR: {str(e)}")
+        st.stop()
     fig = st_plot_all(
         _df=df,
         df_hash=hash_pandas_object(df).sum(),
