@@ -2,6 +2,9 @@ import copy
 
 import streamlit as st
 from streamlit_profiler import Profiler
+from geopandas import GeoDataFrame
+from pandas.util import hash_pandas_object
+
 from examples import EXAMPLES
 from utils import image_button_config, plt_to_svg, svg_to_html, slugify
 from prettymapp.main import get_geometries
@@ -11,12 +14,16 @@ from prettymapp.settings import STYLES
 p = Profiler()
 p.start()
 
-# Enable streamlit caching
+# Wrappers for streamlit caching
 get_geometries = st.experimental_memo(show_spinner=False)(get_geometries)
 
 
 @st.experimental_memo(show_spinner=False)
-def st_plot_all(_df, **kwargs):
+def st_plot_all(_df: GeoDataFrame, df_hash: int, **kwargs):
+    """
+    Wrapper to enable streamlit caching. Unused argument df_hash required to have unique value that avoids using cache
+    as streamlit is not able to hash the geodataframe.
+    """
     fig = Plot(_df, **kwargs).plot_all()
     return fig
 
@@ -171,9 +178,9 @@ result_container = st.empty()
 with st.spinner("Creating new map...(may take up to a minute)"):
     rectangular = shape != "circle"
     df = get_geometries(address=address, radius=radius, rectangular=rectangular)
-
     fig = st_plot_all(
         _df=df,
+        df_hash=hash_pandas_object(df).sum(),
         draw_settings=st.session_state.settings["draw_settings"],
         name_on=name_on,
         name=address if custom_title == "" else custom_title,
