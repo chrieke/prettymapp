@@ -8,7 +8,6 @@ from matplotlib.colors import ListedColormap, cnames, to_rgb
 from matplotlib.pyplot import subplots, Rectangle
 import matplotlib.font_manager as fm
 from matplotlib.patches import Ellipse, Polygon
-from matplotlib.lines import Line2D
 from matplotlib.collections import PatchCollection, LineCollection
 
 
@@ -29,7 +28,7 @@ def adjust_lightness(color: str, amount=0.5) -> tuple:
 
 
 def plot_geom_collection(
-    ax, geoms, values=None, colormap=None, **kwargs
+    ax, geoms, cmap_values=None, colormap=None, **kwargs
 ) -> PatchCollection:
     """
     Plot a collection of shapely geometries
@@ -38,7 +37,7 @@ def plot_geom_collection(
 
     Args:
         geoms: Iterable of shapely objects, not MultiPolgon/MultiLinestring.
-        values: Assignment of colormap, should match length of geoms.
+        cmap_values: Assignment of colormap, should match length of geoms.
     """
     patches = []
     lines = []
@@ -50,11 +49,11 @@ def plot_geom_collection(
             lines.append(geom)  # Linestring
 
     patchcollection = PatchCollection(patches, **kwargs)
-    if values is not None:
-        patchcollection.set_array(values)
+    if cmap_values is not None:
+        patchcollection.set_array(cmap_values)
         patchcollection.set_cmap(colormap)
 
-    linecollection = LineCollection(lines)  #todo: kwargs
+    linecollection = LineCollection(lines)  # todo: kwargs
     # if values is not None: #todo values
     #     linecollection.set_linewidth(values)
     ax.add_collection(linecollection, autolim=True)
@@ -129,6 +128,7 @@ class Plot:
             if "hatch_c" in draw_settings_class:
                 # Matplotlib hatch color is set via ec. hatch_c is used as the edge color here by plotting the outlines
                 # again above.
+                # Todo: why only with df.plot first round.
                 df_class.plot(
                     ax=self.ax,
                     fc="None",
@@ -136,6 +136,14 @@ class Plot:
                     lw=1,
                     zorder=6,
                 )
+                # plot_geom_collection(
+                #     ax=self.ax,
+                #     geoms=df_class.geometry,
+                #     fc="None",
+                #     ec=draw_settings_class["hatch_c"],
+                #     lw=1,
+                #     zorder=6,
+                # )
                 draw_settings_class.pop("hatch_c")
 
             if "cmap" in draw_settings_class:
@@ -147,7 +155,7 @@ class Plot:
                 plot_geom_collection(
                     ax=self.ax,
                     geoms=df_class.geometry,
-                    values=values,
+                    cmap_values=values,
                     colormap=draw_settings_class["cmap"],
                     **draw_settings_class
                 )
