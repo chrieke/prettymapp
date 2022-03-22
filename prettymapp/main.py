@@ -3,13 +3,13 @@ from osmnx.utils import config
 from geopandas import clip, GeoDataFrame
 from shapely.geometry import Polygon
 
-from prettymapp.geo import adjust_street_width, explode_multigeometries
+from prettymapp.geo import explode_multigeometries
 from prettymapp.settings import LC_SETTINGS
 
 config(use_cache=True, log_console=False)
 
 
-def get_osm_geometries(aoi: Polygon, aoi_utm_crs) -> GeoDataFrame:
+def get_osm_geometries(aoi: Polygon) -> GeoDataFrame:
     tags: dict = {}
     for d in LC_SETTINGS.values():  # type: ignore
         for k, v in d.items():  # type: ignore
@@ -42,6 +42,8 @@ def get_osm_geometries(aoi: Polygon, aoi_utm_crs) -> GeoDataFrame:
     # Drop not assigned elements (part of multiple classes)
     df = df[~df["landcover_class"].isnull()]
 
-    df = df.drop(df.columns.difference(["geometry", "landcover_class", "highway"]), axis=1)
+    df = df.drop(
+        df.columns.difference(["geometry", "landcover_class", "highway"]), axis=1
+    )
 
     return df

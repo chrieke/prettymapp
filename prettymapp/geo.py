@@ -23,7 +23,7 @@ def get_aoi(
     coordinates: Optional[Tuple[float, float]] = None,
     distance: int = 1000,
     rectangular: bool = False,
-) -> Tuple[Polygon, Any]:
+) -> Polygon:
     """
     Gets round or rectangular shapely Polygon in in 4326 from input address or coordinates.
 
@@ -62,71 +62,21 @@ def get_aoi(
     if rectangular:
         poly = box(*poly.bounds)
 
-    return poly, utm_crs
+    return poly
 
 
-def adjust_street_width(
-    df: GeoDataFrame, aoi_utm_crs: Optional[Any] = None
-) -> GeoDataFrame:
+def explode_multigeometries(df: GeoDataFrame) -> GeoDataFrame:
     """
-    Adjusts the street Linestrings to thicker Polygons (better visible when plotted).
-
-    Args:
-        df_streets: Geodataframe with street linestrings, requires "street" column.
-
-    Returns:
-        Geodataframe with street Polygons
-    """
-    streets_width = {
-        "motorway": 5,
-        "trunk": 5,
-        "primary": 4.5,
-        "primary_link": 4.5,
-        "secondary": 4,
-        "secondary_link": 4,
-        "tertiary": 3.5,
-        "tertiary_link": 3.5,
-        "cycleway": 3.5,
-        "residential": 3,
-        "service": 2,
-        "unclassified": 2,
-        "pedestrian": 2,
-        "footway": 1,
-    }
-
-    def _find_buffer_strength(row):
-        try:
-            dilation = streets_width[row["highway"]]
-        except TypeError:
-            dilation = streets_width[row["highway"][0]]
-        except KeyError:
-            # Undesired street types
-            dilation = 1
-        return dilation
-
-    if aoi_utm_crs is None:
-        aoi_utm_crs = df.estimate_utm_crs()
-
-    df = df.to_crs(aoi_utm_crs)
-    df["buffer_strength"] = df.apply(_find_buffer_strength, axis=1)
-    df.geometry = df.geometry.buffer(df["buffer_strength"])
-    df = df.to_crs(crs=4326)
-    return df
-
-
-def explode_mp(df: GeoDataFrame) -> GeoDataFrame:
-    """
-    Explode all multi-polygon geometries in a geodataframe into individual polygon
-    geometries.
+    Explode all multi geometries in a geodataframe into individual polygon geometries.
     Adds exploded polygons as rows at the end of the geodataframe and resets its index.
     Args:
         df: Input GeoDataFrame
     """
-    outdf = df[df.geom_type != "MultiPolygon"]
-
-    df_mp = df[df.geom_type == "MultiPolygon"]
-    for _, row in df_mp.iterrows():
-        df_temp = GeoDataFrame(columns=df_mp.columns)
+    mask = df.geom_type.isin(["MultiPolygon", "MultiLineString", "MultiPoint"])
+    outdf = df[~mask]
+    df_multi = df[mask]
+    for _, row in df_multi.iterrows():
+        df_temp = GeoDataFrame(columns=df_multi.columns)
         df_temp = df_temp.append([row] * len(row.geometry), ignore_index=True)
         for i in range(len(row.geometry)):
             df_temp.loc[i, "geometry"] = row.geometry[i]
