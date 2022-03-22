@@ -3,7 +3,7 @@ from osmnx.utils import config
 from geopandas import clip, GeoDataFrame
 from shapely.geometry import Polygon
 
-from prettymapp.geo import adjust_street_width, explode_mp
+from prettymapp.geo import adjust_street_width, explode_multigeometries
 from prettymapp.settings import LC_SETTINGS
 
 config(use_cache=True, log_console=False)
@@ -22,11 +22,11 @@ def get_osm_geometries(aoi: Polygon, aoi_utm_crs) -> GeoDataFrame:
     df = df.droplevel(level=0)
     df = df[df.geometry.geom_type != "Point"]
 
-    df[df["highway"].notna()] = adjust_street_width(
-        df=df[df["highway"].notna()], aoi_utm_crs=aoi_utm_crs
-    )
+    # df[df["highway"].notna()] = adjust_street_width(
+    #     df=df[df["highway"].notna()], aoi_utm_crs=aoi_utm_crs
+    # )
     df = clip(df, aoi)
-    df = explode_mp(df)  # Simpler Polygonpatch plotting
+    df = explode_multigeometries(df)  # Simpler Polygonpatch plotting
 
     df["landcover_class"] = None
     for lc_class, osm_tags in LC_SETTINGS.items():
@@ -45,6 +45,6 @@ def get_osm_geometries(aoi: Polygon, aoi_utm_crs) -> GeoDataFrame:
     # Drop not assigned elements (part of multiple classes)
     df = df[~df["landcover_class"].isnull()]
 
-    df = df.drop(df.columns.difference(["geometry", "landcover_class"]), axis=1)
+    df = df.drop(df.columns.difference(["geometry", "landcover_class", "highway"]), axis=1)
 
     return df

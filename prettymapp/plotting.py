@@ -8,7 +8,8 @@ from matplotlib.colors import ListedColormap, cnames, to_rgb
 from matplotlib.pyplot import subplots, Rectangle
 import matplotlib.font_manager as fm
 from matplotlib.patches import Ellipse, Polygon
-from matplotlib.collections import PatchCollection
+from matplotlib.lines import Line2D
+from matplotlib.collections import PatchCollection, LineCollection
 
 
 def adjust_lightness(color: str, amount=0.5) -> tuple:
@@ -36,21 +37,27 @@ def plot_geom_collection(
     Faster then df.plot() as does not plot Polygons individually.
 
     Args:
-        geoms: Iterable of shapely objects, not MultiPolgon.
+        geoms: Iterable of shapely objects, not MultiPolgon/MultiLinestring.
         values: Assignment of colormap, should match length of geoms.
     """
     patches = []
+    lines = []
     for geom in geoms:
         try:
             exterior = geom.exterior  # Polygon
+            patches.append(Polygon(np.asarray(exterior)))
         except AttributeError:
-            exterior = geom  # Linestring etc.
-        patches.append(Polygon(np.asarray(exterior)))
-    patchcollection = PatchCollection(patches, **kwargs)
+            lines.append(geom)  # Linestring
 
+    patchcollection = PatchCollection(patches, **kwargs)
     if values is not None:
         patchcollection.set_array(values)
         patchcollection.set_cmap(colormap)
+
+    linecollection = LineCollection(lines)  #todo: kwargs
+    # if values is not None: #todo values
+    #     linecollection.set_linewidth(values)
+    ax.add_collection(linecollection, autolim=True)
 
     ax.add_collection(patchcollection, autolim=True)
     return patchcollection
@@ -91,8 +98,6 @@ class Plot:
         self.bg_buffer_x = (self.bg_buffer / 100) * self.xdif
         self.bg_buffer_y = (self.bg_buffer / 100) * self.ydif
 
-        print("buffer", self.bg_buffer_x, self.bg_buffer_y)
-        print("mid", self.xmid, self.ymid)
         self.fig, self.ax = subplots(
             1, 1, figsize=(12, 12), constrained_layout=True, dpi=1200
         )
