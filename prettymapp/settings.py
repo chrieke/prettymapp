@@ -3,7 +3,8 @@ LC_SETTINGS = {
     "water": {
         "natural": ["water", "bay"],
         "place": ["sea"],
-        "leisure": ["swimming_pool"]},
+        "leisure": ["swimming_pool"],
+    },
     "woodland": {"landuse": ["forest"]},
     "grassland": {
         "landuse": ["grass", "vineyard", "orchard", "village_green"],
@@ -22,9 +23,9 @@ LC_SETTINGS = {
             "service",
             "unclassified",
             "footway",
-            "motorway_link"
+            "motorway_link",
         ],
-        "railway": True
+        "railway": True,
     },
     "other": {"amenity": ["parking"], "man_made": ["pier"], "highway": ["pedestrian"]},
 }

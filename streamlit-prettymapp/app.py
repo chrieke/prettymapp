@@ -18,8 +18,8 @@ p.start()
 
 
 @st.experimental_memo(show_spinner=False)
-def st_get_osm_geometries(aoi, _aoi_utm_crs):
-    df = get_osm_geometries(aoi=aoi, aoi_utm_crs=_aoi_utm_crs)
+def st_get_osm_geometries(aoi):
+    df = get_osm_geometries(aoi=aoi)
     return df
 
 
@@ -180,14 +180,12 @@ result_container = st.empty()
 with st.spinner("Creating new map...(may take up to a minute)"):
     rectangular = shape != "circle"
     try:
-        aoi, aoi_utm_crs = get_aoi(
-            address=address, distance=radius, rectangular=rectangular
-        )
+        aoi = get_aoi(address=address, distance=radius, rectangular=rectangular)
     except GeoCodingError as e:
         st.error(f"ERROR: {str(e)}")
         st.stop()
-    df = st_get_osm_geometries(aoi=aoi, _aoi_utm_crs=aoi_utm_crs)
-
+    df = st_get_osm_geometries(aoi=aoi)
+    st.write(df.crs)
     fig = st_plot_all(
         _df=df,
         aoi_bounds=aoi.bounds,
