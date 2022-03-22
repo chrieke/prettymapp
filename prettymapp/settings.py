@@ -1,11 +1,14 @@
 LC_SETTINGS = {
     "urban": {"building": True, "landuse": ["construction", "commercial"]},
-    "water": {"natural": ["water", "bay"]},
+    "water": {
+        "natural": ["water", "bay"],
+        "place": ["sea"],
+        "leisure": ["swimming_pool"]},
     "woodland": {"landuse": ["forest"]},
     "grassland": {
         "landuse": ["grass", "vineyard", "orchard", "village_green"],
         "natural": ["island", "wood"],
-        "leisure": ["park"],
+        "leisure": ["park", "pitch", "garden", "golf_course"],
     },
     "streets": {
         "highway": [
@@ -18,11 +21,12 @@ LC_SETTINGS = {
             "residential",
             "service",
             "unclassified",
-            "pedestrian",
             "footway",
-        ]
+            "motorway_link"
+        ],
+        "railway": True
     },
-    "other": {"amenity": ["parking"], "man_made": ["pier"]},
+    "other": {"amenity": ["parking"], "man_made": ["pier"], "highway": ["pedestrian"]},
 }
 
 # Macau peach
