@@ -1,11 +1,9 @@
-from typing import List
-
 from osmnx.geometries import geometries_from_polygon
 from osmnx.utils import config
 from geopandas import clip, GeoDataFrame
 from shapely.geometry import Polygon
 
-from prettymapp.geo import get_aoi, adjust_street_width, explode_mp
+from prettymapp.geo import adjust_street_width, explode_mp
 from prettymapp.settings import LC_SETTINGS
 
 config(use_cache=True, log_console=False)

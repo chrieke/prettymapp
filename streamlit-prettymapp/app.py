@@ -3,7 +3,6 @@ import copy
 import streamlit as st
 from streamlit_profiler import Profiler
 from geopandas import GeoDataFrame
-from pandas.util import hash_pandas_object
 
 from examples import EXAMPLES
 from utils import image_button_config, plt_to_svg, svg_to_html, slugify
