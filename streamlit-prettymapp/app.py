@@ -185,7 +185,6 @@ with st.spinner("Creating new map...(may take up to a minute)"):
         st.error(f"ERROR: {str(e)}")
         st.stop()
     df = st_get_osm_geometries(aoi=aoi)
-    st.write(df.crs)
     fig = st_plot_all(
         _df=df,
         aoi_bounds=aoi.bounds,

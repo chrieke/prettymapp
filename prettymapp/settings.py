@@ -50,7 +50,7 @@ STYLES = {
         },
         "grassland": {"fc": "#D0F1BF", "ec": "#2F3737", "lw": 1, "zorder": 2},
         "woodland": {"fc": "#64B96A", "ec": "#2F3737", "lw": 1, "zorder": 2},
-        "streets": {"fc": "#2F3737", "ec": "#475657", "alpha": 1, "lw": 0, "zorder": 3},
+        "streets": {"fc": "#2F3737", "zorder": 3},
         "other": {"fc": "#F2F4CB", "ec": "#2F3737", "lw": 1, "zorder": 3},
     },
     "Auburn": {
@@ -77,7 +77,25 @@ STYLES = {
             "zorder": 1,
         },
         "woodland": {"fc": "#64B96A", "ec": "#2F3737", "lw": 1, "zorder": 2},
-        "streets": {"fc": "#2F3737", "ec": "#475657", "alpha": 1, "lw": 0, "zorder": 4},
+        "streets": {"fc": "#2F3737", "zorder": 4},
         "other": {"fc": "#F2F4CB", "ec": "#2F3737", "lw": 1, "zorder": 3},
     },
+}
+
+STREETS_WIDTH = {
+    "motorway": 5,
+    "trunk": 5,
+    "primary": 4.5,
+    "primary_link": 4.5,
+    "secondary": 4,
+    "secondary_link": 4,
+    "tertiary": 3.5,
+    "tertiary_link": 3.5,
+    "cycleway": 3.5,
+    "residential": 3,
+    "service": 2,
+    "unclassified": 2,
+    "pedestrian": 2,
+    "footway": 1,
+    "motorway_link": 3,
 }
