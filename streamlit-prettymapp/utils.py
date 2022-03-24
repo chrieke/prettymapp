@@ -2,11 +2,13 @@ import base64
 from io import StringIO, BytesIO
 import unicodedata
 import re
+from typing import Any
 
+from matplotlib.pyplot import figure
 import streamlit as st
 
 
-def plt_to_svg(fig):
+def plt_to_svg(fig: figure) -> str:
     imgdata = StringIO()
     fig.savefig(
         imgdata, format="svg", pad_inches=0, bbox_inches="tight", transparent=True
@@ -16,9 +18,8 @@ def plt_to_svg(fig):
     return svg_string
 
 
-def svg_to_html(svg_string):
+def svg_to_html(svg_string: str) -> str:
     b64 = base64.b64encode(svg_string.encode("utf-8")).decode("utf-8")
-    # Add some CSS on top
     css_justify = "center"
     css = '<p style="text-align:center; display: flex; flex-direction: column; justify-content: {};">'.format(
         css_justify
@@ -27,7 +28,7 @@ def svg_to_html(svg_string):
     return html
 
 
-def plt_to_href(fig, filename):
+def plt_to_href(fig: figure, filename: str):
     buf = BytesIO()
     fig.savefig(buf, format="png", pad_inches=0, bbox_inches="tight", transparent=True)
     img_str = base64.b64encode(buf.getvalue()).decode()
@@ -35,7 +36,7 @@ def plt_to_href(fig, filename):
     return href
 
 
-def slugify(value, allow_unicode=False):
+def slugify(value: Any, allow_unicode: bool = False):
     """
     Taken from https://github.com/django/django/blob/master/django/utils/text.py
     Convert to ASCII if 'allow_unicode' is False. Convert spaces or repeated
@@ -57,6 +58,9 @@ def slugify(value, allow_unicode=False):
 
 
 def image_button_config():
+    """
+    Hack for streamlit custom button with image.
+    """
     st.write(
         """
 		<style>

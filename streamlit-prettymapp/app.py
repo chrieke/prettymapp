@@ -15,8 +15,6 @@ p = Profiler()
 p.start()
 
 # Wrappers to enable streamlit caching
-
-
 @st.experimental_memo(show_spinner=False)
 def st_get_osm_geometries(aoi):
     df = get_osm_geometries(aoi=aoi)

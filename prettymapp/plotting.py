@@ -1,25 +1,30 @@
 from pathlib import Path
 import colorsys
+from typing import Tuple, Optional, List
 from dataclasses import dataclass
 
-import numpy as np
 from geopandas import GeoDataFrame
+import numpy as np
+from shapely.geometry import LineString, Polygon
 from matplotlib.colors import ListedColormap, cnames, to_rgb
 from matplotlib.pyplot import subplots, Rectangle
 import matplotlib.font_manager as fm
-from matplotlib.patches import Ellipse, Polygon
+from matplotlib.patches import Ellipse
+from matplotlib.patches import Polygon as plt_polygon
 from matplotlib.collections import PatchCollection, LineCollection
+from matplotlib.axes import Axes
 
 from prettymapp.settings import STREETS_WIDTH
 
 
-def adjust_lightness(color: str, amount=0.5) -> tuple:
+def adjust_lightness(color: str, amount: float = 0.5) -> Tuple[float]:
     """
-    Helper to avoid having the user background ec color value which is similar to background color.
+    In-/Decrease color brightness amount by factor.
+
+    Helper to avoid having the user define background ec color value which is similar to background color.
 
     via https://stackoverflow.com/questions/37765197/darken-or-lighten-a-color-in-matplotlib
     """
-    #
     try:
         c = cnames[color]
     except KeyError:
@@ -29,7 +34,13 @@ def adjust_lightness(color: str, amount=0.5) -> tuple:
     return adjusted_c
 
 
-def plot_poly_collection(ax, polys, cmap_values=None, colormap=None, **kwargs) -> None:
+def plot_poly_collection(
+    ax: Axes,
+    polys: List[Polygon],
+    cmap_values: Optional[List[int]] = None,
+    colormap: Optional[ListedColormap] = None,
+    **kwargs
+) -> None:
     """
     Plot a collection of shapely polygons.
 
@@ -38,8 +49,9 @@ def plot_poly_collection(ax, polys, cmap_values=None, colormap=None, **kwargs) -
     Args:
         polys: Iterable of shapely polgons, not MultiPolgon.
         cmap_values: Assignment of colormap, should match length of geoms.
+        colormap: Matplotlib colormap.
     """
-    patches = [Polygon(np.asarray(poly.exterior)) for poly in polys]
+    patches = [plt_polygon(np.asarray(poly.exterior)) for poly in polys]
     patchcollection = PatchCollection(patches, **kwargs)
     if cmap_values is not None:
         patchcollection.set_array(cmap_values)
@@ -47,7 +59,12 @@ def plot_poly_collection(ax, polys, cmap_values=None, colormap=None, **kwargs) -
     ax.add_collection(patchcollection, autolim=True)
 
 
-def plot_linestring_collection(ax, lines, linewidth_values=None, **kwargs) -> None:
+def plot_linestring_collection(
+    ax: Axes,
+    lines: List[LineString],
+    linewidth_values: Optional[List[float]] = None,
+    **kwargs
+) -> None:
     """
     Plot a collection of shapely linestrings
 
@@ -66,7 +83,9 @@ def plot_linestring_collection(ax, lines, linewidth_values=None, **kwargs) -> No
 @dataclass
 class Plot:
     df: GeoDataFrame
-    aoi_bounds: list  # Not df bounds as could lead to weird plot shapes with unequal geometry distribution.
+    aoi_bounds: List[
+        float
+    ]  # Not df bounds as could lead to weird plot shapes with unequal geometry distribution.
     draw_settings: dict
     shape: str = "circle"
     contour_width: int = 0
@@ -89,7 +108,7 @@ class Plot:
             self.xmax,
             self.ymax,
         ) = self.aoi_bounds
-        # take from aoi geometry bounds, otherwise if no geometries on one side problematic.
+        # take from aoi geometry bounds, otherwise probelematic if unequal geometry distribution over plot.
         self.xmid = (self.xmin + self.xmax) / 2
         self.ymid = (self.ymin + self.ymax) / 2
         self.xdif = self.xmax - self.xmin
@@ -260,9 +279,9 @@ class Plot:
             size=self.font_size,
         )
 
-    def set_credits(self, add_package_credit=False):
+    def set_credits(self, add_package_credit=True):
         credit_text = "© OpenStreetMap"
-        package_credit_text = "\n prettymaps | prettymapp"
+        package_credit_text = "\n prettymapp | prettymaps"
         if add_package_credit:
             credit_text = credit_text + package_credit_text
 

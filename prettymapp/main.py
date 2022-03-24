@@ -23,7 +23,7 @@ def get_osm_geometries(aoi: Polygon) -> GeoDataFrame:
     df = df[~df.geometry.geom_type.isin(["Point", "MultiPoint"])]
 
     df = clip(df, aoi)
-    df = explode_multigeometries(df)  # Simpler Polygonpatch plotting
+    df = explode_multigeometries(df)
 
     df["landcover_class"] = None
     for lc_class, osm_tags in LC_SETTINGS.items():
@@ -41,7 +41,6 @@ def get_osm_geometries(aoi: Polygon) -> GeoDataFrame:
         df.loc[mask_lc_class, "landcover_class"] = lc_class
     # Drop not assigned elements (part of multiple classes)
     df = df[~df["landcover_class"].isnull()]
-
     df = df.drop(
         df.columns.difference(["geometry", "landcover_class", "highway"]), axis=1
     )
