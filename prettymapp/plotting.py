@@ -210,9 +210,8 @@ class Plot:
         y = self.ymid + self.text_y / 100 * self.ydif
 
         _location_ = Path(__file__).resolve().parent
-        fontproperties = fm.FontProperties(
-            fname=_location_ / "fonts/PermanentMarker-Regular.ttf"
-        )
+        fpath = _location_ / "fonts/PermanentMarker-Regular.ttf"
+        fontproperties = fm.FontProperties(fname=fpath.resolve())
         self.ax.text(
             x=x,
             y=y,
