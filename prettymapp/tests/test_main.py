@@ -15,16 +15,28 @@ AOI_UTM_CRS = CRS.from_user_input(32632)
 
 @pytest.mark.live
 def test_get_geometries_live():
-    df = get_osm_geometries(AOI, AOI_UTM_CRS)
+    df = get_osm_geometries(AOI)
     assert isinstance(df, GeoDataFrame)
     assert not df.empty
 
 
 @pytest.mark.live
 def test_main_live():
-    df = get_osm_geometries(AOI, AOI_UTM_CRS)
+    df = get_osm_geometries(AOI)
     fig = Plot(df=df, aoi_bounds=AOI.bounds, draw_settings=STYLES["Peach"]).plot_all()
     assert fig is not None
     # assert isinstance(fig, int)
     # import matplotlib.pyplot as plt
     # plt.show()
+
+
+# def test_main_liveaa():
+#     from prettymapp.geo import get_aoi
+#
+#     aoi, aoi_utm_crs = get_aoi("Miami", distance=1100)
+#     df = get_osm_geometries(aoi)
+#     fig = Plot(df=df, aoi_bounds=AOI.bounds, draw_settings=STYLES["Peach"]).plot_all()
+#     assert fig is not None
+#     # assert isinstance(fig, int)
+#     # import matplotlib.pyplot as plt
+#     # plt.show()

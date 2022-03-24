@@ -17,7 +17,7 @@ from matplotlib.axes import Axes
 from prettymapp.settings import STREETS_WIDTH
 
 
-def adjust_lightness(color: str, amount: float = 0.5) -> Tuple[float]:
+def adjust_lightness(color: str, amount: float = 0.5) -> Tuple[float, float, float]:
     """
     In-/Decrease color brightness amount by factor.
 
@@ -145,6 +145,7 @@ class Plot:
             except KeyError:
                 continue
 
+            # pylint: disable=no-else-continue
             if lc_class == "streets":
                 df_class = df_class[df_class.geom_type == "LineString"]
                 linewidth_values = list(

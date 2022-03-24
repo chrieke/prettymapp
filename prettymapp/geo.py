@@ -1,4 +1,4 @@
-from typing import Tuple, Optional, Any
+from typing import Tuple, Optional
 
 from osmnx.geocoder import geocode
 from geopandas import GeoDataFrame
