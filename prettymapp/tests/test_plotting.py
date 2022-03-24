@@ -1,8 +1,11 @@
 from matplotlib.pyplot import subplots
-from matplotlib.collections import PatchCollection
 from shapely.geometry import Polygon, LineString
 
-from prettymapp.plotting import adjust_lightness, plot_poly_collection
+from prettymapp.plotting import (
+    adjust_lightness,
+    plot_poly_collection,
+    plot_linestring_collection,
+)
 
 
 def test_adjust_lightness():
@@ -12,10 +15,17 @@ def test_adjust_lightness():
     assert color == (0.6705882352941177, 0.4510504201680673, 0.0)
 
 
-def test_plot_geom_collection():
+def test_plot_poly_collection():
     _, ax = subplots(1, 1, figsize=(12, 12), constrained_layout=True, dpi=1200)
     poly = Polygon([[0, 0], [1, 0], [1, 1], [0, 1], [0, 0]])
+    geoms = [poly] * 3
+    plot_poly_collection(ax, geoms)
+
+
+def test_plot_linestring_collection():
+    _, ax = subplots(1, 1, figsize=(12, 12), constrained_layout=True, dpi=1200)
     linestring = LineString([(0, 0), (1, 1)])
-    geoms = [poly, linestring] * 3
-    patches = plot_poly_collection(ax, geoms)
-    assert isinstance(patches, PatchCollection)
+    geoms = [linestring] * 3
+    plot_linestring_collection(ax, geoms)
+
+    #
