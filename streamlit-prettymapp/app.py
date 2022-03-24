@@ -46,23 +46,35 @@ for example_name, example_col in zip(EXAMPLES.keys(), example_cols):
     example_buttons.append(example_col.button(example_name))
 selected_example = None
 if any(example_buttons):
-    # Reset settings for new example
+    # Set settings for new example
     name_selected_example = list(EXAMPLES.keys())[example_buttons.index(True)]
     settings: dict = EXAMPLES[name_selected_example]  # type: ignore
     st.session_state.settings = settings.copy()
     st.session_state.settings["draw_settings"] = STYLES[settings["style"]].copy()
+    st.session_state.run_id += 1
 
 st.write("")
 form = st.form(key="form_params")
 form.markdown("**Or choose your own location & map style**")
 col1, col2, col3 = form.columns([3, 1, 1])
 
-address = col1.text_input("Location Address", st.session_state.settings["address"])
-radius = col2.slider("Radius Size", 1, 1500, st.session_state.settings["radius"])
+address = col1.text_input(
+    "Location Address",
+    st.session_state.settings["address"],
+    key=f"address_{st.session_state.run_id}",
+)
+radius = col2.slider(
+    "Radius Size",
+    1,
+    1500,
+    st.session_state.settings["radius"],
+    key=f"radius_{st.session_state.run_id}",
+)
 style = col3.selectbox(
     "Color theme",
     list(STYLES.keys()),
     list(STYLES.keys()).index(st.session_state.settings["style"]),
+    key=f"style_{st.session_state.run_id}",
 )
 
 expander = form.expander("More map style options")
@@ -70,62 +82,93 @@ col1style, col2style, _, col3style = expander.columns([2, 2, 0.1, 1])
 
 shape_options = ["circle", "rectangle"]
 shape = col1style.radio(
-    "Map Shape",
+    label="Map Shape",
     options=shape_options,
     index=shape_options.index(st.session_state.settings["shape"]),
+    key=f"mapshape_{st.session_state.run_id}",
 )
 contour_width = col1style.slider(
-    "Map contour width",
-    0,
-    20,
-    st.session_state.settings["contour_width"],
+    label="Map contour width",
+    min_value=0,
+    max_value=20,
+    value=st.session_state.settings["contour_width"],
     help="Thickness of contour line sourrounding the map.",
     key=f"contour_{st.session_state.run_id}",
 )
 contour_color = col1style.color_picker(
-    "Map contour color", st.session_state.settings["contour_color"]
+    label="Map contour color",
+    value=st.session_state.settings["contour_color"],
+    key=f"contourcolor_{st.session_state.run_id}",
 )
 col1style.markdown("---")
 
 bg_shape_options = ["rectangle", "circle", None]
 bg_shape = col1style.radio(
-    "Background Shape",
+    label="Background Shape",
     options=bg_shape_options,
     index=bg_shape_options.index(st.session_state.settings["bg_shape"]),
+    key=f"bgshape_{st.session_state.run_id}",
 )
 bg_color = col1style.color_picker(
-    "Background Color", st.session_state.settings["bg_color"]
+    label="Background Color",
+    value=st.session_state.settings["bg_color"],
+    key=f"bgcolor_{st.session_state.run_id}",
 )
 bg_buffer = col1style.slider(
-    "Background Size",
-    0,
-    50,
-    st.session_state.settings["bg_buffer"],
+    label="Background Size",
+    min_value=0,
+    max_value=50,
+    value=st.session_state.settings["bg_buffer"],
     help="How much the background extends beyond the figure.",
+    key=f"bgsize_{st.session_state.run_id}",
 )
 
 name_on = col2style.checkbox(
-    "Add Location Name",
-    st.session_state.settings["name_on"],
+    label="Add Location Name",
+    value=st.session_state.settings["name_on"],
     help="If checked, adds the "
     "selected address as the title. "
     "Can be customized below.",
+    key=f"name_{st.session_state.run_id}",
 )
 custom_title = col2style.text_input(
-    "Use custom title instead", st.session_state.settings["custom_title"], max_chars=30
+    label="Use custom title instead",
+    value=st.session_state.settings["custom_title"],
+    max_chars=30,
+    key=f"title_{st.session_state.run_id}",
 )
-font_size = col2style.slider("Font Size", 1, 50, st.session_state.settings["font_size"])
+font_size = col2style.slider(
+    label="Font Size",
+    min_value=1,
+    max_value=50,
+    value=st.session_state.settings["font_size"],
+    key=f"fontsize_{st.session_state.run_id}",
+)
 font_color = col2style.color_picker(
-    "Font Color", st.session_state.settings["font_color"]
+    label="Font Color",
+    value=st.session_state.settings["font_color"],
+    key=f"fontcolor_{st.session_state.run_id}",
 )
 text_x = col2style.slider(
-    "Text left/right", -100, 100, st.session_state.settings["text_x"]
+    "Text left/right",
+    -100,
+    100,
+    st.session_state.settings["text_x"],
+    key=f"textx_{st.session_state.run_id}",
 )
 text_y = col2style.slider(
-    "Text top/bottom", -100, 100, st.session_state.settings["text_y"]
+    "Text top/bottom",
+    -100,
+    100,
+    st.session_state.settings["text_y"],
+    key=f"texty_{st.session_state.run_id}",
 )
 text_rotation = col2style.slider(
-    "Text rotation", -90, 90, st.session_state.settings["text_rotation"]
+    "Text rotation",
+    -90,
+    90,
+    st.session_state.settings["text_rotation"],
+    key=f"rotation_{st.session_state.run_id}",
 )
 
 col3style.write("Custom Colors")
@@ -137,12 +180,20 @@ else:
 for lc_class, class_style in desired_drawing_settings.items():
     if "cmap" in class_style:
         for idx, color in enumerate(class_style["cmap"]):  # type: ignore
-            picked_color = col3style.color_picker(f"{lc_class} {idx+1}", color)
+            picked_color = col3style.color_picker(
+                f"{lc_class} {idx+1}",
+                color,
+                key=f"{lc_class}color" f"_{st.session_state.run_id}",
+            )
             st.session_state.settings["draw_settings"][lc_class]["cmap"][
                 idx
             ] = picked_color
     else:
-        picked_color = col3style.color_picker(f"{lc_class}", class_style.get("fc"))
+        picked_color = col3style.color_picker(
+            f"{lc_class}",
+            class_style.get("fc"),
+            key=f"{lc_class}color" f"_{st.session_state.run_id}",
+        )
         st.session_state.settings["draw_settings"][lc_class]["fc"] = picked_color
 
 variables = [
@@ -163,9 +214,6 @@ variables = [
     bg_buffer,
     bg_color,
 ]
-
-if st.button("Reset"):
-    st.session_state.run_id += 1
 
 submit_button = form.form_submit_button(label="Submit")
 if submit_button:
