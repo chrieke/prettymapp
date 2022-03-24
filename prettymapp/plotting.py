@@ -1,18 +1,15 @@
 from pathlib import Path
 import colorsys
-from typing import Tuple, Optional, List
+from typing import Tuple, List
 from dataclasses import dataclass
 
+from geopandas.plotting import _plot_polygon_collection, _plot_linestring_collection
 from geopandas import GeoDataFrame
 import numpy as np
-from shapely.geometry import LineString, Polygon
 from matplotlib.colors import ListedColormap, cnames, to_rgb
 from matplotlib.pyplot import subplots, Rectangle
 import matplotlib.font_manager as fm
 from matplotlib.patches import Ellipse
-from matplotlib.patches import Polygon as plt_polygon
-from matplotlib.collections import PatchCollection, LineCollection
-from matplotlib.axes import Axes
 
 from prettymapp.settings import STREETS_WIDTH
 
@@ -32,52 +29,6 @@ def adjust_lightness(color: str, amount: float = 0.5) -> Tuple[float, float, flo
     c = colorsys.rgb_to_hls(*to_rgb(c))
     adjusted_c = colorsys.hls_to_rgb(c[0], max(0, min(1, amount * c[1])), c[2])
     return adjusted_c
-
-
-def plot_poly_collection(
-    ax: Axes,
-    polys: List[Polygon],
-    cmap_values: Optional[List[int]] = None,
-    colormap: Optional[ListedColormap] = None,
-    **kwargs
-) -> None:
-    """
-    Plot a collection of shapely polygons.
-
-    Faster then df.plot() as does not plot Polygons individually.
-
-    Args:
-        polys: Iterable of shapely polgons, not MultiPolgon.
-        cmap_values: Assignment of colormap, should match length of geoms.
-        colormap: Matplotlib colormap.
-    """
-    patches = [plt_polygon(np.asarray(poly.exterior)) for poly in polys]
-    patchcollection = PatchCollection(patches, **kwargs)
-    if cmap_values is not None:
-        patchcollection.set_array(cmap_values)
-        patchcollection.set_cmap(colormap)
-    ax.add_collection(patchcollection, autolim=True)
-
-
-def plot_linestring_collection(
-    ax: Axes,
-    lines: List[LineString],
-    linewidth_values: Optional[List[float]] = None,
-    **kwargs
-) -> None:
-    """
-    Plot a collection of shapely linestrings
-
-    Faster then df.plot() as does not plot Polygons individually.
-
-    Args:
-        lines: Iterable of shapely linestrings, not MultiLinestring.
-        linewidth_values: Assignment of colormap, should match length of geoms.
-    """
-    linecollection = LineCollection(lines, **kwargs)
-    if linewidth_values is not None:
-        linecollection.set_linewidth(linewidth_values)
-    ax.add_collection(linecollection, autolim=True)
 
 
 @dataclass
@@ -139,6 +90,10 @@ class Plot:
         return self.fig
 
     def set_geometries(self):
+        """
+        Avoids using geodataframe.plot() as this uses plt.draw(), but for the app, the figure needs to be rendered
+        only in st.pyplot. Shaves off 1 sec.
+        """
         for lc_class in self.df["landcover_class"].unique():
             df_class = self.df[self.df["landcover_class"] == lc_class]
             try:
@@ -153,12 +108,11 @@ class Plot:
                     df_class["highway"].map(STREETS_WIDTH).fillna(1)
                 )
                 draw_settings_class["ec"] = draw_settings_class.pop("fc")
-                plot_linestring_collection(
-                    ax=self.ax,
-                    lines=df_class.geometry,
-                    linewidth_values=linewidth_values,
-                    **draw_settings_class
+                linecollection = _plot_linestring_collection(
+                    ax=self.ax, geoms=df_class.geometry, **draw_settings_class
                 )
+                linecollection.set_linewidth(linewidth_values)
+                self.ax.add_collection(linecollection, autolim=True)
                 continue
             else:
                 df_class = df_class[df_class.geom_type == "Polygon"]
@@ -166,33 +120,30 @@ class Plot:
             if "hatch_c" in draw_settings_class:
                 # Matplotlib hatch color is set via ec. hatch_c is used as the edge color here by plotting the outlines
                 # again above.
-                plot_poly_collection(
+                _plot_polygon_collection(
                     ax=self.ax,
-                    polys=df_class.geometry,
+                    geoms=df_class.geometry,
                     fc="None",
                     ec=draw_settings_class["hatch_c"],
                     lw=1,
                     zorder=6,
                 )
                 draw_settings_class.pop("hatch_c")
-                self.ax.autoscale_view()
 
             if "cmap" in draw_settings_class:
-                draw_settings_class["cmap"] = ListedColormap(
-                    draw_settings_class["cmap"]
-                )
+                cmap = ListedColormap(draw_settings_class["cmap"])
+                draw_settings_class.pop("cmap")
                 cmap_values = np.random.randint(0, 3, df_class.shape[0])
-                # Patchcollection much faster than gpd.plot
-                plot_poly_collection(
+                _plot_polygon_collection(
                     ax=self.ax,
-                    polys=df_class.geometry,
-                    cmap_values=cmap_values,
-                    colormap=draw_settings_class["cmap"],
+                    geoms=df_class.geometry,
+                    values=cmap_values,
+                    cmap=cmap,
                     **draw_settings_class
                 )
             else:
-                plot_poly_collection(
-                    ax=self.ax, polys=df_class.geometry, **draw_settings_class
+                _plot_polygon_collection(
+                    ax=self.ax, geoms=df_class.geometry, **draw_settings_class
                 )
 
     def set_map_contour(self):
