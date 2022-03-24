@@ -6,6 +6,24 @@ from typing import Any
 
 from matplotlib.pyplot import figure
 import streamlit as st
+from geopandas import GeoDataFrame
+
+from prettymapp.plotting import Plot
+from prettymapp.main import get_osm_geometries
+
+
+@st.experimental_memo(show_spinner=False)
+def st_get_osm_geometries(aoi):
+    """Wrapper to enable streamlit caching for package function"""
+    df = get_osm_geometries(aoi=aoi)
+    return df
+
+
+@st.experimental_memo(show_spinner=False)
+def st_plot_all(_df: GeoDataFrame, **kwargs):
+    """Wrapper to enable streamlit caching for package function"""
+    fig = Plot(_df, **kwargs).plot_all()
+    return fig
 
 
 def plt_to_svg(fig: figure) -> str:
