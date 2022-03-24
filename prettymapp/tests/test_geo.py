@@ -9,7 +9,6 @@ import osmnx as ox
 from prettymapp.geo import (
     validate_coordinates,
     get_aoi,
-    adjust_street_width,
     GeoCodingError,
 )
 
@@ -98,15 +97,3 @@ def test_get_aoi_from_user_input_coordinates_live():
 def test_get_aoi_invalid_address_raises():
     with pytest.raises(GeoCodingError):
         get_aoi("not_an_address")
-
-
-def test_adjust_street_width():
-    _location_ = Path(__file__).resolve().parent
-    with open(_location_ / "mock_data/df_pre_adjusting.pickle", "rb") as handle:
-        streets_df = pickle.load(handle)
-
-    streets_df_adjusted = adjust_street_width(streets_df)
-
-    isinstance(streets_df_adjusted, GeoDataFrame)
-    assert not all(streets_df_adjusted.is_empty)
-    assert streets_df_adjusted.iloc[0].geometry != streets_df.iloc[0].geometry
