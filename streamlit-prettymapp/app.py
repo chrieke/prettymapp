@@ -4,8 +4,6 @@ import streamlit as st
 from streamlit_profiler import Profiler
 import numpy as np
 
-from prettymapp.geo import GeoCodingError, get_aoi
-from prettymapp.settings import STYLES
 from examples import EXAMPLES
 from utils import (
     image_button_config,
@@ -15,6 +13,8 @@ from utils import (
     st_get_osm_geometries,
     st_plot_all,
 )
+from prettymapp.geo import GeoCodingError, get_aoi
+from prettymapp.settings import STYLES
 
 
 p = Profiler()
