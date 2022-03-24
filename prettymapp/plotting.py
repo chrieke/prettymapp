@@ -57,8 +57,8 @@ def plot_linestring_collection(ax, lines, linewidth_values=None, **kwargs) -> No
         lines: Iterable of shapely linestrings, not MultiLinestring.
         linewidth_values: Assignment of colormap, should match length of geoms.
     """
-    linecollection = LineCollection(lines, **kwargs)  # todo: kwargs
-    if linewidth_values is not None:  # todo values
+    linecollection = LineCollection(lines, **kwargs)
+    if linewidth_values is not None:
         linecollection.set_linewidth(linewidth_values)
     ax.add_collection(linecollection, autolim=True)
 
@@ -88,7 +88,7 @@ class Plot:
             self.ymin,
             self.xmax,
             self.ymax,
-        ) = self.aoi_bounds  # TODO: dont take from totalbounds,
+        ) = self.aoi_bounds
         # take from aoi geometry bounds, otherwise if no geometries on one side problematic.
         self.xmid = (self.xmin + self.xmax) / 2
         self.ymid = (self.ymin + self.ymax) / 2
@@ -211,7 +211,7 @@ class Plot:
         self.ax.patch.set_zorder(6)
 
     def set_background(self):
-        ec = adjust_lightness(self.bg_color, 0.78)  # todo: correct value?
+        ec = adjust_lightness(self.bg_color, 0.78)
         if self.bg_shape == "rectangle":
             patch = Rectangle(
                 xy=(self.xmin - self.bg_buffer_x, self.ymin - self.bg_buffer_y),
