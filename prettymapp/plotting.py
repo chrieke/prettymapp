@@ -120,7 +120,8 @@ class Plot:
         self.fig, self.ax = subplots(
             1, 1, figsize=(12, 12), constrained_layout=True, dpi=1200
         )
-        self.ax.set_aspect("equal")
+        self.ax.set_aspect(1 / np.cos(self.ymid * np.pi / 180))
+
         self.ax.axis("off")
         self.ax.set_xlim(self.xmin - self.bg_buffer_x, self.xmax + self.bg_buffer_x)
         self.ax.set_ylim(self.ymin - self.bg_buffer_y, self.ymax + self.bg_buffer_y)
@@ -165,23 +166,16 @@ class Plot:
             if "hatch_c" in draw_settings_class:
                 # Matplotlib hatch color is set via ec. hatch_c is used as the edge color here by plotting the outlines
                 # again above.
-                # Todo: why only with df.plot first round.
-                df_class.plot(
+                plot_poly_collection(
                     ax=self.ax,
+                    polys=df_class.geometry,
                     fc="None",
                     ec=draw_settings_class["hatch_c"],
                     lw=1,
                     zorder=6,
                 )
-                # plot_geom_collection(
-                #     ax=self.ax,
-                #     geoms=df_class.geometry,
-                #     fc="None",
-                #     ec=draw_settings_class["hatch_c"],
-                #     lw=1,
-                #     zorder=6,
-                # )
                 draw_settings_class.pop("hatch_c")
+                self.ax.autoscale_view()
 
             if "cmap" in draw_settings_class:
                 draw_settings_class["cmap"] = ListedColormap(
