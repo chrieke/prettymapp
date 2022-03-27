@@ -80,6 +80,31 @@ STYLES = {
         "streets": {"fc": "#2F3737", "zorder": 4},
         "other": {"fc": "#F2F4CB", "ec": "#2F3737", "lw": 1, "zorder": 3},
     },
+    "Citrus": {
+        "urban": {
+            "cmap": ["#FFFF3F", "#F4D58D", "#F5CB5C"],
+            "ec": "#2F3737",
+            "lw": 0.5,
+            "zorder": 5,
+        },
+        "water": {
+            "fc": "#007F5F",
+            "ec": "#2F3737",
+            "lw": 1,
+            "zorder": 3,
+        },
+        "grassland": {
+            "fc": "#55A630",
+            "ec": "#2F3737",
+            "hatch": "ooo...",
+            "hatch_c": "#80B918",
+            "lw": 1,
+            "zorder": 1,
+        },
+        "woodland": {"fc": "#80B918", "ec": "#2F3737", "lw": 1, "zorder": 2},
+        "streets": {"fc": "#FFFFFF", "zorder": 4},
+        "other": {"fc": "#EAE2B7", "ec": "#2F3737", "lw": 1, "zorder": 3},
+    },
 }
 
 STREETS_WIDTH = {

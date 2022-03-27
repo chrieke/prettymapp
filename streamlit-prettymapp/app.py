@@ -71,7 +71,7 @@ style = col3.selectbox(
     key=f"style_{st.session_state.run_id}",
 )
 
-expander = form.expander("Map style options")
+expander = form.expander("Customize map style")
 col1style, col2style, _, col3style = expander.columns([2, 2, 0.1, 1])
 
 shape_options = ["circle", "rectangle"]
@@ -112,7 +112,7 @@ contour_color = col1style.color_picker(
 contour_width = col1style.slider(
     "Map contour width",
     0,
-    20,
+    30,
     value=st.session_state.settings["contour_width"],
     help="Thickness of contour line sourrounding the map.",
     key=f"contour_{st.session_state.run_id}",
@@ -237,10 +237,10 @@ with st.spinner("Creating map... (may take up to a minute)"):
 # st.download_button(label="Download image", data=data, file_name=f"{fname}.{img_format}")
 
 st.markdown("---")
+st.write("Share on social media with the hashtag [#prettymaps](https://twitter.com/search?q=%23prettymaps&src=typed_query) !")
 st.markdown(
     "More infos and :star: at [github.com/chrieke/prettymapp](https://github.com/chrieke/prettymapp)"
 )
-
 
 # Save to sessions state for next iteration.
 variables = {
