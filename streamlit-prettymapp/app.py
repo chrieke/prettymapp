@@ -59,7 +59,7 @@ address = col1.text_input(
 )
 radius = col2.slider(
     "Radius",
-    1,
+    100,
     1500,
     value=st.session_state.settings["radius"],
     key=f"radius_{st.session_state.run_id}",
