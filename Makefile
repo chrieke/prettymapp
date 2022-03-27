@@ -1,8 +1,12 @@
 test:
-	bash test.sh
+	rm -r .pytest_cache
+	black .
+	python -m pytest --pylint --pylint-rcfile=../../pylintrc --mypy --mypy-ignore-missing-imports --durations=3
 
 test[live]:
-	bash test.sh --runlive
+	rm -r .pytest_cache
+	black .
+	python -m pytest --pylint --pylint-rcfile=../../pylintrc --mypy --mypy-ignore-missing-imports --runlive --durations=5
 
 setup:
 	pip install -r requirements.txt
