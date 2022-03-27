@@ -1,5 +1,4 @@
 import copy
-from tempfile import NamedTemporaryFile
 
 import streamlit as st
 
@@ -193,7 +192,7 @@ if submit_button:
     pass
 
 result_container = st.empty()
-with st.spinner("Creating new map... (might take up to 1 min)"):
+with st.spinner("Creating map... (may take up to a minute)"):
     rectangular = shape != "circle"
     try:
         aoi = get_aoi(address=address, distance=radius, rectangular=rectangular)
@@ -220,26 +219,27 @@ with st.spinner("Creating new map... (might take up to 1 min)"):
         bg_color=bg_color,
     )
 
-    svg_string = plt_to_svg(fig)
-    html = svg_to_html(svg_string)
-    result_container.write(html, unsafe_allow_html=True)
-    # st.pyplot(fig, pad_inches=0, bbox_inches="tight", transparent=True)
+    # result_container.write(html, unsafe_allow_html=True)
+    st.pyplot(fig, pad_inches=0, bbox_inches="tight", transparent=True, dpi=300)
 
-st.write("")
-st.write("Download image as")
-fname = slugify(address)
-st.download_button(label="SVG", data=svg_string, file_name=f"{fname}.svg")
+# svg_string = plt_to_svg(fig)
+# html = svg_to_html(svg_string)
+# st.write("")
+# fname = slugify(address)
+# img_format = st.selectbox("Download image as", ["svg", "png", "jpg"], index=0)
+# if img_format == "svg":
+#     data = svg_string
+# elif img_format == "png":
+#     import io
+#
+#     data = io.BytesIO()
+#     fig.savefig(data, pad_inches=0, bbox_inches="tight", transparent=True)
+# st.download_button(label="Download image", data=data, file_name=f"{fname}.{img_format}")
 
-# with NamedTemporaryFile(suffix=".png") as tmpfile:
-#     fig.savefig(tmpfile.name, pad_inches=0, bbox_inches="tight", transparent=True)
-#     with open(tmpfile.name, "rb") as f:
-#         st.download_button(
-#             label="PNG", data=f, file_name=f"{fname}.png"
-#         )
-# resolution = st.selectbox("Resolution", ["720", "1080"])
-# a = plt_to_href(fig, resolution, f"{slugify(address)}.svg", "PNG")
-# print(a)
-# st.markdown(a, unsafe_allow_html=True)
+st.markdown("---")
+st.markdown(
+    "More infos and :star: at [github.com/chrieke/prettymapp](https://github.com/chrieke/prettymapp)"
+)
 
 
 # Save to sessions state for next iteration.
