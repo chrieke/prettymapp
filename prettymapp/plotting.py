@@ -10,6 +10,7 @@ from matplotlib.colors import ListedColormap, cnames, to_rgb
 from matplotlib.pyplot import subplots, Rectangle
 import matplotlib.font_manager as fm
 from matplotlib.patches import Ellipse
+import matplotlib.patheffects as PathEffects
 
 from prettymapp.settings import STREETS_WIDTH
 
@@ -230,6 +231,7 @@ class Plot:
         if add_package_credit:
             credit_text = credit_text + package_credit_text
 
-        x = self.xmin + 0.8 * self.xdif
-        y = self.ymin + 0.02 * self.ydif
-        self.ax.text(x=x, y=y, s=credit_text, fontsize=9, zorder=6)
+        x = self.xmin + 0.87 * self.xdif
+        y = self.ymin - 0.70 * self.bg_buffer_y
+        text = self.ax.text(x=x, y=y, s=credit_text, c="w", fontsize=9, zorder=6)
+        text.set_path_effects([PathEffects.withStroke(linewidth=3, foreground="black")])

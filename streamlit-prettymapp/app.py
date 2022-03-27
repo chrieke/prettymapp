@@ -2,6 +2,7 @@ import copy
 from tempfile import NamedTemporaryFile
 
 import streamlit as st
+
 # from streamlit_profiler import Profiler
 import numpy as np
 
@@ -227,9 +228,7 @@ with st.spinner("Creating new map... (might take up to 1 min)"):
 st.write("")
 st.write("Download image as")
 fname = slugify(address)
-st.download_button(
-    label="SVG", data=svg_string, file_name=f"{fname}.svg"
-)
+st.download_button(label="SVG", data=svg_string, file_name=f"{fname}.svg")
 
 # with NamedTemporaryFile(suffix=".png") as tmpfile:
 #     fig.savefig(tmpfile.name, pad_inches=0, bbox_inches="tight", transparent=True)
