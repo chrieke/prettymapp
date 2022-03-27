@@ -1,14 +1,9 @@
 black
-requests-mock
 pylint==2.8.3
-types-mock
 pytest
 pytest-pylint
 pytest-sugar
+pytest-mypy
 mypy==0.902
 mypy-extensions
-pytest-cov
-pytest-mypy
-coverage-badge
-mock
 twine
