@@ -105,6 +105,33 @@ STYLES = {
         "streets": {"fc": "#FFFFFF", "zorder": 4},
         "other": {"fc": "#EAE2B7", "ec": "#2F3737", "lw": 1, "zorder": 3},
     },
+    "Flannel": {
+        "urban": {
+            "cmap": ["#433633", "#FF5E5B"],
+            "ec": "#2F3737",
+            "lw": 0.5,
+            "zorder": 5,
+        },
+        "water": {
+            "fc": "#a8e1e6",
+            "ec": "#9bc3d4",
+            "hatch_c": "#2F3737",
+            "hatch": "ooo...",
+            "lw": 1,
+            "zorder": 3,
+        },
+        "grassland": {
+            "fc": "#8BB174",
+            "ec": "#A7C497",
+            "hatch": "ooo...",
+            "hatch_c": "#2F3737",
+            "lw": 1,
+            "zorder": 1,
+        },
+        "woodland": {"fc": "#64B96A", "ec": "#2F3737", "lw": 1, "zorder": 2},
+        "streets": {"fc": "#2F3737", "zorder": 4, "ec": 475657},
+        "other": {"fc": "#F2F4CB", "ec": "#2F3737", "lw": 1, "zorder": 3},
+    },
 }
 
 STREETS_WIDTH = {

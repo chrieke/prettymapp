@@ -86,12 +86,14 @@ def image_button_config():
 				width: 130px !important;
 				height: 130px;
 				padding: 0.1rem;
-				font-weight: 600;
-				font-size: 1.2rem;
+				font-weight: 900;
+				font-size: 1.1rem;
 				background-color: transparent;
 				color: black;
 				flex-grow:1;
-				padding-top:102px;
+				padding-top:80px;
+				-webkit-text-stroke-width: 1.0px;
+                -webkit-text-stroke-color: white;
 			}
 			[data-testid="stHorizontalBlock"] button:before {
 				width: 130px;
@@ -121,11 +123,15 @@ def image_button_config():
 				- Image URL must be a web address, not a local filepath(Streamlit doesn't serve local images on a static URL).
 				- Must start with https:// or http://, otherwise it points to localhost.
 				*/
-				background-image: url("https://bit.ly/3pMzNIy");
+				background-image: url("https://i.ibb.co/KV2RW1s/macau-small.png");
 			}
 			/* 2nd button inside columns */
 			[data-testid="stHorizontalBlock"] > div:nth-child(2) button:before  {
-				background-image: url("https://bit.ly/3zhLfyH");
+				background-image: url("https://i.ibb.co/nwgnSmK/barcelona-small.png");
+			}
+			/* 3rd button inside columns */
+			[data-testid="stHorizontalBlock"] > div:nth-child(3) button:before  {
+				background-image: url("https://i.ibb.co/Nyjp1CB/wuerzburg-small.png");
 			}
 		</style>
 		""",

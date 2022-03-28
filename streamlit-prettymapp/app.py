@@ -237,7 +237,9 @@ with st.spinner("Creating map... (may take up to a minute)"):
 # st.download_button(label="Download image", data=data, file_name=f"{fname}.{img_format}")
 
 st.markdown("---")
-st.write("Share on social media with the hashtag [#prettymaps](https://twitter.com/search?q=%23prettymaps&src=typed_query) !")
+st.write(
+    "Share on social media with the hashtag [#prettymaps](https://twitter.com/search?q=%23prettymaps&src=typed_query) !"
+)
 st.markdown(
     "More infos and :star: at [github.com/chrieke/prettymapp](https://github.com/chrieke/prettymapp)"
 )
