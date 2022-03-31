@@ -25,7 +25,6 @@ st.set_page_config(
     page_title="prettymapp", page_icon="🚀", initial_sidebar_state="collapsed"
 )
 st.markdown("# Prettymapp")
-st.write("")
 
 if "run_id" not in st.session_state:
     st.session_state.run_id = 0
@@ -35,7 +34,7 @@ if "run_id" not in st.session_state:
 image_button_config()
 
 example_buttons = [
-    column.button(name) for name, column in zip(EXAMPLES.keys(), st.columns(5))
+    column.button(name) for name, column in zip(EXAMPLES.keys(), st.columns(4))
 ]
 selected_example = None
 if any(example_buttons):

@@ -83,21 +83,21 @@ def image_button_config():
         """
 		<style>
 			[data-testid="stHorizontalBlock"] button {
-				width: 130px !important;
-				height: 130px;
+				width: 165px !important;
+				height: 165px;
 				padding: 0.1rem;
 				font-weight: 900;
-				font-size: 1.1rem;
+				font-size: 1.3rem;
 				background-color: transparent;
 				color: black;
 				flex-grow:1;
-				padding-top:80px;
+				padding-top:97px;
 				-webkit-text-stroke-width: 1.0px;
                 -webkit-text-stroke-color: white;
 			}
 			[data-testid="stHorizontalBlock"] button:before {
-				width: 130px;
-				height: 130px;
+				width: 165px;
+				height: 165px;
 				content: "";
 				position: absolute;
 				left: 0;
@@ -132,6 +132,10 @@ def image_button_config():
 			/* 3rd button inside columns */
 			[data-testid="stHorizontalBlock"] > div:nth-child(3) button:before  {
 				background-image: url("https://i.ibb.co/Nyjp1CB/wuerzburg-small.png");
+			}
+			/* 4th button inside columns */
+			[data-testid="stHorizontalBlock"] > div:nth-child(4) button:before  {
+				background-image: url("https://i.ibb.co/BwPqqwM/heerhvogowaard-small.png");
 			}
 		</style>
 		""",
