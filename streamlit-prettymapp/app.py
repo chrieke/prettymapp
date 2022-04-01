@@ -1,8 +1,6 @@
 import copy
 
 import streamlit as st
-
-# from streamlit_profiler import Profiler
 import numpy as np
 
 from examples import EXAMPLES
@@ -13,23 +11,25 @@ from utils import (
     slugify,
     st_get_osm_geometries,
     st_plot_all,
+    get_colors_from_style,
 )
 from prettymapp.geo import GeoCodingError, get_aoi
 from prettymapp.settings import STYLES
-
-
-# p = Profiler()
-# p.start()
 
 st.set_page_config(
     page_title="prettymapp", page_icon="🚀", initial_sidebar_state="collapsed"
 )
 st.markdown("# Prettymapp")
 
-if "run_id" not in st.session_state:
-    st.session_state.run_id = 0
-    st.session_state.settings = EXAMPLES["Macau"]
-    st.session_state.settings["draw_settings"] = STYLES["Peach"]  # type: ignore
+
+if not st.session_state:
+    st.session_state.update(EXAMPLES["Macau"])
+
+    lc_class_colors = get_colors_from_style("Peach")
+    st.session_state.lc_classes = list(lc_class_colors.keys())
+    st.session_state.update(lc_class_colors)
+    st.session_state["previous_style"] = "Peach"
+
 
 image_button_config()
 
@@ -38,13 +38,10 @@ example_buttons = [
 ]
 selected_example = None
 if any(example_buttons):
-    st.session_state.run_id += 1
     # Set settings for new example
     index_selected = list(np.where(example_buttons))[0][0]
     name_selected = list(EXAMPLES.keys())[index_selected]
-    settings: dict = EXAMPLES[name_selected]  # type: ignore
-    st.session_state.settings = settings.copy()
-    st.session_state.settings["draw_settings"] = STYLES[settings["style"]].copy()
+    st.session_state.update(EXAMPLES[name_selected].copy())
 
 st.write("")
 form = st.form(key="form_settings")
@@ -52,22 +49,19 @@ col1, col2, col3 = form.columns([3, 1, 1])
 
 address = col1.text_input(
     "Location address",
-    value=st.session_state.settings["address"],
-    key=f"address_{st.session_state.run_id}",
+    key=f"address",
 )
 radius = col2.slider(
     "Radius",
     100,
     1500,
-    value=st.session_state.settings["radius"],
-    key=f"radius_{st.session_state.run_id}",
+    key=f"radius",
 )
 
 style = col3.selectbox(
     "Color theme",
     options=list(STYLES.keys()),
-    index=list(STYLES.keys()).index(st.session_state.settings["style"]),
-    key=f"style_{st.session_state.run_id}",
+    key=f"style",
 )
 
 expander = form.expander("Customize map style")
@@ -77,118 +71,91 @@ shape_options = ["circle", "rectangle"]
 shape = col1style.radio(
     "Map Shape",
     options=shape_options,
-    index=shape_options.index(st.session_state.settings["shape"]),
-    key=f"mapshape_{st.session_state.run_id}",
+    key=f"shape",
 )
 
 bg_shape_options = ["rectangle", "circle", None]
 bg_shape = col1style.radio(
     "Background Shape",
     options=bg_shape_options,
-    index=bg_shape_options.index(st.session_state.settings["bg_shape"]),
-    key=f"bgshape_{st.session_state.run_id}",
+    key=f"bg_shape",
 )
 bg_color = col1style.color_picker(
     "Background Color",
-    value=st.session_state.settings["bg_color"],
-    key=f"bgcolor_{st.session_state.run_id}",
+    key="bg_color",
 )
 bg_buffer = col1style.slider(
     "Background Size",
     min_value=0,
     max_value=50,
-    value=st.session_state.settings["bg_buffer"],
     help="How much the background extends beyond the figure.",
-    key=f"bgsize_{st.session_state.run_id}",
+    key="bg_buffer",
 )
 
 col1style.markdown("---")
 contour_color = col1style.color_picker(
     "Map contour color",
-    value=st.session_state.settings["contour_color"],
-    key=f"contourcolor_{st.session_state.run_id}",
+    key="contour_color",
 )
 contour_width = col1style.slider(
     "Map contour width",
     0,
     30,
-    value=st.session_state.settings["contour_width"],
     help="Thickness of contour line sourrounding the map.",
-    key=f"contour_{st.session_state.run_id}",
+    key=f"contour_width",
 )
 
 name_on = col2style.checkbox(
     "Display title",
-    value=st.session_state.settings["name_on"],
     help="If checked, adds the selected address as the title. Can be customized below.",
-    key=f"name_{st.session_state.run_id}",
+    key=f"name_on",
 )
 custom_title = col2style.text_input(
     "Custom title (optional)",
-    value=st.session_state.settings["custom_title"],
     max_chars=30,
-    key=f"title_{st.session_state.run_id}",
+    key=f"custom_title",
 )
 font_size = col2style.slider(
     "Title font size",
     min_value=1,
     max_value=50,
-    value=st.session_state.settings["font_size"],
-    key=f"fontsize_{st.session_state.run_id}",
+    key=f"font_size",
 )
 font_color = col2style.color_picker(
     "Title font color",
-    value=st.session_state.settings["font_color"],
-    key=f"fontcolor_{st.session_state.run_id}",
+    key=f"font_color",
 )
 text_x = col2style.slider(
     "Title left/right",
     -100,
     100,
-    value=st.session_state.settings["text_x"],
-    key=f"textx_{st.session_state.run_id}",
+    key=f"text_x",
 )
 text_y = col2style.slider(
     "Title top/bottom",
     -100,
     100,
-    value=st.session_state.settings["text_y"],
-    key=f"texty_{st.session_state.run_id}",
+    key=f"text_y",
 )
 text_rotation = col2style.slider(
     "Title rotation",
     -90,
     90,
-    value=st.session_state.settings["text_rotation"],
-    key=f"rotation_{st.session_state.run_id}",
+    key=f"text_rotation",
 )
 
-col3style.write("Custom Colors")
-if style != st.session_state.settings["style"]:
-    #  Reset custom colors if style changes
-    draw_settings = copy.deepcopy(STYLES[style])
-else:
-    draw_settings = copy.deepcopy(STYLES[st.session_state.settings["style"]])
-for lc_class, class_style in draw_settings.items():
-    if "cmap" in class_style:
-        for idx, color in enumerate(class_style["cmap"]):  # type: ignore
-            picked_color = col3style.color_picker(
-                f"{lc_class} {idx+1}",
-                value=color,
-                key=f"color{lc_class}{style}{idx+1}_{st.session_state.run_id}",
-            )
-            draw_settings[lc_class]["cmap"][idx] = picked_color
+if style != st.session_state["previous_style"]:
+    st.session_state.update(get_colors_from_style(style))
+draw_settings = copy.deepcopy(STYLES[style])
+for lc_class in st.session_state.lc_classes:
+    picked_color = col3style.color_picker(lc_class, key=lc_class)
+    if "_" in lc_class:
+        lc_class, idx = lc_class.split("_")
+        draw_settings[lc_class]["cmap"][int(idx)] = picked_color
     else:
-        picked_color = col3style.color_picker(
-            f"{lc_class}",
-            value=class_style.get("fc"),
-            key=f"color_{lc_class}{style}{st.session_state.run_id}",
-        )
         draw_settings[lc_class]["fc"] = picked_color
 
-submit_button = form.form_submit_button(label="Submit")
-if submit_button:
-    pass
+form.form_submit_button(label="Submit")
 
 result_container = st.empty()
 with st.spinner("Creating map... (may take up to a minute)"):
@@ -243,27 +210,4 @@ st.markdown(
     "More infos and :star: at [github.com/chrieke/prettymapp](https://github.com/chrieke/prettymapp)"
 )
 
-# Save to sessions state for next iteration.
-variables = {
-    "address": address,
-    "radius": radius,
-    "style": style,
-    "draw_settings": draw_settings,
-    "shape": shape,
-    "contour_width": contour_width,
-    "contour_color": contour_color,
-    "name_on": name_on,
-    "custom_title": custom_title,
-    "font_size": font_size,
-    "font_color": font_color,
-    "text_x": text_x,
-    "text_y": text_y,
-    "text_rotation": text_rotation,
-    "bg_shape": bg_shape,
-    "bg_buffer": bg_buffer,
-    "bg_color": bg_color,
-}
-for k, v in variables.items():
-    st.session_state.settings[k] = v
-
-# p.stop()
+st.session_state["previous_style"] = style

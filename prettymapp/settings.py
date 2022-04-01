@@ -107,7 +107,7 @@ STYLES = {
     },
     "Flannel": {
         "urban": {
-            "cmap": ["#433633", "#FF5E5B"],
+            "cmap": ["#433633", "#FF5E5B", "#FF5E5B"],
             "ec": "#2F3737",
             "lw": 0.5,
             "zorder": 5,

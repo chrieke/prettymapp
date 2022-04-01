@@ -10,6 +10,7 @@ from geopandas import GeoDataFrame
 
 from prettymapp.plotting import Plot
 from prettymapp.main import get_osm_geometries
+from prettymapp.settings import STYLES
 
 
 @st.experimental_memo(show_spinner=False)
@@ -24,6 +25,21 @@ def st_plot_all(_df: GeoDataFrame, **kwargs):
     """Wrapper to enable streamlit caching for package function"""
     fig = Plot(_df, **kwargs).plot_all()
     return fig
+
+
+def get_colors_from_style(style: str) -> dict:
+    """
+    Dict of landcover_class : color
+    """
+    lc_class_colors = {}
+    for lc_class, class_style in STYLES[style].items():
+        colors = class_style.get("cmap", class_style.get("fc"))
+        if isinstance(colors, list):
+            for idx, color in enumerate(colors):
+                lc_class_colors[f"{lc_class}_{idx}"] = color
+        else:
+            lc_class_colors[lc_class] = colors
+    return lc_class_colors
 
 
 def plt_to_svg(fig: figure) -> str:
