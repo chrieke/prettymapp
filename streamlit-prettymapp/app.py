@@ -6,9 +6,6 @@ import numpy as np
 from examples import EXAMPLES
 from utils import (
     image_button_config,
-    plt_to_svg,
-    svg_to_html,
-    slugify,
     st_get_osm_geometries,
     st_plot_all,
     get_colors_from_style,
@@ -49,19 +46,19 @@ col1, col2, col3 = form.columns([3, 1, 1])
 
 address = col1.text_input(
     "Location address",
-    key=f"address",
+    key="address",
 )
 radius = col2.slider(
     "Radius",
     100,
     1500,
-    key=f"radius",
+    key="radius",
 )
 
 style = col3.selectbox(
     "Color theme",
     options=list(STYLES.keys()),
-    key=f"style",
+    key="style",
 )
 
 expander = form.expander("Customize map style")
@@ -71,14 +68,14 @@ shape_options = ["circle", "rectangle"]
 shape = col1style.radio(
     "Map Shape",
     options=shape_options,
-    key=f"shape",
+    key="shape",
 )
 
 bg_shape_options = ["rectangle", "circle", None]
 bg_shape = col1style.radio(
     "Background Shape",
     options=bg_shape_options,
-    key=f"bg_shape",
+    key="bg_shape",
 )
 bg_color = col1style.color_picker(
     "Background Color",
@@ -102,46 +99,46 @@ contour_width = col1style.slider(
     0,
     30,
     help="Thickness of contour line sourrounding the map.",
-    key=f"contour_width",
+    key="contour_width",
 )
 
 name_on = col2style.checkbox(
     "Display title",
     help="If checked, adds the selected address as the title. Can be customized below.",
-    key=f"name_on",
+    key="name_on",
 )
 custom_title = col2style.text_input(
     "Custom title (optional)",
     max_chars=30,
-    key=f"custom_title",
+    key="custom_title",
 )
 font_size = col2style.slider(
     "Title font size",
     min_value=1,
     max_value=50,
-    key=f"font_size",
+    key="font_size",
 )
 font_color = col2style.color_picker(
     "Title font color",
-    key=f"font_color",
+    key="font_color",
 )
 text_x = col2style.slider(
     "Title left/right",
     -100,
     100,
-    key=f"text_x",
+    key="text_x",
 )
 text_y = col2style.slider(
     "Title top/bottom",
     -100,
     100,
-    key=f"text_y",
+    key="text_y",
 )
 text_rotation = col2style.slider(
     "Title rotation",
     -90,
     90,
-    key=f"text_rotation",
+    key="text_rotation",
 )
 
 if style != st.session_state["previous_style"]:

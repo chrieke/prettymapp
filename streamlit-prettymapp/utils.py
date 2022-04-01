@@ -29,7 +29,7 @@ def st_plot_all(_df: GeoDataFrame, **kwargs):
 
 def get_colors_from_style(style: str) -> dict:
     """
-    Dict of landcover_class : color
+    Returns dict of landcover_class : color
     """
     lc_class_colors = {}
     for lc_class, class_style in STYLES[style].items():
