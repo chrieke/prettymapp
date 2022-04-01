@@ -1,4 +1,4 @@
-# 🖼️ prettymapp
+# prettymapp 🖼️
 
 **Prettymapp is a webapp to create beautiful maps from OpenStreetMap data.**
 
