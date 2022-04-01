@@ -1,6 +1,6 @@
 # prettymapp 🖼️
 
-**Prettymapp is a webapp to create beautiful maps from OpenStreetMap data.**
+**Prettymapp is a webapp to create beautiful maps from OpenStreetMap data (based on prettymaps)**
 
 ---
 <h3 align="center">
