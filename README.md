@@ -2,7 +2,6 @@
 
 **Prettymapp is a webapp to create beautiful maps from OpenStreetMap data.**
 
-
 ---
 <h3 align="center">
     🎈 Try it out here: <a href="https://share.streamlit.io/chrieke/prettymapp/main/streamlit-prettymapp/app.
@@ -11,6 +10,18 @@ py">prettymapp on streamlit 🎈 </a>
 
 ---
 
+
+
+<p align="center">
+    <a href="https://share.streamlit.io/chrieke/prettymapp/main/streamlit-prettymapp/app.
+py"><img src="./streamlit-prettymapp/example_prints/demo.gif" width=700></a>
+</p>
+
+<br>
+
+<table>
+    <tr><td><img src="./streamlit-prettymapp/example_prints/macau.png"></td><td><img src="./streamlit-prettymapp/example_prints/barcelona.png"></td></td><td><img src="./streamlit-prettymapp/example_prints/wuerzburg.png"></td></tr>
+</table>
 
 ## Based on prettymaps
 
@@ -22,7 +33,7 @@ simplified configuration interfaces. It is partially tested and adds a [streamli
 
 <br>
 
-<table>
-    <tr><td><img src="./streamlit-prettymapp/example_prints/macau.png"></td><td><img src="./streamlit-prettymapp/example_prints/barcelona.png"></td></td><td><img src="./streamlit-prettymapp/example_prints/wuerzburg.png"></td></tr>
-</table>
+
+
+
 
