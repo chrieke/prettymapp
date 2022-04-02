@@ -1,10 +1,10 @@
 test:
-	rm -r .pytest_cache
+	-rm -r .pytest_cache
 	black .
 	python -m pytest --pylint --pylint-rcfile=../../pylintrc --mypy --mypy-ignore-missing-imports --durations=3
 
 test[live]:
-	rm -r .pytest_cache
+	-rm -r .pytest_cache
 	black .
 	python -m pytest --pylint --pylint-rcfile=../../pylintrc --mypy --mypy-ignore-missing-imports --runlive --durations=5
 
