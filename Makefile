@@ -10,7 +10,7 @@ test[live]:
 
 setup:
 	pip install -r requirements.txt
-	pip install -r streamlit-prettybasicmaps/requirements.txt
+	pip install -r streamlit-prettymapp/requirements.txt
 
 setup-dev:
 	pip install -r requirements.txt
