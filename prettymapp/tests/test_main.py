@@ -3,7 +3,7 @@ from geopandas import GeoDataFrame
 from shapely.geometry import box
 from pyproj import CRS
 
-from prettymapp.main import get_osm_geometries
+from prettymapp.osm import get_osm_geometries
 from prettymapp.plotting import Plot
 from prettymapp.settings import STYLES
 
@@ -21,7 +21,7 @@ def test_get_geometries_live():
 
 
 @pytest.mark.live
-def test_main_live():
+def test_osm_live():
     df = get_osm_geometries(AOI)
     fig = Plot(df=df, aoi_bounds=AOI.bounds, draw_settings=STYLES["Peach"]).plot_all()
     assert fig is not None
@@ -30,7 +30,7 @@ def test_main_live():
     # plt.show()
 
 
-# def test_main_liveaa():
+# def test_osm_liveaa():
 #     from prettymapp.geo import get_aoi
 #
 #     aoi, aoi_utm_crs = get_aoi("Miami", distance=1100)

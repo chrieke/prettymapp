@@ -9,7 +9,7 @@ import streamlit as st
 from geopandas import GeoDataFrame
 
 from prettymapp.plotting import Plot
-from prettymapp.main import get_osm_geometries
+from prettymapp.osm import get_osm_geometries
 from prettymapp.settings import STYLES
 
 
