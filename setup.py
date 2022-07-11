@@ -9,7 +9,7 @@ setup(
     author="Christoph Rieke",
     author_email="christoph.k.rieke@gmail.com",
     description="",
-    long_description=parent_dir.joinpath("README.md").read_text(encoding="utf-8"),
+    long_description=parent_dir.joinpath("README.md").read_text(encoding='utf-8'),
     long_description_content_type="text/markdown",
     url="https://github.com/chrieke/prettymapp",
     license="MIT",
