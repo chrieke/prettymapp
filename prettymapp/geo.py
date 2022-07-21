@@ -2,9 +2,9 @@ from typing import Tuple, Optional
 
 from osmnx.geocoder import geocode
 from geopandas import GeoDataFrame
+import pandas as pd
 from pandas import DataFrame
 from shapely.geometry import Polygon, Point, box
-
 
 class GeoCodingError(Exception):
     pass
@@ -80,7 +80,7 @@ def explode_multigeometries(df: GeoDataFrame) -> GeoDataFrame:
         df_temp = df_temp.append([row] * len(row.geometry.geoms), ignore_index=True)
         for i in range(len(row.geometry.geoms)):
             df_temp.loc[i, "geometry"] = row.geometry.geoms[i]
-        outdf = outdf.append(df_temp, ignore_index=True)
+        outdf = GeoDataFrame(pd.concat([outdf, df_temp], ignore_index=True))
 
     outdf = outdf.reset_index(drop=True)
     return outdf
