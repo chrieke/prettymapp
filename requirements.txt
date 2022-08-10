@@ -1,1 +1,1 @@
-osmnx
+osmnx==1.2.2
