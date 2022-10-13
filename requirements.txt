@@ -1,3 +1,2 @@
+numpy==1.22.3 #osmnx subdependecies are partially unpinned
 osmnx==1.2.2
-numpy==1.22.3 #osmnx subdependecies are unpinned
-matplotlib==3.5.1
