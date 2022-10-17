@@ -1,4 +1,5 @@
 import copy
+import io
 
 import streamlit as st
 import numpy as np
@@ -9,6 +10,9 @@ from utils import (
     st_get_osm_geometries,
     st_plot_all,
     get_colors_from_style,
+    plt_to_svg,
+    svg_to_html,
+    slugify
 )
 from prettymapp.geo import GeoCodingError, get_aoi
 from prettymapp.settings import STYLES
@@ -185,19 +189,21 @@ with st.spinner("Creating map... (may take up to a minute)"):
     # result_container.write(html, unsafe_allow_html=True)
     st.pyplot(fig, pad_inches=0, bbox_inches="tight", transparent=True, dpi=300)
 
-# svg_string = plt_to_svg(fig)
-# html = svg_to_html(svg_string)
-# st.write("")
-# fname = slugify(address)
-# img_format = st.selectbox("Download image as", ["svg", "png", "jpg"], index=0)
-# if img_format == "svg":
-#     data = svg_string
-# elif img_format == "png":
-#     import io
-#
-#     data = io.BytesIO()
-#     fig.savefig(data, pad_inches=0, bbox_inches="tight", transparent=True)
-# st.download_button(label="Download image", data=data, file_name=f"{fname}.{img_format}")
+
+st.write("")
+
+img_format = st.radio("Image file type", ["png", "svg", "geotiff"], index=0)
+if img_format == "png":
+    data = io.BytesIO()
+    fig.savefig(data, pad_inches=0, bbox_inches="tight", transparent=True)
+elif img_format == "svg":
+    svg_string = plt_to_svg(fig)
+    html = svg_to_html(svg_string)
+    data = svg_string
+elif img_format == "geotiff":
+    pass
+st.download_button(label="Download", data=data, file_name=f"{slugify(address)}.{img_format}")
+
 
 st.markdown("---")
 st.write(
