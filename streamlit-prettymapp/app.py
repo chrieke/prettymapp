@@ -12,7 +12,7 @@ from utils import (
     get_colors_from_style,
     plt_to_svg,
     svg_to_html,
-    slugify
+    slugify,
 )
 from prettymapp.geo import GeoCodingError, get_aoi
 from prettymapp.settings import STYLES
@@ -192,17 +192,52 @@ with st.spinner("Creating map... (may take up to a minute)"):
 
 st.write("")
 
-img_format = st.radio("Image file type", ["png", "svg", "geotiff"], index=0)
-if img_format == "png":
+# Solution with cascaded buttons to avoid the format conversion running by default in every st run
+png_button = st.button("Downlod PNG")
+if png_button:
+    img_format = "png"
     data = io.BytesIO()
     fig.savefig(data, pad_inches=0, bbox_inches="tight", transparent=True)
-elif img_format == "svg":
+    st.download_button(
+        label="Download", data=data, file_name=f"{slugify(address)}.{img_format}"
+    )
+svg_button = st.button("Downlod SVG")
+if svg_button:
+    img_format = "svg"
     svg_string = plt_to_svg(fig)
     html = svg_to_html(svg_string)
     data = svg_string
-elif img_format == "geotiff":
+    st.download_button(
+        label="Download", data=data, file_name=f"{slugify(address)}.{img_format}"
+    )
+geotiff_button = st.button("Downlod GEOTIFF")
+if geotiff_button:
+    img_format = "geotiff"
     pass
-st.download_button(label="Download", data=data, file_name=f"{slugify(address)}.{img_format}")
+    # import rasterio
+    # io_buf = io.BytesIO()
+    # fig.savefig(io_buf, format='raw', dpi=1200)  #dpi same as in original subplot #, pad_inches=0, bbox_inches="tight",
+    # # transparent=True
+    # io_buf.seek(0)
+    # img_arr = np.reshape(np.frombuffer(io_buf.getvalue(), dtype=np.uint8),
+    #                      newshape=(int(fig.bbox.bounds[3]), int(fig.bbox.bounds[2]), -1))
+    # io_buf.close()
+    # st.write(img_arr.shape)
+    # profile = rasterio.profiles.DefaultGTiffProfile
+    # transform = rasterio.transform.from_bounds(*aoi.bounds, width=img_arr.shape[0], height=img_arr.shape[1])
+    # crs = rasterio.crs.CRS.from_epsg(4326)
+    # profile.update({
+    #     'height': img_arr.shape[0],
+    #     'width': img_arr.shape[1],
+    #     'transform': transform,
+    #     'count': 4,
+    #     'crs': crs
+    # })
+    #
+    # with rasterio.open(output_file_path, 'w', **profile) as dst:
+    #     dst.write(img_arr, indexes=[1,2,3,4])
+    #
+    # st.download_button(label="Download", data=data, file_name=f"{slugify(address)}.{img_format}")
 
 
 st.markdown("---")
