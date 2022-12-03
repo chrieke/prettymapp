@@ -33,7 +33,7 @@ def test_osm_live():
 # def test_osm_liveaa():
 #     from prettymapp.geo import get_aoi
 #
-#     aoi, aoi_utm_crs = get_aoi("Miami", distance=1100)
+#     aoi, aoi_utm_crs = get_aoi("Miami", radius=1100)
 #     df = get_osm_geometries(aoi)
 #     fig = Plot(df=df, aoi_bounds=AOI.bounds, draw_settings=STYLES["Peach"]).plot_all()
 #     assert fig is not None
