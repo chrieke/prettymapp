@@ -1,6 +1,6 @@
 # prettymapp 🖼️
 
-**Prettymapp is a webapp to create beautiful maps from OpenStreetMap data (based on prettymaps)**
+**Prettymapp is a webapp and Python package to create beautiful maps from OpenStreetMap data**
 
 ---
 <h3 align="center">
@@ -31,18 +31,18 @@ The prettymapp rewrite focuses on speed and adapted configuration to interface w
 It drops more complex configuration options in favour of improved speed, reduced code complexity and 
 simplified configuration interfaces. It is partially tested and adds a [streamlit](https://streamlit.io/) webapp component.
 
-## Standalone Python package
+## Python package
 
-In addition to the [streamlit webapp](https://share.streamlit.io/chrieke/prettymapp/main/streamlit-prettymapp/app.py), 
-you can also use the Python package to create your own application or further customize the functionality.
+You can also use prettymapp without the webapp, directly in Python. This lets you customize the functionality or 
+build your own application.
 
 **Installation:**
 
 ```bash
-pip install git+https://github.com/chrieke/prettymapp.git
+pip install prettymapp
 ```
 
-**Define the area, download and plot the osm data:**
+**Define the area, download and plot the OSM data:**
 
 ```python
 from prettymapp.geo import get_aoi
