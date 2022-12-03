@@ -63,5 +63,5 @@ fig.savefig("map.jpg")
 ```
 
 To customize the map apperance, use the additional arguments of the [`Plot`](plotting.py#L36) class (e.g. `shape`, 
-`contour_width` etc.). Check the preconfigured [styles](settings.py#L35) and webapp [examples](examples.json) for 
-inspiration.
+`contour_width` etc.). Check the preconfigured [styles](prettymapp/settings.py#L35) and 
+webapp [examples](streamlit-prettymapp/examples.json) for inspiration.
