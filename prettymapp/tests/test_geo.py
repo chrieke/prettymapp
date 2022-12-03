@@ -30,7 +30,7 @@ def test_get_aoi_from_user_input_address(ox_geocode):
         13.403083847278062,
         52.52567909987013,
     )
-    assert poly.area == 0.00041542753985753574
+    assert poly.area == 0.00041542753985753124
 
 
 @patch.object(ox, "geocode")
