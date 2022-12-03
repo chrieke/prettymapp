@@ -28,10 +28,18 @@ if not st.session_state:
     st.session_state.update(lc_class_colors)
     st.session_state["previous_style"] = "Peach"
 
-example_image_fp = "./streamlit-prettymapp/example_prints/{}_small.png"
+# TODO: Fix component to use correct local filepath when deployed
+# example_image_pattern = "./streamlit-prettymapp/example_prints/{}_small.png"
+# example_image_fp = [example_image_pattern.format(name.lower()) for name in list(EXAMPLES.keys())[:4]]
+example_image_urls = [
+    "https://i.ibb.co/KV2RW1s/macau-small.png",
+    "https://i.ibb.co/nwgnSmK/barcelona-small.png",
+    "https://i.ibb.co/Nyjp1CB/wuerzburg-small.png",
+    "https://i.ibb.co/BwPqqwM/heerhvogowaard-small.png",
+]
 index_selected = image_select(
     "",
-    images=[example_image_fp.format(name) for name in list(EXAMPLES.keys())[:4]],
+    images=example_image_urls,
     captions=list(EXAMPLES.keys())[:4],
     index=0,
     return_value="index",
