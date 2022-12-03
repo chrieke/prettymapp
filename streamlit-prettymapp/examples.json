@@ -1,4 +1,4 @@
-EXAMPLES = {
+{
     "Macau": {
         "address": "Praça Ferreira do Amaral, Macau",
         "custom_title": "Macau",
@@ -8,15 +8,15 @@ EXAMPLES = {
         "contour_width": 1,
         "contour_color": "#2F3537",
         "image": "macao.png",
-        "name_on": True,
+        "name_on": true,
         "font_size": 25,
         "font_color": "#2F3737",
         "text_x": 19,
         "text_y": -45,
         "text_rotation": -24,
-        "bg_shape": "circle",  # background
+        "bg_shape": "circle",
         "bg_buffer": 2,
-        "bg_color": "#F2F4CB",
+        "bg_color": "#F2F4CB"
     },
     "Barcelona": {
         "address": "Plaça Tetuan, 08010 Barcelona, Spain",
@@ -27,7 +27,7 @@ EXAMPLES = {
         "contour_width": 0,
         "contour_color": "#2F3538",
         "image": "barcelona.png",
-        "name_on": True,
+        "name_on": true,
         "font_size": 30,
         "font_color": "#2F3738",
         "text_x": -53,
@@ -35,7 +35,7 @@ EXAMPLES = {
         "text_rotation": -90,
         "bg_shape": "rectangle",
         "bg_buffer": 6,
-        "bg_color": "#F9EFDC",
+        "bg_color": "#F9EFDC"
     },
     "Würzburg": {
         "address": "Martinstraße 4, 97070 Würzburg",
@@ -46,15 +46,15 @@ EXAMPLES = {
         "contour_width": 15,
         "contour_color": "#FFFFFF",
         "image": "edinburgh.png",
-        "name_on": True,
+        "name_on": true,
         "font_size": 25,
         "font_color": "#FFFFFF",
         "text_x": -41,
         "text_y": 25,
         "text_rotation": -46,
-        "bg_shape": None,  # background
+        "bg_shape": null,
         "bg_buffer": 4,
-        "bg_color": "#000000",
+        "bg_color": "#000000"
     },
     "Heerhugowaard": {
         "address": "Stad van de Zon, Heerhugowaard, Netherlands",
@@ -65,7 +65,7 @@ EXAMPLES = {
         "contour_width": 0,
         "contour_color": "#2F3737",
         "image": "heerhugowaard.png",
-        "name_on": True,
+        "name_on": true,
         "font_size": 27,
         "font_color": "#2F3737",
         "text_x": 0,
@@ -73,7 +73,7 @@ EXAMPLES = {
         "text_rotation": 0,
         "bg_shape": "rectangle",
         "bg_buffer": 0,
-        "bg_color": "#EDEFDA",
+        "bg_color": "#EDEFDA"
     },
     "Edinburgh": {
         "address": "Princes St, Edinburgh, UK",
@@ -84,15 +84,15 @@ EXAMPLES = {
         "contour_width": 0,
         "contour_color": "#2F3737",
         "image": "edinburgh.png",
-        "name_on": False,
+        "name_on": false,
         "font_size": 16,
         "font_color": "#2F3737",
         "text_x": -37,
         "text_y": 26,
         "text_rotation": -45,
-        "bg_shape": "rectangle",  # background
+        "bg_shape": "rectangle",
         "bg_buffer": 2,
-        "bg_color": "#F2F4CB",
+        "bg_color": "#F2F4CB"
     },
-    "Erbil": "erbil.png",
+    "Erbil": "erbil.png"
 }

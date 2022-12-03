@@ -1,9 +1,9 @@
 import copy
+import json
 
 import streamlit as st
 import numpy as np
 
-from examples import EXAMPLES
 from utils import (
     image_button_config,
     st_get_osm_geometries,
@@ -18,6 +18,8 @@ st.set_page_config(
 )
 st.markdown("# Prettymapp")
 
+with open("./examples.json", "r") as f:
+    EXAMPLES = json.load(f)
 
 if not st.session_state:
     st.session_state.update(EXAMPLES["Macau"])
