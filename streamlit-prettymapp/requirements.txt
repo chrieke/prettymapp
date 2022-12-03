@@ -1,3 +1,0 @@
-streamlit
-# streamlit-profiler
-../prettymapp
