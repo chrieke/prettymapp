@@ -15,6 +15,9 @@ setup(
     license="MIT",
     packages=find_packages(exclude=("tests", "streamlit-prettymapp")),
     package_data={"": ["fonts/PermanentMarker-Regular.ttf"]},
+    data_files=[
+        ("", ["requirements.txt"]),
+    ],
     include_package_data=True,
     zip_safe=False,
     install_requires=parent_dir.joinpath("requirements.txt").read_text(encoding="utf-8").splitlines(),
