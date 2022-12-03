@@ -62,12 +62,6 @@ fig = Plot(
 fig.savefig("map.jpg")
 ```
 
-To customize the map apperance, use the additional arguments of the 
-[`Plot`](https://github.com/chrieke/prettymapp/blob/5c4b7976711a5a2a01c5aa3b113dba299180e95c/prettymapp/plotting.py#L36) 
-class (e.g. `shape`, `contour_width` etc.).
-Check the preconfigured [styles](https://github.com/chrieke/prettymapp/blob/5c4b7976711a5a2a01c5aa3b113dba299180e95c/prettymapp/settings.py#L35)
-and webapp [examples](https://github.com/chrieke/prettymapp/blob/main/streamlit-prettymapp/examples.py) for 
+To customize the map apperance, use the additional arguments of the [`Plot`](plotting.py#L36) class (e.g. `shape`, 
+`contour_width` etc.). Check the preconfigured [styles](settings.py#L35) and webapp [examples](examples.json) for 
 inspiration.
-
-
-
