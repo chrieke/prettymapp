@@ -9,7 +9,7 @@ setup(
     author="Christoph Rieke",
     author_email="christoph.k.rieke@gmail.com",
     description="",
-    long_description=parent_dir.joinpath("README.md").read_text(encoding='utf-8'),
+    long_description=parent_dir.joinpath("README.md").read_text(encoding="utf-8"),
     long_description_content_type="text/markdown",
     url="https://github.com/chrieke/prettymapp",
     license="MIT",
@@ -20,7 +20,9 @@ setup(
     ],
     include_package_data=True,
     zip_safe=False,
-    install_requires=parent_dir.joinpath("requirements.txt").read_text(encoding="utf-8").splitlines(),
+    install_requires=parent_dir.joinpath("requirements.txt")
+    .read_text(encoding="utf-8")
+    .splitlines(),
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",

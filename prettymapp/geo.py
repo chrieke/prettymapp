@@ -6,6 +6,7 @@ import pandas as pd
 from pandas import DataFrame
 from shapely.geometry import Polygon, Point, box
 
+
 class GeoCodingError(Exception):
     pass
 
