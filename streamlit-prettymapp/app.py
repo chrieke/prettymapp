@@ -2,10 +2,9 @@ import copy
 import json
 
 import streamlit as st
-import numpy as np
+from streamlit_image_select import image_select
 
 from utils import (
-    image_button_config,
     st_get_osm_geometries,
     st_plot_all,
     get_colors_from_style,
@@ -29,18 +28,16 @@ if not st.session_state:
     st.session_state.update(lc_class_colors)
     st.session_state["previous_style"] = "Peach"
 
-
-image_button_config()
-
-example_buttons = [
-    column.button(name) for name, column in zip(EXAMPLES.keys(), st.columns(4))
-]
-selected_example = None
-if any(example_buttons):
-    # Set settings for new example
-    index_selected = list(np.where(example_buttons))[0][0]
-    name_selected = list(EXAMPLES.keys())[index_selected]
-    st.session_state.update(EXAMPLES[name_selected].copy())
+example_image_fp = "./streamlit-prettymapp/example_prints/{}_small.png"
+index_selected = image_select(
+    "",
+    images=[example_image_fp.format(name) for name in list(EXAMPLES.keys())[:4]],
+    captions=list(EXAMPLES.keys())[:4],
+    index=0,
+    return_value="index",
+)
+name_selected = list(EXAMPLES.keys())[index_selected]
+st.session_state.update(EXAMPLES[name_selected].copy())
 
 st.write("")
 form = st.form(key="form_settings")
