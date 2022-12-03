@@ -160,7 +160,7 @@ result_container = st.empty()
 with st.spinner("Creating map... (may take up to a minute)"):
     rectangular = shape != "circle"
     try:
-        aoi = get_aoi(address=address, distance=radius, rectangular=rectangular)
+        aoi = get_aoi(address=address, radius=radius, rectangular=rectangular)
     except GeoCodingError as e:
         st.error(f"ERROR: {str(e)}")
         st.stop()

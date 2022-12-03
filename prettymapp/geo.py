@@ -22,7 +22,7 @@ def validate_coordinates(lat: float, lon: float) -> None:
 def get_aoi(
     address: Optional[str] = None,
     coordinates: Optional[Tuple[float, float]] = None,
-    distance: int = 1000,
+    radius: int = 1000,
     rectangular: bool = False,
 ) -> Polygon:
     """
@@ -31,7 +31,7 @@ def get_aoi(
     Args:
         address: Address string
         coordinates: lat, lon
-        distance: Radius in meter
+        radius: Radius in meter
         rectangular: Optionally return aoi as rectangular polygon, default False.
 
     Returns:
@@ -56,7 +56,7 @@ def get_aoi(
     )
     utm_crs = df.estimate_utm_crs()
     df = df.to_crs(utm_crs)
-    df.geometry = df.geometry.buffer(distance)
+    df.geometry = df.geometry.buffer(radius)
     df = df.to_crs(crs=4326)
     poly = df.iloc[0].geometry
 

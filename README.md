@@ -50,7 +50,7 @@ from prettymapp.osm import get_osm_geometries
 from prettymapp.plotting import Plot
 from prettymapp.settings import STYLES
 
-aoi = get_aoi(address="Brandenburger Tor, Berlin", distance=500, rectangular=True)
+aoi = get_aoi(address="Praça Ferreira do Amaral, Macau", radius=1100, rectangular=False)
 df = get_osm_geometries(aoi=aoi)
 
 fig = Plot(
