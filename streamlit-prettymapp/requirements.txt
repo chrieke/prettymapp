@@ -1,2 +1,2 @@
 streamlit
-../prettymapp
+-e ../prettymapp

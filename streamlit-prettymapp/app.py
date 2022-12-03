@@ -18,7 +18,7 @@ st.set_page_config(
 )
 st.markdown("# Prettymapp")
 
-with open("./examples.json", "r") as f:
+with open("./streamlit-prettymapp/examples.json", "r") as f:
     EXAMPLES = json.load(f)
 
 if not st.session_state:
