@@ -25,7 +25,7 @@ if not st.session_state:
     st.session_state.update(EXAMPLES["Macau"])
 
     lc_class_colors = get_colors_from_style("Peach")
-    st.session_state.lc_classes = list(lc_class_colors.keys())
+    st.session_state.lc_classes = list(lc_class_colors.keys())  # type: ignore
     st.session_state.update(lc_class_colors)
     st.session_state["previous_style"] = "Peach"
 
@@ -150,7 +150,7 @@ for lc_class in st.session_state.lc_classes:
     picked_color = col3style.color_picker(lc_class, key=lc_class)
     if "_" in lc_class:
         lc_class, idx = lc_class.split("_")
-        draw_settings[lc_class]["cmap"][int(idx)] = picked_color
+        draw_settings[lc_class]["cmap"][int(idx)] = picked_color  # type: ignore
     else:
         draw_settings[lc_class]["fc"] = picked_color
 
