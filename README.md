@@ -58,6 +58,8 @@ fig = Plot(
     aoi_bounds=aoi.bounds,
     draw_settings=STYLES["Peach"]
 ).plot_all()
+
+fig.savefig("map.jpg")
 ```
 
 To customize the map apperance, use the additional arguments of the 
