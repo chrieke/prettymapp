@@ -5,7 +5,7 @@ parent_dir = Path(__file__).resolve().parent
 
 setup(
     name="prettymapp",
-    version="0.0.3",
+    version="0.1.0",
     author="Christoph Rieke",
     author_email="christoph.k.rieke@gmail.com",
     description="",
@@ -13,7 +13,9 @@ setup(
     long_description_content_type="text/markdown",
     url="https://github.com/chrieke/prettymapp",
     license="MIT",
-    packages=find_packages(exclude=("prettymapp/tests", "streamlit-prettymapp", "cache")),
+    packages=find_packages(
+        exclude=("prettymapp/tests", "streamlit-prettymapp", "cache")
+    ),
     package_data={"": ["fonts/PermanentMarker-Regular.ttf"]},
     data_files=[
         ("", ["requirements.txt"]),
