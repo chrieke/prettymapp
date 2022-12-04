@@ -1,12 +1,13 @@
 from osmnx.geometries import geometries_from_polygon
-from osmnx.utils import config
+from osmnx import settings
 from geopandas import clip, GeoDataFrame
 from shapely.geometry import Polygon
 
 from prettymapp.geo import explode_multigeometries
 from prettymapp.settings import LC_SETTINGS
 
-config(use_cache=True, log_console=False)
+settings.use_cache = True
+settings.log_console = False
 
 
 def get_osm_geometries(aoi: Polygon) -> GeoDataFrame:
