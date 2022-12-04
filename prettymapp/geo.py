@@ -77,10 +77,10 @@ def explode_multigeometries(df: GeoDataFrame) -> GeoDataFrame:
     outdf = df[~mask]
     df_multi = df[mask]
     for _, row in df_multi.iterrows():
-        df_temp = GeoDataFrame(columns=df_multi.columns)
-        df_temp = df_temp.append([row] * len(row.geometry.geoms), ignore_index=True)
-        for i in range(len(row.geometry.geoms)):
-            df_temp.loc[i, "geometry"] = row.geometry.geoms[i]
+        df_temp = GeoDataFrame(
+            pd.DataFrame.from_records([row.to_dict()] * len(row.geometry.geoms))
+        )
+        df_temp.geometry = list(row.geometry.geoms)
         outdf = GeoDataFrame(pd.concat([outdf, df_temp], ignore_index=True))
 
     outdf = outdf.reset_index(drop=True)
