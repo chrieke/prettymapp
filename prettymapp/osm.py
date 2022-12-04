@@ -1,12 +1,13 @@
 from osmnx.geometries import geometries_from_polygon
-from osmnx.utils import config
+from osmnx import settings
 from geopandas import clip, GeoDataFrame
 from shapely.geometry import Polygon
 
 from prettymapp.geo import explode_multigeometries
 from prettymapp.settings import LC_SETTINGS
 
-config(use_cache=True, log_console=False)
+settings.use_cache = True
+settings.log_console = False
 
 
 def get_osm_geometries(aoi: Polygon) -> GeoDataFrame:
@@ -27,7 +28,7 @@ def get_osm_geometries(aoi: Polygon) -> GeoDataFrame:
 
     df["landcover_class"] = None
     for lc_class, osm_tags in LC_SETTINGS.items():
-        tags_in_columns = set(osm_tags.keys()).intersection(list(df.columns))  # type: ignore
+        tags_in_columns = list(set(osm_tags.keys()).intersection(list(df.columns)))  # type: ignore
         mask_lc_class = df[tags_in_columns].notna().sum(axis=1) != 0
         # Remove mask elements that belong to other subtag
         listed_osm_tags = {

@@ -1,11 +1,15 @@
 from mock import patch
 import pytest
-from shapely.geometry import Polygon
+from shapely.geometry import Polygon, MultiPolygon
 import osmnx as ox
+import geopandas as gpd
+import pandas as pd
+
 from prettymapp.geo import (
     validate_coordinates,
     get_aoi,
     GeoCodingError,
+    explode_multigeometries,
 )
 
 
@@ -90,3 +94,18 @@ def test_get_aoi_from_user_input_coordinates_live():
 def test_get_aoi_invalid_address_raises():
     with pytest.raises(GeoCodingError):
         get_aoi("not_an_address")
+
+
+def test_explode_multigeoemtries():
+    poly1 = Polygon([[0, 0], [1, 0], [1, 1], [0, 1], [0, 0]])
+    poly2 = Polygon([[0, 0], [2, 0], [2, 2], [0, 2], [0, 0]])
+    multipoly = MultiPolygon([poly1, poly2])
+    df = gpd.GeoDataFrame(
+        pd.DataFrame([0, 1], columns=["id"]),
+        crs="EPSG:4326",
+        geometry=[poly1, multipoly],
+    )
+    df_result = explode_multigeometries(df)
+
+    assert df.shape[0] != df_result.shape[0]
+    assert df_result.shape[0] == 3
