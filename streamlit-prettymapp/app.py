@@ -39,7 +39,7 @@ example_image_fp = [example_image_pattern.format(name.lower()) for name in list(
 # ]
 index_selected = image_select(
     "",
-    images=example_image_pattern,
+    images=example_image_fp,
     captions=list(EXAMPLES.keys())[:4],
     index=0,
     return_value="index",
