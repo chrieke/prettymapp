@@ -28,7 +28,7 @@ def get_osm_geometries(aoi: Polygon) -> GeoDataFrame:
 
     df["landcover_class"] = None
     for lc_class, osm_tags in LC_SETTINGS.items():
-        tags_in_columns = set(osm_tags.keys()).intersection(list(df.columns))  # type: ignore
+        tags_in_columns = list(set(osm_tags.keys()).intersection(list(df.columns)))  # type: ignore
         mask_lc_class = df[tags_in_columns].notna().sum(axis=1) != 0
         # Remove mask elements that belong to other subtag
         listed_osm_tags = {
