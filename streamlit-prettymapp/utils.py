@@ -3,6 +3,7 @@ from io import StringIO, BytesIO
 import unicodedata
 import re
 from typing import Any
+import io
 
 from matplotlib.pyplot import figure
 import streamlit as st
@@ -89,3 +90,9 @@ def slugify(value: Any, allow_unicode: bool = False):
         )
     value = re.sub(r"[^\w\s-]", "", value.lower())
     return re.sub(r"[-\s]+", "-", value).strip("-_")
+
+
+def gdf_to_bytesio_geojson(geodataframe):
+    geojson_object = io.BytesIO()
+    geodataframe.to_file(geojson_object, driver="GeoJSON")
+    return geojson_object
