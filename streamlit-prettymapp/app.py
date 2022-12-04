@@ -8,6 +8,7 @@ from utils import (
     st_get_osm_geometries,
     st_plot_all,
     get_colors_from_style,
+    gdf_to_bytesio_geojson,
 )
 from prettymapp.geo import GeoCodingError, get_aoi
 from prettymapp.settings import STYLES
@@ -30,13 +31,9 @@ if not st.session_state:
 
 # TODO: Fix component to use correct local filepath when deployed
 example_image_pattern = "streamlit-prettymapp/example_prints/{}_small.png"
-example_image_fp = [example_image_pattern.format(name.lower()) for name in list(EXAMPLES.keys())[:4]]
-# example_image_urls = [
-#     "https://i.ibb.co/KV2RW1s/macau-small.png",
-#     "https://i.ibb.co/nwgnSmK/barcelona-small.png",
-#     "https://i.ibb.co/Nyjp1CB/wuerzburg-small.png",
-#     "https://i.ibb.co/BwPqqwM/heerhvogowaard-small.png",
-# ]
+example_image_fp = [
+    example_image_pattern.format(name.lower()) for name in list(EXAMPLES.keys())[:4]
+]
 index_selected = image_select(
     "",
     images=example_image_fp,
@@ -170,25 +167,24 @@ with st.spinner("Creating map... (may take up to a minute)"):
         st.error(f"ERROR: {str(e)}")
         st.stop()
     df = st_get_osm_geometries(aoi=aoi)
-    fig = st_plot_all(
-        _df=df,
-        aoi_bounds=aoi.bounds,
-        draw_settings=draw_settings,
-        name_on=name_on,
-        name=address if custom_title == "" else custom_title,
-        font_size=font_size,
-        font_color=font_color,
-        text_x=text_x,
-        text_y=text_y,
-        text_rotation=text_rotation,
-        shape=shape,
-        contour_width=contour_width,
-        contour_color=contour_color,
-        bg_shape=bg_shape,
-        bg_buffer=bg_buffer,
-        bg_color=bg_color,
-    )
-
+    config = {
+        "aoi_bounds": aoi.bounds,
+        "draw_settings": draw_settings,
+        "name_on": name_on,
+        "name": address if custom_title == "" else custom_title,
+        "font_size": font_size,
+        "font_color": font_color,
+        "text_x": text_x,
+        "text_y": text_y,
+        "text_rotation": text_rotation,
+        "shape": shape,
+        "contour_width": contour_width,
+        "contour_color": contour_color,
+        "bg_shape": bg_shape,
+        "bg_buffer": bg_buffer,
+        "bg_color": bg_color,
+    }
+    fig = st_plot_all(_df=df, **config)
     # result_container.write(html, unsafe_allow_html=True)
     st.pyplot(fig, pad_inches=0, bbox_inches="tight", transparent=True, dpi=300)
 
@@ -205,6 +201,24 @@ with st.spinner("Creating map... (may take up to a minute)"):
 #     data = io.BytesIO()
 #     fig.savefig(data, pad_inches=0, bbox_inches="tight", transparent=True)
 # st.download_button(label="Download image", data=data, file_name=f"{fname}.{img_format}")
+
+st.markdown("</br>", unsafe_allow_html=True)
+st.markdown("</br>", unsafe_allow_html=True)
+ex1, ex2 = st.columns(2)
+
+with ex2.expander("Export geometries as GeoJSON"):
+    st.write(f"{df.shape[0]} geometries")
+    st.download_button(
+        label="Download",
+        data=gdf_to_bytesio_geojson(df),
+        file_name=f"prettymapp_{address[:10]}.geojson",
+        mime="application/geo+json",
+    )
+
+config = {"address": address, **config}
+with ex2.expander("Export map configuration"):
+    st.write(config)
+
 
 st.markdown("---")
 st.write(
