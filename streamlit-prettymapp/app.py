@@ -28,8 +28,8 @@ if not st.session_state:
     st.session_state.lc_classes = list(lc_class_colors.keys())  # type: ignore
     st.session_state.update(lc_class_colors)
     st.session_state["previous_style"] = "Peach"
+    st.session_state["previous_example_index"] = 0
 
-# TODO: Fix component to use correct local filepath when deployed
 example_image_pattern = "streamlit-prettymapp/example_prints/{}_small.png"
 example_image_fp = [
     example_image_pattern.format(name.lower()) for name in list(EXAMPLES.keys())[:4]
@@ -41,8 +41,10 @@ index_selected = image_select(
     index=0,
     return_value="index",
 )
-name_selected = list(EXAMPLES.keys())[index_selected]
-st.session_state.update(EXAMPLES[name_selected].copy())
+if index_selected != st.session_state["previous_example_index"]:
+    name_selected = list(EXAMPLES.keys())[index_selected]
+    st.session_state.update(EXAMPLES[name_selected].copy())
+    st.session_state["previous_example_index"] = index_selected
 
 st.write("")
 form = st.form(key="form_settings")
