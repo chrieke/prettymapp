@@ -208,7 +208,7 @@ st.markdown("</br>", unsafe_allow_html=True)
 st.markdown("</br>", unsafe_allow_html=True)
 ex1, ex2 = st.columns(2)
 
-with ex2.expander("Export geometries as GeoJSON"):
+with ex1.expander("Export geometries as GeoJSON"):
     st.write(f"{df.shape[0]} geometries")
     st.download_button(
         label="Download",
