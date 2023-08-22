@@ -4,8 +4,7 @@
 
 ---
 <h3 align="center">
-    🎈 Try it out here: <a href="https://share.streamlit.io/chrieke/prettymapp/main/streamlit-prettymapp/app.
-py">prettymapp on streamlit 🎈 </a>
+    🎈 Try it out here: <a href="https://prettymapp.streamlit.app/">prettymapp on streamlit 🎈 </a>
 </h3>
 
 ---
@@ -13,8 +12,7 @@ py">prettymapp on streamlit 🎈 </a>
 
 
 <p align="center">
-    <a href="https://share.streamlit.io/chrieke/prettymapp/main/streamlit-prettymapp/app.
-py"><img src="./streamlit-prettymapp/example_prints/demo.gif" width=700></a>
+    <a href="https://prettymapp.streamlit.app/"><img src="./streamlit-prettymapp/example_prints/demo.gif" width=700></a>
 </p>
 
 <br>
