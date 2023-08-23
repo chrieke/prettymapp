@@ -6,7 +6,7 @@ from shapely.geometry import Polygon
 from prettymapp.geo import explode_multigeometries
 from prettymapp.settings import LC_SETTINGS
 
-settings.use_cache = True
+settings.use_cache = False
 settings.log_console = False
 
 
