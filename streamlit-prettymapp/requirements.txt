@@ -1,3 +1,2 @@
 streamlit==1.25.0
 streamlit-image-select==0.6.0
--e ../prettymapp
