@@ -1,2 +1,6 @@
-cache
-.git
+**/.git/
+**/tests/
+**/cache/
+**/*.log
+**/*.tmp
+**/*.cache
