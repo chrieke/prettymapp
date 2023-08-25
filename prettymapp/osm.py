@@ -1,4 +1,4 @@
-from osmnx.geometries import geometries_from_polygon
+from osmnx.features import features_from_polygon
 from osmnx import settings
 from geopandas import clip, GeoDataFrame
 from shapely.geometry import Polygon
@@ -19,7 +19,7 @@ def get_osm_geometries(aoi: Polygon) -> GeoDataFrame:
             except TypeError:  # e.g. "building": True
                 tags[k] = v
 
-    df = geometries_from_polygon(polygon=aoi, tags=tags)
+    df = features_from_polygon(polygon=aoi, tags=tags)
     df = df.droplevel(level=0)
     df = df[~df.geometry.geom_type.isin(["Point", "MultiPoint"])]
 
