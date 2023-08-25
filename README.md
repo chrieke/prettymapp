@@ -29,6 +29,14 @@ The prettymapp rewrite focuses on speed and adapted configuration to interface w
 It drops more complex configuration options in favour of improved speed, reduced code complexity and 
 simplified configuration interfaces. It is partially tested and adds a [streamlit](https://streamlit.io/) webapp component.
 
+## Running the app locally
+
+```bash
+git clone https://github.com/chrieke/prettymapp.git
+cd prettymapp
+streamlit run streamlit-prettymapp/app.py
+```
+
 ## Python package
 
 You can also use prettymapp without the webapp, directly in Python. This lets you customize the functionality or 
