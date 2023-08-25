@@ -4,17 +4,19 @@ import unicodedata
 import re
 from typing import Any
 import io
+import json
 
 from matplotlib.pyplot import figure
 import streamlit as st
 from geopandas import GeoDataFrame
+from shapely.geometry import Polygon
 
 from prettymapp.plotting import Plot
 from prettymapp.osm import get_osm_geometries
 from prettymapp.settings import STYLES
 
 
-@st.cache_data(show_spinner=False)
+@st.cache_data(show_spinner=False, hash_funcs={Polygon: lambda x: json.dumps(x.__geo_interface__)})
 def st_get_osm_geometries(aoi):
     """Wrapper to enable streamlit caching for package function"""
     df = get_osm_geometries(aoi=aoi)
