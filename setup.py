@@ -5,7 +5,7 @@ parent_dir = Path(__file__).resolve().parent
 
 setup(
     name="prettymapp",
-    version="0.1.0",
+    version="0.2.0",
     author="Christoph Rieke",
     author_email="christoph.k.rieke@gmail.com",
     description="",
