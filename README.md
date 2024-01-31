@@ -29,13 +29,22 @@ The prettymapp rewrite focuses on speed and adapted configuration to interface w
 It drops more complex configuration options in favour of improved speed, reduced code complexity and 
 simplified configuration interfaces. It is partially tested and adds a [streamlit](https://streamlit.io/) webapp component.
 
-## Running the app locally
+## Run the app locally
 
 ```bash
 git clone https://github.com/chrieke/prettymapp.git
 cd prettymapp
 pip install -r streamlit-prettymapp/requirements.txt
 streamlit run streamlit-prettymapp/app.py
+```
+
+## Run the app with Docker
+
+Build and run the Docker container with the existing Docker file. Open `http://0.0.0.0:8501/` in your browser to 
+see the streamlit app.
+```bash
+docker build -t streamlit-prettymapp .
+docker run -p 8501:8501 streamlit
 ```
 
 ## Python package
@@ -72,3 +81,5 @@ fig.savefig("map.jpg")
 To customize the map appearance, use the additional arguments of the [`Plot`](plotting.py#L36) class (e.g. `shape`, 
 `contour_width` etc.). Check the preconfigured [styles](prettymapp/settings.py#L35) and 
 webapp [examples](streamlit-prettymapp/examples.json) for inspiration.
+
+
