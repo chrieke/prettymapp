@@ -12,7 +12,8 @@ RUN mkdir -p /app/streamlit-prettymapp
 
 COPY streamlit-prettymapp /app/streamlit-prettymapp
 
-RUN pip3 install -r streamlit-prettymapp/requirements.txt
+RUN pip3 install --upgrade pip --no-cache-dir \
+    && pip3 install -r streamlit-prettymapp/requirements.txt --no-cache-dir
 
 EXPOSE 8501
 
