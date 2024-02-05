@@ -4,7 +4,9 @@ WORKDIR /app
 
 RUN apt-get update && apt-get install --no-install-recommends -y \
     curl gdal-bin libgdal-dev g++ \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get autoremove -y \
+    && apt-get clean
 
 RUN mkdir -p /app/streamlit-prettymapp
 
