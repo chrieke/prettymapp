@@ -10,7 +10,7 @@ settings.use_cache = True
 settings.log_console = False
 
 
-def get_osm_geometries(aoi: Polygon) -> GeoDataFrame:
+def get_osm_tags():
     tags: dict = {}
     for d in LC_SETTINGS.values():  # type: ignore
         for k, v in d.items():  # type: ignore
@@ -18,8 +18,10 @@ def get_osm_geometries(aoi: Polygon) -> GeoDataFrame:
                 tags.setdefault(k, []).extend(v)
             except TypeError:  # e.g. "building": True
                 tags[k] = v
+    return tags
 
-    df = features_from_polygon(polygon=aoi, tags=tags)
+
+def cleanup_osm_df(df: GeoDataFrame, aoi: Polygon) -> GeoDataFrame:
     df = df.droplevel(level=0)
     df = df[~df.geometry.geom_type.isin(["Point", "MultiPoint"])]
 
@@ -46,4 +48,11 @@ def get_osm_geometries(aoi: Polygon) -> GeoDataFrame:
         df.columns.difference(["geometry", "landcover_class", "highway"]), axis=1
     )
 
+    return df
+
+
+def get_osm_geometries(aoi: Polygon) -> GeoDataFrame:
+    tags = get_osm_tags()
+    df = features_from_polygon(polygon=aoi, tags=tags)
+    df = cleanup_osm_df(df, aoi)
     return df
