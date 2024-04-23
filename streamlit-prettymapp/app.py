@@ -18,7 +18,7 @@ st.set_page_config(
 )
 st.markdown("# Prettymapp")
 
-with open("./streamlit-prettymapp/examples.json", "r") as f:
+with open("./streamlit-prettymapp/examples.json", "r", encoding="utf8") as f:
     EXAMPLES = json.load(f)
 
 if not st.session_state:
@@ -61,7 +61,7 @@ radius = col2.slider(
     key="radius",
 )
 
-style = col3.selectbox(
+style: str = col3.selectbox(
     "Color theme",
     options=list(STYLES.keys()),
     key="style",
@@ -148,7 +148,7 @@ text_rotation = col2style.slider(
 )
 
 if style != st.session_state["previous_style"]:
-    st.session_state.update(get_colors_from_style(style))
+    st.session_state.update(get_colors_from_style(style))  # type: ignore
 draw_settings = copy.deepcopy(STYLES[style])
 for lc_class in st.session_state.lc_classes:
     picked_color = col3style.color_picker(lc_class, key=lc_class)

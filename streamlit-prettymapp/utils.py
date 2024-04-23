@@ -60,10 +60,8 @@ def plt_to_svg(fig: figure) -> str:
 def svg_to_html(svg_string: str) -> str:
     b64 = base64.b64encode(svg_string.encode("utf-8")).decode("utf-8")
     css_justify = "center"
-    css = '<p style="text-align:center; display: flex; flex-direction: column; justify-content: {};">'.format(
-        css_justify
-    )
-    html = r'{}<img src="data:image/svg+xml;base64,{}"/>'.format(css, b64)
+    css = f'<p style="text-align:center; display: flex; flex-direction: column; justify-content: {css_justify};">'
+    html = rf'{css}<img src="data:image/svg+xml;base64,{b64}"/>'
     return html
 
 
