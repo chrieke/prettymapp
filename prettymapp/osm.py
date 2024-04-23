@@ -73,7 +73,9 @@ def get_osm_geometries(aoi: Polygon) -> GeoDataFrame:
     return df
 
 
-def get_osm_geometries_from_xml(filepath: Union[str, Path], aoi: Union[Polygon, None]=None) -> GeoDataFrame:
+def get_osm_geometries_from_xml(
+    filepath: Union[str, Path], aoi: Union[Polygon, None] = None
+) -> GeoDataFrame:
     """
     Query OSM features in an OSM-formatted XML file.
 
