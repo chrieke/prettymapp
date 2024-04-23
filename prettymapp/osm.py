@@ -27,14 +27,14 @@ def get_osm_tags():
     return tags
 
 
-def cleanup_osm_df(df: GeoDataFrame, aoi: Polygon) -> GeoDataFrame:
+def cleanup_osm_df(df: GeoDataFrame, aoi: Union[Polygon, None] = None) -> GeoDataFrame:
     """
     Cleanup of queried osm geometries to relevant level for use with prettymapp
     """
     df = df.droplevel(level=0)
     df = df[~df.geometry.geom_type.isin(["Point", "MultiPoint"])]
-
-    df = clip(df, aoi)
+    if aoi is not None:
+        df = clip(df, aoi)
     df = explode_multigeometries(df)
 
     df["landcover_class"] = None
