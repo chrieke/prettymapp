@@ -69,7 +69,7 @@ fig = Plot(
 fig.savefig("map.jpg")
 ```
 
-You can also plot downloaded OSM xml files:
+You can also plot exported OSM XML files e.g. from openstreetmap.org:
 
 ```python
 from prettymapp.osm import get_osm_geometries_from_xml
