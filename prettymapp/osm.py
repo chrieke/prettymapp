@@ -1,4 +1,7 @@
-from osmnx.features import features_from_polygon
+from typing import Union
+from pathlib import Path
+
+from osmnx.features import features_from_polygon, features_from_xml
 from osmnx import settings
 from geopandas import clip, GeoDataFrame
 from shapely.geometry import Polygon
@@ -11,6 +14,9 @@ settings.log_console = False
 
 
 def get_osm_tags():
+    """
+    Get relevant OSM tags for use with prettymapp
+    """
     tags: dict = {}
     for d in LC_SETTINGS.values():  # type: ignore
         for k, v in d.items():  # type: ignore
@@ -21,11 +27,14 @@ def get_osm_tags():
     return tags
 
 
-def cleanup_osm_df(df: GeoDataFrame, aoi: Polygon) -> GeoDataFrame:
+def cleanup_osm_df(df: GeoDataFrame, aoi: Union[Polygon, None] = None) -> GeoDataFrame:
+    """
+    Cleanup of queried osm geometries to relevant level for use with prettymapp
+    """
     df = df.droplevel(level=0)
     df = df[~df.geometry.geom_type.isin(["Point", "MultiPoint"])]
-
-    df = clip(df, aoi)
+    if aoi is not None:
+        df = clip(df, aoi)
     df = explode_multigeometries(df)
 
     df["landcover_class"] = None
@@ -52,7 +61,29 @@ def cleanup_osm_df(df: GeoDataFrame, aoi: Polygon) -> GeoDataFrame:
 
 
 def get_osm_geometries(aoi: Polygon) -> GeoDataFrame:
+    """
+    Query OSM features within a polygon geometry.
+
+    Args:
+        aoi: Polygon geometry query boundary.
+    """
     tags = get_osm_tags()
     df = features_from_polygon(polygon=aoi, tags=tags)
+    df = cleanup_osm_df(df, aoi)
+    return df
+
+
+def get_osm_geometries_from_xml(
+    filepath: Union[str, Path], aoi: Union[Polygon, None] = None
+) -> GeoDataFrame:
+    """
+    Query OSM features in an OSM-formatted XML file.
+
+    Args:
+        filepath: path to file containing OSM XML data
+        aoi: Optional geographic boundary to filter elements
+    """
+    tags = get_osm_tags()
+    df = features_from_xml(filepath, polygon=aoi, tags=tags)
     df = cleanup_osm_df(df, aoi)
     return df
