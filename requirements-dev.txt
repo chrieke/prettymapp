@@ -1,11 +1,11 @@
 black
-pylint==2.8.3
+pylint==3.1.0
 mock
 types-mock
 pytest
 pytest-pylint
 pytest-sugar
 pytest-mypy
-mypy==0.902
+mypy==1.9.0
 mypy-extensions
 twine

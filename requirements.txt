@@ -1,4 +1,4 @@
-pandas==2.2.1 #osmnx subdependecies are partially unpinned
-osmnx==1.9.1
+pandas==2.2.2 #osmnx subdependecies are partially unpinned
+osmnx==1.9.2
 pyogrio==0.7.2
-matplotlib==3.8.3
+matplotlib==3.8.4
