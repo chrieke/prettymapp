@@ -69,6 +69,16 @@ fig = Plot(
 fig.savefig("map.jpg")
 ```
 
+You can also plot downloaded OSM xml files:
+
+```python
+from prettymapp.osm import get_osm_geometries_from_xml
+
+df = get_osm_geometries_from_xml(filepath="Berlin.osm")
+aoi_bounds = df.total_bounds
+...
+```
+
 To customize the map appearance, use the additional arguments of the [`Plot`](plotting.py#L36) class (e.g. `shape`, 
 `contour_width` etc.). Check the preconfigured [styles](prettymapp/settings.py#L35) and 
 webapp [examples](streamlit-prettymapp/examples.json) for inspiration.
