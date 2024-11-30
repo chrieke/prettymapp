@@ -1,4 +1,5 @@
 # Keep for streamlit install
 streamlit==1.40.2
 streamlit-image-select==0.6.0
+pyogrio
 prettymapp
