@@ -1,0 +1,58 @@
+[project]
+name = "prettymapp"
+version = "0.3.0"
+description = "Create beautiful maps from OpenStreetMap data"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [{ name = "Christoph Rieke", email = "christoph.k.rieke@gmail.com" }]
+keywords = ["art", "map", "cartography", "osm", "streamlit"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers"
+]
+dependencies = [
+    "matplotlib>=3.9.2",
+    "osmnx>=2.0.0",
+    "pandas==2.2.3",
+    "pyogrio>=0.10.0",
+]
+
+[dependency-groups]
+dev = [
+    "black",
+    "pylint==3.1.0",
+    "mock",
+    "types-mock",
+    "pytest",
+    "pytest-pylint",
+    "pytest-sugar",
+    "pytest-mypy",
+    "mypy==1.9.0",
+    "mypy-extensions",
+    "twine",
+]
+
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+package-dir = {"" = "."}
+include-package-data = false
+license-files = ["LICENSES/*.txt"]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["prettymapp*"]
+
+[tool.setuptools.package-data]
+prettymapp = ["fonts/PermanentMarker-Regular.ttf"]
+
+[project.urls]
+Homepage = "https://github.com/chrieke/prettymapp"
+Changelog = "https://github.com/chrieke/prettymapp/changelog"
