@@ -85,7 +85,7 @@ aoi_bounds = df.total_bounds
 
 Edit the `draw_settings` input to create your own custom styles! The map layout can be further customized with the additional arguments of the [`Plot`](plotting.py#L36) class (e.g. `shape`, `contour_width` etc.). Check the webapp [examples](streamlit-prettymapp/examples.json) for inspiration.
 
-```
+```python
 from prettymapp.settings import STYLES
 
 custom_style = STYLES["Peach"].copy()
@@ -108,7 +108,7 @@ fig = Plot(
 
 You can also customize the selection of OSM landcover classes that should be displayed.
 
-```
+```python
 from prettymapp.settings import LANDCOVER_CLASSES
 
 custom_lc_classes = LANDCOVER_CLASSES.copy()
