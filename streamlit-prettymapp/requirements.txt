@@ -1,3 +1,4 @@
-streamlit==1.33.0
+# Keep for streamlit install
+streamlit==1.40.2
 streamlit-image-select==0.6.0
 prettymapp
