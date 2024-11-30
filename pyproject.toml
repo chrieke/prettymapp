@@ -41,6 +41,7 @@ dev = [
 requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
+# Specifically define package, doesn't know if prettymapp or cache
 [tool.setuptools]
 package-dir = {"" = "."}
 include-package-data = false
