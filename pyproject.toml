@@ -21,6 +21,12 @@ dependencies = [
     "pyogrio>=0.10.0",
 ]
 
+[project.optional-dependencies]
+streamlit = [
+    "streamlit",
+    "streamlit-image-select",
+]
+
 [dependency-groups]
 dev = [
     "black",
@@ -35,7 +41,6 @@ dev = [
     "mypy-extensions",
     "twine",
 ]
-
 
 [build-system]
 requires = ["setuptools"]
