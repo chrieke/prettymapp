@@ -14,6 +14,7 @@ Update your installation to the latest version:
 
 - Allow selection of landcover classes via new `landcover_classes` parameter in `get_osm_geometries`
 - `drawing_settings` parameter in `Plot` now defaults to `STYLES["Peach"]`
+- `pyproject.toml` replaces setup.py & requirements.txt files
 
 ## 0.3.0
 **April 23, 2024**
