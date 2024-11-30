@@ -3,6 +3,7 @@ import colorsys
 from typing import Tuple, List
 from dataclasses import dataclass
 
+from dataclasses import field
 from geopandas.plotting import _plot_polygon_collection, _plot_linestring_collection
 from geopandas import GeoDataFrame
 import numpy as np
@@ -12,7 +13,7 @@ import matplotlib.font_manager as fm
 from matplotlib.patches import Ellipse
 import matplotlib.patheffects as PathEffects
 
-from prettymapp.settings import STREETS_WIDTH
+from prettymapp.settings import STREETS_WIDTH, STYLES
 
 
 def adjust_lightness(color: str, amount: float = 0.5) -> Tuple[float, float, float]:
@@ -34,14 +35,19 @@ def adjust_lightness(color: str, amount: float = 0.5) -> Tuple[float, float, flo
 
 @dataclass
 class Plot:
+    """
+    Main plotting class for prettymapp.
+    """
     df: GeoDataFrame
     aoi_bounds: List[
         float
     ]  # Not df bounds as could lead to weird plot shapes with unequal geometry distribution.
-    draw_settings: dict
+    draw_settings: dict = field(default_factory=lambda: STYLES["Peach"])
+    # Map layout settings
     shape: str = "circle"
     contour_width: int = 0
     contour_color: str = "#2F3537"
+    # Optional map text settings e.g. to display location name
     name_on: bool = False
     name: str = "some name"
     font_size: int = 25
@@ -49,6 +55,7 @@ class Plot:
     text_x: int = 0
     text_y: int = 0
     text_rotation: int = 0
+    # Map background settings
     bg_shape: str = "rectangle"
     bg_buffer: int = 2
     bg_color: str = "#F2F4CB"
