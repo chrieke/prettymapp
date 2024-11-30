@@ -7,18 +7,21 @@ from geopandas import clip, GeoDataFrame
 from shapely.geometry import Polygon
 
 from prettymapp.geo import explode_multigeometries
-from prettymapp.settings import LC_SETTINGS
+from prettymapp.settings import LANDCOVER_CLASSES
 
 settings.use_cache = True
 settings.log_console = False
 
 
-def get_osm_tags():
+def get_osm_tags(landcover_classes: dict = LANDCOVER_CLASSES):
     """
     Get relevant OSM tags for use with prettymapp
+    
+    Args:
+        landcover_classes: Landcover selection settings, defaults to prettymapp.settings.LANDCOVER_CLASSES
     """
     tags: dict = {}
-    for d in LC_SETTINGS.values():  # type: ignore
+    for d in landcover_classes.values():  # type: ignore
         for k, v in d.items():  # type: ignore
             try:
                 tags.setdefault(k, []).extend(v)
@@ -27,9 +30,16 @@ def get_osm_tags():
     return tags
 
 
-def cleanup_osm_df(df: GeoDataFrame, aoi: Union[Polygon, None] = None) -> GeoDataFrame:
+def cleanup_osm_df(
+    df: GeoDataFrame, aoi: Union[Polygon, None] = None, landcover_classes: dict = LANDCOVER_CLASSES
+) -> GeoDataFrame:
     """
     Cleanup of queried osm geometries to relevant level for use with prettymapp
+    
+    Args:
+        df: GeoDataFrame with queried OSM geometries
+        aoi: Optional geographic boundary to filter elements
+        landcover_classes: Landcover selection settings, defaults to prettymapp.settings.LANDCOVER_CLASSES
     """
     df = df.droplevel(level=0)
     df = df[~df.geometry.geom_type.isin(["Point", "MultiPoint"])]
@@ -38,7 +48,7 @@ def cleanup_osm_df(df: GeoDataFrame, aoi: Union[Polygon, None] = None) -> GeoDat
     df = explode_multigeometries(df)
 
     df["landcover_class"] = None
-    for lc_class, osm_tags in LC_SETTINGS.items():
+    for lc_class, osm_tags in landcover_classes.items():
         tags_in_columns = list(set(osm_tags.keys()).intersection(list(df.columns)))  # type: ignore
         mask_lc_class = df[tags_in_columns].notna().sum(axis=1) != 0
         # Remove mask elements that belong to other subtag
@@ -60,21 +70,24 @@ def cleanup_osm_df(df: GeoDataFrame, aoi: Union[Polygon, None] = None) -> GeoDat
     return df
 
 
-def get_osm_geometries(aoi: Polygon) -> GeoDataFrame:
+def get_osm_geometries(
+    aoi: Polygon, landcover_classes: dict = LANDCOVER_CLASSES
+) -> GeoDataFrame:
     """
     Query OSM features within a polygon geometry.
 
     Args:
         aoi: Polygon geometry query boundary.
+        landcover_classes: Landcover selection settings, defaults to prettymapp.settings.LANDCOVER_CLASSES
     """
-    tags = get_osm_tags()
+    tags = get_osm_tags(landcover_classes=landcover_classes)
     df = features_from_polygon(polygon=aoi, tags=tags)
     df = cleanup_osm_df(df, aoi)
     return df
 
 
 def get_osm_geometries_from_xml(
-    filepath: Union[str, Path], aoi: Union[Polygon, None] = None
+    filepath: Union[str, Path], aoi: Union[Polygon, None] = None, landcover_classes: dict = LANDCOVER_CLASSES
 ) -> GeoDataFrame:
     """
     Query OSM features in an OSM-formatted XML file.
@@ -82,8 +95,9 @@ def get_osm_geometries_from_xml(
     Args:
         filepath: path to file containing OSM XML data
         aoi: Optional geographic boundary to filter elements
+        landcover_classes: Landcover selection settings, defaults to prettymapp.settings.LANDCOVER_CLASSES
     """
-    tags = get_osm_tags()
+    tags = get_osm_tags(landcover_classes=landcover_classes)
     df = features_from_xml(filepath, polygon=aoi, tags=tags)
     df = cleanup_osm_df(df, aoi)
     return df

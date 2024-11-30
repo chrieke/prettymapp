@@ -1,4 +1,4 @@
-LC_SETTINGS = {
+LANDCOVER_CLASSES = {
     "urban": {"building": True, "landuse": ["construction", "commercial"]},
     "water": {
         "natural": ["water", "bay"],
@@ -30,10 +30,9 @@ LC_SETTINGS = {
     "other": {"amenity": ["parking"], "man_made": ["pier"], "highway": ["pedestrian"]},
 }
 
-# Macau peach
-# Barcelona auburn
+# Contains drawing settings
 STYLES = {
-    "Peach": {
+    "Peach": { # e.g. Macau
         "urban": {
             "cmap": ["#FFC857", "#E9724C", "#C5283D"],
             "ec": "#2F3737",
@@ -53,7 +52,7 @@ STYLES = {
         "streets": {"fc": "#2F3737", "zorder": 3},
         "other": {"fc": "#F2F4CB", "ec": "#2F3737", "lw": 1, "zorder": 3},
     },
-    "Auburn": {
+    "Auburn": { # e.g. Barcelona
         "urban": {
             "cmap": ["#433633", "#FF5E5B", "#FF5E5B"],
             "ec": "#2F3737",
@@ -80,7 +79,7 @@ STYLES = {
         "streets": {"fc": "#2F3737", "zorder": 4},
         "other": {"fc": "#F2F4CB", "ec": "#2F3737", "lw": 1, "zorder": 3},
     },
-    "Citrus": {
+    "Citrus": { # e.g. Würzburg
         "urban": {
             "cmap": ["#FFFF3F", "#F4D58D", "#F5CB5C"],
             "ec": "#2F3737",
@@ -105,7 +104,7 @@ STYLES = {
         "streets": {"fc": "#FFFFFF", "zorder": 4},
         "other": {"fc": "#EAE2B7", "ec": "#2F3737", "lw": 1, "zorder": 3},
     },
-    "Flannel": {
+    "Flannel": { # e.g. Heerhugowaard
         "urban": {
             "cmap": ["#433633", "#FF5E5B", "#FF5E5B"],
             "ec": "#2F3737",

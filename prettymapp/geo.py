@@ -54,8 +54,7 @@ def get_aoi(
     df = GeoDataFrame(
         DataFrame([0], columns=["id"]), crs="EPSG:4326", geometry=[Point(lon, lat)]
     )
-    utm_crs = df.estimate_utm_crs()
-    df = df.to_crs(utm_crs)
+    df = df.to_crs(df.estimate_utm_crs())
     df.geometry = df.geometry.buffer(radius)
     df = df.to_crs(crs=4326)
     poly = df.iloc[0].geometry
