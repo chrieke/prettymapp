@@ -55,6 +55,7 @@ class Plot:
     text_x: int = 0
     text_y: int = 0
     text_rotation: int = 0
+    credit: bool = True
     # Map background settings
     bg_shape: str = "rectangle"
     bg_buffer: int = 2
@@ -93,7 +94,8 @@ class Plot:
             self.set_map_contour()
         if self.name_on:
             self.set_name()
-        self.set_credits(add_package_credit=True)
+        if self.credit is True:
+            self.set_credits(add_package_credit=True)
 
         return self.fig
 
