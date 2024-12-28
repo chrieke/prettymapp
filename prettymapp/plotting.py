@@ -37,6 +37,31 @@ def adjust_lightness(color: str, amount: float = 0.5) -> Tuple[float, float, flo
 class Plot:
     """
     Main plotting class for prettymapp.
+    
+    Args:
+        df: GeoDataFrame with the geometries to plot
+        aoi_bounds: List of minx, miny, maxx, maxy coordinates, specifying the map extent
+        draw_settings: Dictionary of color & draw settings, see prettymapp.settings.STYLES
+        
+        # Map layout
+        shape: the map shape, "circle" or "rectangle"
+        contour_width: width of the map contour, defaults to 0
+        contour_color: color of the map contour, defaults to "#2F3537"
+        
+        # Optional map text settings e.g. to display location name
+        name_on: whether to display the location name, defaults to False
+        name: the location name to display, defaults to "some name"
+        font_size: font size of the location name, defaults to 25
+        font_color: color of the location name, defaults to "#2F3737"
+        text_x: x-coordinate of the location name, defaults to 0
+        text_y: y-coordinate of the location name, defaults to 0
+        text_rotation: rotation of the location name, defaults to 0
+        credits: Boolean whether to display the OSM&package credits, defaults to True
+        
+        # Map background settings
+        bg_shape: the map background shape, "circle" or "rectangle", defaults to "circle"
+        bg_buffer: buffer around the map, defaults to 2
+        bg_color: color of the map background, defaults to "#F2F4CB"
     """
     df: GeoDataFrame
     aoi_bounds: List[
@@ -55,7 +80,7 @@ class Plot:
     text_x: int = 0
     text_y: int = 0
     text_rotation: int = 0
-    show_credits: bool = True
+    credits: bool = True
     # Map background settings
     bg_shape: str = "rectangle"
     bg_buffer: int = 2
@@ -95,7 +120,7 @@ class Plot:
         if self.name_on:
             self.set_name()
         if self.show_credits:
-            self.set_credits(add_package_credit=True)
+            self.set_credits()
 
         return self.fig
 
@@ -234,17 +259,17 @@ class Plot:
             size=self.font_size,
         )
 
-    def set_credits(self, add_package_credit=True):
+    def set_credits(self, text: str = "© OpenStreetMap\n prettymapp | prettymaps", 
+                x: float | None = None, 
+                y: float | None = None, 
+                fontsize: int = 9, 
+                zorder: int = 6):
         """
-        Add OSM credits to lower right corner of map, optionally 
-        add prettymapp package credit.
+        Add OSM credits. Defaults to lower right corner of map.
         """
-        credit_text = "© OpenStreetMap"
-        if add_package_credit:
-            package_credit_text = "\n prettymapp | prettymaps"
-            credit_text = credit_text + package_credit_text
-
-        x = self.xmin + 0.87 * self.xdif
-        y = self.ymin - 0.70 * self.bg_buffer_y
-        text = self.ax.text(x=x, y=y, s=credit_text, c="w", fontsize=9, zorder=6)
+        if x is None:
+            x = self.xmin + 0.87 * self.xdif
+        if y is None:
+            y = self.ymin - 0.70 * self.bg_buffer_y
+        text = self.ax.text(x=x, y=y, s=text, c="w", fontsize=fontsize, zorder=zorder)
         text.set_path_effects([PathEffects.withStroke(linewidth=3, foreground="black")])
