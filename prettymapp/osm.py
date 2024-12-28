@@ -82,7 +82,7 @@ def get_osm_geometries(
     """
     tags = get_osm_tags(landcover_classes=landcover_classes)
     df = features_from_polygon(polygon=aoi, tags=tags)
-    df = cleanup_osm_df(df, aoi)
+    df = cleanup_osm_df(df, aoi, landcover_classes=landcover_classes)
     return df
 
 
@@ -99,5 +99,5 @@ def get_osm_geometries_from_xml(
     """
     tags = get_osm_tags(landcover_classes=landcover_classes)
     df = features_from_xml(filepath, polygon=aoi, tags=tags)
-    df = cleanup_osm_df(df, aoi)
+    df = cleanup_osm_df(df, aoi, landcover_classes=landcover_classes)
     return df
