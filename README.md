@@ -83,7 +83,7 @@ aoi_bounds = df.total_bounds
 
 **Customize styles & layers**
 
-Edit the `draw_settings` input to create your own custom styles! The map layout can be further customized with the additional arguments of the [`Plot`](plotting.py#L36) class (e.g. `shape`, `contour_width` etc.). Check the webapp [examples](streamlit-prettymapp/examples.json) for inspiration.
+Edit the `draw_settings` input to create your own custom styles! The map layout can be further customized with the additional arguments of the [`Plot`](prettymapp/plotting.py#L24) class (e.g. `shape`, `contour_width` etc.). Check the webapp [examples](streamlit-prettymapp/examples.json) for inspiration.
 
 ```python
 from prettymapp.settings import STYLES
@@ -106,13 +106,16 @@ fig = Plot(
 
 ```
 
-You can also customize the selection of OSM landcover classes that should be displayed.
+You can also customize the selection of OSM landcover classes that should be displayed! Customize the 
+default settings or create your own dictionary! See [settings.py](prettymapp/settings.py#L3) for the defaults.
 
 ```python
 from prettymapp.settings import LANDCOVER_CLASSES
 
 custom_lc_classes = LANDCOVER_CLASSES.copy()
-custom_lc_classes["urban"]["building"] = False
+custom_lc_classes["urban"]["building"] = False # drops all building subclasses
+custom_lc_classes["grassland"]["leisure"] = True # Include all leisure subclasses
+custom_lc_classes["grassland"]["natural"] = ["island"] # Selects only specific natural subclasses
 
 df = get_osm_geometries(aoi=aoi, landcover_classes=custom_lc_classes)
 ```
