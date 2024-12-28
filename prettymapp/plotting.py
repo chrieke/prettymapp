@@ -55,7 +55,7 @@ class Plot:
     text_x: int = 0
     text_y: int = 0
     text_rotation: int = 0
-    credit: bool = True
+    show_credits: bool = True
     # Map background settings
     bg_shape: str = "rectangle"
     bg_buffer: int = 2
@@ -94,7 +94,7 @@ class Plot:
             self.set_map_contour()
         if self.name_on:
             self.set_name()
-        if self.credit is True:
+        if self.show_credits:
             self.set_credits(add_package_credit=True)
 
         return self.fig
@@ -235,9 +235,13 @@ class Plot:
         )
 
     def set_credits(self, add_package_credit=True):
+        """
+        Add OSM credits to lower right corner of map, optionally 
+        add prettymapp package credit.
+        """
         credit_text = "© OpenStreetMap"
-        package_credit_text = "\n prettymapp | prettymaps"
         if add_package_credit:
+            package_credit_text = "\n prettymapp | prettymaps"
             credit_text = credit_text + package_credit_text
 
         x = self.xmin + 0.87 * self.xdif
