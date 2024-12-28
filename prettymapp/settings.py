@@ -1,3 +1,5 @@
+
+# Setting `True` will include all subclasses of the class, without having to specify them explicitly.
 LANDCOVER_CLASSES = {
     "urban": {"building": True, "landuse": ["construction", "commercial"]},
     "water": {
