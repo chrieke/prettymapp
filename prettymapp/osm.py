@@ -19,14 +19,20 @@ def get_osm_tags(landcover_classes: dict = LANDCOVER_CLASSES):
     
     Args:
         landcover_classes: Landcover selection settings, defaults to prettymapp.settings.LANDCOVER_CLASSES
+        E.g.
+        {
+            "urban": {"building": True, "landuse": ["construction", "commercial"]},
+            "water": {"natural": ["water", "bay"]},
+        }
     """
     tags: dict = {}
-    for d in landcover_classes.values():  # type: ignore
-        for k, v in d.items():  # type: ignore
-            try:
-                tags.setdefault(k, []).extend(v)
-            except TypeError:  # e.g. "building": True
-                tags[k] = v
+    for sub_classes_dict in landcover_classes.values():
+        for sub_class_name, subsub_classes in sub_classes_dict.items():
+            if subsub_classes:  # Skip if False value
+                if isinstance(subsub_classes, list):
+                    tags.setdefault(sub_class_name, []).extend(subsub_classes)
+                elif isinstance(subsub_classes, bool):
+                    tags[sub_class_name] = subsub_classes
     return tags
 
 
