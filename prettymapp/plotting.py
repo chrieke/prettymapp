@@ -16,23 +16,6 @@ import matplotlib.patheffects as PathEffects
 from prettymapp.settings import STREETS_WIDTH, STYLES
 
 
-def adjust_lightness(color: str, amount: float = 0.5) -> Tuple[float, float, float]:
-    """
-    In-/Decrease color brightness amount by factor.
-
-    Helper to avoid having the user define background ec color value which is similar to background color.
-
-    via https://stackoverflow.com/questions/37765197/darken-or-lighten-a-color-in-matplotlib
-    """
-    try:
-        c = cnames[color]
-    except KeyError:
-        c = color
-    c = colorsys.rgb_to_hls(*to_rgb(c))
-    adjusted_c = colorsys.hls_to_rgb(c[0], max(0, min(1, amount * c[1])), c[2])
-    return adjusted_c
-
-
 @dataclass
 class Plot:
     """
@@ -273,3 +256,20 @@ class Plot:
             y = self.ymin - 0.70 * self.bg_buffer_y
         text = self.ax.text(x=x, y=y, s=text, c="w", fontsize=fontsize, zorder=zorder)
         text.set_path_effects([PathEffects.withStroke(linewidth=3, foreground="black")])
+
+
+def adjust_lightness(color: str, amount: float = 0.5) -> Tuple[float, float, float]:
+    """
+    In-/Decrease color brightness amount by factor.
+
+    Helper to avoid having the user define background ec color value which is similar to background color.
+
+    via https://stackoverflow.com/questions/37765197/darken-or-lighten-a-color-in-matplotlib
+    """
+    try:
+        c = cnames[color]
+    except KeyError:
+        c = color
+    c = colorsys.rgb_to_hls(*to_rgb(c))
+    adjusted_c = colorsys.hls_to_rgb(c[0], max(0, min(1, amount * c[1])), c[2])
+    return adjusted_c
