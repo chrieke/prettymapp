@@ -9,6 +9,14 @@ Update your installation to the latest version:
     pip install prettymapp --upgrade
     ```
 
+## 0.5.0
+**November 30, 2024**
+
+- Adds boolean `credits` parameter to the `Plot` class. Set to `False` to hide the OSM/package credits on the map.
+- Fixes an issue where customized landcover_classes where ignored in `get_osm_geometries`.
+- Fixes an issue where setting a landcover_class to `False` resulted in a Keyerror.
+- Various documentation & example improvements.
+
 ## 0.4.0
 **November 30, 2024**
 
