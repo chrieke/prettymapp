@@ -102,7 +102,7 @@ class Plot:
             self.set_map_contour()
         if self.name_on:
             self.set_name()
-        if self.show_credits:
+        if self.credits:
             self.set_credits()
 
         return self.fig
