@@ -10,7 +10,7 @@ Update your installation to the latest version:
     ```
 
 ## 0.5.0
-**November 30, 2024**
+**December 29, 2024**
 
 - Adds boolean `credits` parameter to the `Plot` class. Set to `False` to hide the OSM/package credits on the map.
 - Fixes an issue where customized landcover_classes where ignored in `get_osm_geometries`.

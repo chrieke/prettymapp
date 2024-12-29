@@ -31,6 +31,8 @@ simplified configuration interfaces. It is partially tested and adds a [streamli
 
 ## Running the app locally
 
+You can use the webapp directly under [prettymapp.streamlit.app](https://prettymapp.streamlit.app/) or run it locally via:
+
 ```bash
 git clone https://github.com/chrieke/prettymapp.git
 cd prettymapp
