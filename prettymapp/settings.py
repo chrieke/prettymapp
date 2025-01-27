@@ -1,4 +1,3 @@
-
 # Setting `True` will include all subclasses of the class, without having to specify them explicitly.
 LANDCOVER_CLASSES = {
     "urban": {"building": True, "landuse": ["construction", "commercial"]},
@@ -53,6 +52,10 @@ STYLES = {
         "woodland": {"fc": "#64B96A", "ec": "#2F3737", "lw": 1, "zorder": 2},
         "streets": {"fc": "#2F3737", "zorder": 3},
         "other": {"fc": "#F2F4CB", "ec": "#2F3737", "lw": 1, "zorder": 3},
+        "street_names": {
+            "font_size": 12,
+            "font_color": "#2F3737",
+        },
     },
     "Auburn": { # e.g. Barcelona
         "urban": {
@@ -80,6 +83,10 @@ STYLES = {
         "woodland": {"fc": "#64B96A", "ec": "#2F3737", "lw": 1, "zorder": 2},
         "streets": {"fc": "#2F3737", "zorder": 4},
         "other": {"fc": "#F2F4CB", "ec": "#2F3737", "lw": 1, "zorder": 3},
+        "street_names": {
+            "font_size": 12,
+            "font_color": "#2F3737",
+        },
     },
     "Citrus": { # e.g. Würzburg
         "urban": {
@@ -105,6 +112,10 @@ STYLES = {
         "woodland": {"fc": "#80B918", "ec": "#2F3737", "lw": 1, "zorder": 2},
         "streets": {"fc": "#FFFFFF", "zorder": 4},
         "other": {"fc": "#EAE2B7", "ec": "#2F3737", "lw": 1, "zorder": 3},
+        "street_names": {
+            "font_size": 12,
+            "font_color": "#2F3737",
+        },
     },
     "Flannel": { # e.g. Heerhugowaard
         "urban": {
@@ -132,6 +143,10 @@ STYLES = {
         "woodland": {"fc": "#64B96A", "ec": "#2F3737", "lw": 1, "zorder": 2},
         "streets": {"fc": "#2F3737", "zorder": 4, "ec": 475657},
         "other": {"fc": "#F2F4CB", "ec": "#2F3737", "lw": 1, "zorder": 3},
+        "street_names": {
+            "font_size": 12,
+            "font_color": "#2F3737",
+        },
     },
 }
 
