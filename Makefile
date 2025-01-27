@@ -30,3 +30,8 @@ clean:
 	find . -name ".mypy_cache" -exec rm -rf {} +
 	find . -name ".pytest_cache" -exec rm -rf {} +
 	find . -name ".coverage" -exec rm -f {} +
+
+deploy-azure:
+	kubectl apply -f k8s/deployment.yaml
+	az aks get-credentials --resource-group <resource-group> --name <aks-cluster-name>
+	kubectl rollout restart deployment/fastapi-deployment
