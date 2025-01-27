@@ -5,11 +5,12 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 COPY streamlit-prettymapp /app/streamlit-prettymapp/
+COPY prettymapp /app/prettymapp/
 
 WORKDIR /app
 
 RUN pip3 install -r streamlit-prettymapp/requirements.txt
-RUN pip3 install fastapi uvicorn
+RUN pip3 install -r pyproject.toml
 
 EXPOSE 8501
 EXPOSE 8000
