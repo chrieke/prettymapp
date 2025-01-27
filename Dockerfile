@@ -9,9 +9,11 @@ COPY streamlit-prettymapp /app/streamlit-prettymapp/
 WORKDIR /app
 
 RUN pip3 install -r streamlit-prettymapp/requirements.txt
+RUN pip3 install fastapi uvicorn
 
 EXPOSE 8501
+EXPOSE 8000
 
 HEALTHCHECK CMD curl --fail http://localhost:8501/_stcore/health
 
-ENTRYPOINT ["streamlit", "run", "streamlit-prettymapp/app.py", "--server.port=8501", "--server.address=0.0.0.0"]
+ENTRYPOINT ["uvicorn", "prettymapp.fastapi_app:app", "--host", "0.0.0.0", "--port", "8000"]
