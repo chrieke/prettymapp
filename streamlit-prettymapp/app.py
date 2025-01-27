@@ -147,23 +147,6 @@ text_rotation = col2style.slider(
     key="text_rotation",
 )
 
-# Add options for customizing street name rendering
-street_name_on = col2style.checkbox(
-    "Display street names",
-    help="If checked, adds street names to the map.",
-    key="street_name_on",
-)
-street_name_font_size = col2style.slider(
-    "Street name font size",
-    min_value=1,
-    max_value=50,
-    key="street_name_font_size",
-)
-street_name_font_color = col2style.color_picker(
-    "Street name font color",
-    key="street_name_font_color",
-)
-
 if style != st.session_state["previous_style"]:
     st.session_state.update(get_colors_from_style(style))  # type: ignore
 draw_settings = copy.deepcopy(STYLES[style])
@@ -202,9 +185,6 @@ with st.spinner("Creating map... (may take up to a minute)"):
         "bg_shape": bg_shape,
         "bg_buffer": bg_buffer,
         "bg_color": bg_color,
-        "street_name_on": street_name_on,
-        "street_name_font_size": street_name_font_size,
-        "street_name_font_color": street_name_font_color,
     }
     fig = st_plot_all(_df=df, **config)
     # result_container.write(html, unsafe_allow_html=True)

@@ -104,7 +104,6 @@ class Plot:
             self.set_name()
         if self.credits:
             self.set_credits()
-        self.set_street_names()
 
         return self.fig
 
@@ -258,40 +257,6 @@ class Plot:
         text = self.ax.text(x=x, y=y, s=text, c="w", fontsize=fontsize, zorder=zorder)
         text.set_path_effects([PathEffects.withStroke(linewidth=3, foreground="black")])
 
-    def set_street_names(self):
-        """
-        Render street names on the map.
-        Adjust text placement to avoid overlaps dynamically.
-        Use the same font and style as the location name for consistency.
-        """
-        _location_ = Path(__file__).resolve().parent
-        fpath = _location_ / "fonts/PermanentMarker-Regular.ttf"
-        fontproperties = fm.FontProperties(fname=fpath.resolve())
-        font_size = self.font_size * 0.5  # Smaller than the location name
-
-        for idx, row in self.df.iterrows():
-            if row["landcover_class"] == "streets" and row["highway"] in STREETS_WIDTH:
-                x, y = row.geometry.centroid.x, row.geometry.centroid.y
-                street_name = row.get("name", "")
-                if street_name:
-                    text = self.ax.text(
-                        x=x,
-                        y=y,
-                        s=street_name,
-                        color=self.font_color,
-                        zorder=6,
-                        ha="center",
-                        fontproperties=fontproperties,
-                        size=font_size,
-                    )
-                    text.set_path_effects([PathEffects.withStroke(linewidth=3, foreground="white")])
-                    # Adjust text placement to avoid overlaps
-                    renderer = self.fig.canvas.get_renderer()
-                    bbox = text.get_window_extent(renderer=renderer)
-                    if self.ax.bbox.contains(bbox):
-                        continue
-                    else:
-                        text.set_position((x + 0.0001, y + 0.0001))  # Adjust position
 
 def adjust_lightness(color: str, amount: float = 0.5) -> Tuple[float, float, float]:
     """

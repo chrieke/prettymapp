@@ -70,7 +70,7 @@ def cleanup_osm_df(
     # Drop not assigned elements (part of multiple classes)
     df = df[~df["landcover_class"].isnull()]
     df = df.drop(
-        df.columns.difference(["geometry", "landcover_class", "highway", "name"]), axis=1
+        df.columns.difference(["geometry", "landcover_class", "highway"]), axis=1
     )
 
     return df
