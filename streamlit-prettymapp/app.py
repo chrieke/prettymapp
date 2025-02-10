@@ -47,7 +47,7 @@ if index_selected != st.session_state["previous_example_index"]:
     st.session_state["previous_example_index"] = index_selected
 
 st.write("")
-form = st.form(key="form_settings")
+form = st.form(key="form_settings", enter_to_submit=False)
 col1, col2, col3 = form.columns([3, 1, 1])
 
 address = col1.text_input(
