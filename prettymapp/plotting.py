@@ -242,7 +242,7 @@ class Plot:
             size=self.font_size,
         )
 
-    def set_credits(self, text: str = "© OpenStreetMap\n prettymapp | prettymaps", 
+    def set_credits(self, text: str = "", 
                 x: float | None = None, 
                 y: float | None = None, 
                 fontsize: int = 9, 
