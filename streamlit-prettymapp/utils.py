@@ -2,8 +2,6 @@ from io import StringIO
 import unicodedata
 import re
 from typing import Any
-import io
-import json
 
 from matplotlib.pyplot import figure
 import streamlit as st
@@ -15,9 +13,7 @@ from prettymapp.osm import get_osm_geometries
 from prettymapp.settings import STYLES
 
 
-@st.cache_data(
-    show_spinner=False, hash_funcs={Polygon: lambda x: json.dumps(x.__geo_interface__)}
-)
+@st.cache_data(show_spinner=False, hash_funcs={Polygon: lambda x: str(x.wkt)})
 def st_get_osm_geometries(aoi):
     """Wrapper to enable streamlit caching for package function"""
     df = get_osm_geometries(aoi=aoi)
@@ -75,9 +71,3 @@ def slugify(value: Any, allow_unicode: bool = False):
         )
     value = re.sub(r"[^\w\s-]", "", value.lower())
     return re.sub(r"[-\s]+", "-", value).strip("-_")
-
-
-def gdf_to_bytesio_geojson(geodataframe):
-    geojson_object = io.BytesIO()
-    geodataframe.to_file(geojson_object, driver="GeoJSON")
-    return geojson_object

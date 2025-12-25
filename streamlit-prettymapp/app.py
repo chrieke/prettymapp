@@ -3,12 +3,12 @@ import json
 
 import streamlit as st
 from streamlit_image_select import image_select
+from pathlib import Path
 
 from utils import (
     st_get_osm_geometries,
     st_plot_all,
     get_colors_from_style,
-    gdf_to_bytesio_geojson,
     plt_to_svg,
     slugify,
 )
@@ -241,10 +241,11 @@ ex1, ex2 = st.columns(2)
 
 with ex1.expander("Export geometries as GeoJSON"):
     st.write(f"{df.shape[0]} geometries")
+    geojson_fname_base = slugify(address) if str(address).strip() else "prettymapp"
     st.download_button(
         label="Download",
-        data=gdf_to_bytesio_geojson(df),
-        file_name=f"prettymapp_{address[:10]}.geojson",
+        data=lambda: df.to_json().encode("utf-8"),
+        file_name=f"{geojson_fname_base}.geojson",
         mime="application/geo+json",
     )
 
