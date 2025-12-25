@@ -254,9 +254,6 @@ with ex2.expander("Export map configuration"):
 
 
 st.markdown("---")
-st.write(
-    "Share on social media with the hashtag [#prettymaps](https://twitter.com/search?q=%23prettymaps&src=typed_query) !"
-)
 st.markdown(
     "More infos and :star: at [github.com/chrieke/prettymapp](https://github.com/chrieke/prettymapp)"
 )
