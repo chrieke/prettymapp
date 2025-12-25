@@ -9,6 +9,13 @@ Update your installation to the latest version:
     pip install prettymapp --upgrade
     ```
 
+## 0.6.0
+**December 25, 2025**
+
+- Add image download button with format (png, svg) selection
+- Small improvements to local run config
+
+
 ## 0.5.0
 **December 29, 2024**
 
