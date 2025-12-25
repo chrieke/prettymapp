@@ -14,7 +14,7 @@ class GeoCodingError(Exception):
 def validate_coordinates(lat: float, lon: float) -> None:
     if lat < -90 or lat > 90 or lon < -180 or lon > 180:
         raise ValueError(
-            "longitude (-90 to 90) and latitude (-180 to 180) coordinates "
+            "latitude (-90 to 90) and longitude (-180 to 180) coordinates "
             "are not within valid ranges."
         )
 
@@ -48,7 +48,9 @@ def get_aoi(
         except ValueError as e:
             raise GeoCodingError(f"Could not geocode address '{address}'") from e
     else:
-        lat, lon = coordinates  # type: ignore
+        if coordinates is None:
+            raise ValueError("Either 'address' or 'coordinates' must be provided.")
+        lat, lon = coordinates
     validate_coordinates(lat, lon)
 
     df = GeoDataFrame(
