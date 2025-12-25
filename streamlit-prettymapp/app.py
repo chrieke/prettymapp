@@ -200,6 +200,7 @@ with st.expander("Export image"):
         index=0,
         help="Export the rendered map in different formats.",
         key="export_image_format",
+        format_func=lambda v: "PNG (300 dpi)" if v == "png" else "SVG (lossless)",
     )
     fname_base = slugify(address) if str(address).strip() else "prettymapp"
     mime_by_format = {
