@@ -9,6 +9,8 @@ from utils import (
     st_plot_all,
     get_colors_from_style,
     gdf_to_bytesio_geojson,
+    plt_to_svg,
+    slugify,
 )
 from prettymapp.geo import GeoCodingError, get_aoi
 from prettymapp.settings import STYLES
@@ -160,7 +162,6 @@ for lc_class in st.session_state.lc_classes:
 
 form.form_submit_button(label="Submit")
 
-result_container = st.empty()
 with st.spinner("Creating map... (may take up to a minute)"):
     rectangular = shape != "circle"
     try:
@@ -187,25 +188,55 @@ with st.spinner("Creating map... (may take up to a minute)"):
         "bg_color": bg_color,
     }
     fig = st_plot_all(_df=df, **config)
-    # result_container.write(html, unsafe_allow_html=True)
     st.pyplot(fig, pad_inches=0, bbox_inches="tight", transparent=True, dpi=300)
 
-# svg_string = plt_to_svg(fig)
-# html = svg_to_html(svg_string)
-# st.write("")
-# fname = slugify(address)
-# img_format = st.selectbox("Download image as", ["svg", "png", "jpg"], index=0)
-# if img_format == "svg":
-#     data = svg_string
-# elif img_format == "png":
-#     import io
-#
-#     data = io.BytesIO()
-#     fig.savefig(data, pad_inches=0, bbox_inches="tight", transparent=True)
-# st.download_button(label="Download image", data=data, file_name=f"{fname}.{img_format}")
+st.markdown("</br>", unsafe_allow_html=True)
+st.markdown("</br>", unsafe_allow_html=True)
 
-st.markdown("</br>", unsafe_allow_html=True)
-st.markdown("</br>", unsafe_allow_html=True)
+with st.expander("Export image"):
+    img_format = st.selectbox(
+        "File type",
+        options=["png", "svg"],
+        index=0,
+        help="Export the rendered map in different formats.",
+        key="export_image_format",
+        format_func=lambda v: "PNG (300 dpi)" if v == "png" else "SVG (lossless)",
+    )
+    fname_base = slugify(address) if str(address).strip() else "prettymapp"
+    mime_by_format = {
+        "png": "image/png",
+        "svg": "image/svg+xml",
+    }
+
+    def _make_download_data():
+        # Deferred, only executed on click.
+        if img_format == "svg":
+            return plt_to_svg(fig)
+
+        import io
+
+        buf = io.BytesIO()
+        savefig_kwargs = dict(
+            format=img_format,
+            pad_inches=0,
+            bbox_inches="tight",
+            transparent=True,
+        )
+        if img_format == "png":
+            savefig_kwargs["dpi"] = 300
+        fig.savefig(buf, **savefig_kwargs)
+        buf.seek(0)
+        return buf.getvalue()
+
+    st.download_button(
+        label="Download",
+        data=_make_download_data,
+        file_name=f"{fname_base}.{img_format}",
+        mime=mime_by_format[img_format],
+        on_click="ignore",
+        key=f"download_image_{img_format}",
+    )
+
 ex1, ex2 = st.columns(2)
 
 with ex1.expander("Export geometries as GeoJSON"):

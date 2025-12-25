@@ -1,5 +1,4 @@
-import base64
-from io import StringIO, BytesIO
+from io import StringIO
 import unicodedata
 import re
 from typing import Any
@@ -55,22 +54,6 @@ def plt_to_svg(fig: figure) -> str:
     imgdata.seek(0)
     svg_string = imgdata.getvalue()
     return svg_string
-
-
-def svg_to_html(svg_string: str) -> str:
-    b64 = base64.b64encode(svg_string.encode("utf-8")).decode("utf-8")
-    css_justify = "center"
-    css = f'<p style="text-align:center; display: flex; flex-direction: column; justify-content: {css_justify};">'
-    html = rf'{css}<img src="data:image/svg+xml;base64,{b64}"/>'
-    return html
-
-
-def plt_to_href(fig: figure, filename: str):
-    buf = BytesIO()
-    fig.savefig(buf, format="png", pad_inches=0, bbox_inches="tight", transparent=True)
-    img_str = base64.b64encode(buf.getvalue()).decode()
-    href = f'<a href="data:file/txt;base64,{img_str}" download="{filename}"></a>'
-    return href
 
 
 def slugify(value: Any, allow_unicode: bool = False):
