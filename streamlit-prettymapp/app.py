@@ -20,7 +20,8 @@ st.set_page_config(
 )
 st.markdown("# Prettymapp")
 
-with open("./streamlit-prettymapp/examples.json", "r", encoding="utf8") as f:
+_HERE = Path(__file__).resolve().parent
+with (_HERE / "examples.json").open("r", encoding="utf8") as f:
     EXAMPLES = json.load(f)
 
 if not st.session_state:
@@ -32,7 +33,7 @@ if not st.session_state:
     st.session_state["previous_style"] = "Peach"
     st.session_state["previous_example_index"] = 0
 
-example_image_pattern = "streamlit-prettymapp/example_prints/{}_small.png"
+example_image_pattern = str(_HERE / "example_prints" / "{}_small.png")
 example_image_fp = [
     example_image_pattern.format(name.lower()) for name in list(EXAMPLES.keys())[:4]
 ]
