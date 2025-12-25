@@ -36,8 +36,8 @@ You can use the webapp directly under [prettymapp.streamlit.app](https://prettym
 ```bash
 git clone https://github.com/chrieke/prettymapp.git
 cd prettymapp
-pip install -r streamlit-prettymapp/requirements.txt
-streamlit run streamlit-prettymapp/app.py
+uv sync --extra streamlit
+uv run streamlit run streamlit-prettymapp/app.py
 ```
 
 ## Python package
