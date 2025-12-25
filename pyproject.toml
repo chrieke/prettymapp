@@ -12,20 +12,16 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
     "Development Status :: 4 - Beta",
-    "Intended Audience :: Developers"
+    "Intended Audience :: Developers",
 ]
 dependencies = [
-    "matplotlib>=3.9.2",
-    "osmnx>=2.0.0",
-    "pandas==2.2.3",
-    "pyogrio>=0.10.0",
+    "matplotlib>=3.10.8",
+    "osmnx>=2.0.7",
+    "pandas>=2.3.3",
 ]
 
 [project.optional-dependencies]
-streamlit = [
-    "streamlit",
-    "streamlit-image-select",
-]
+streamlit = ["streamlit", "streamlit-image-select"]
 
 [dependency-groups]
 dev = [
@@ -48,7 +44,7 @@ build-backend = "setuptools.build_meta"
 
 # Specifically define package, doesn't know if prettymapp or cache
 [tool.setuptools]
-package-dir = {"" = "."}
+package-dir = { "" = "." }
 include-package-data = false
 license-files = ["LICENSES/*.txt"]
 
