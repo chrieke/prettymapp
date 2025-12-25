@@ -14,11 +14,7 @@ classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
 ]
-dependencies = [
-    "matplotlib>=3.10.8",
-    "osmnx>=2.0.7",
-    "pandas>=2.3.3",
-]
+dependencies = ["matplotlib>=3.10.8", "osmnx>=2.0.7", "pandas>=2.3.3"]
 
 [project.optional-dependencies]
 streamlit = ["streamlit", "streamlit-image-select"]
@@ -39,7 +35,7 @@ dev = [
 ]
 
 [build-system]
-requires = ["setuptools"]
+requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"
 
 # Specifically define package, doesn't know if prettymapp or cache
