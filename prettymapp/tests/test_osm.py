@@ -1,4 +1,12 @@
-from prettymapp.osm import get_osm_tags, get_osm_geometries_from_xml
+import pytest
+from geopandas import GeoDataFrame
+
+from prettymapp.osm import (
+    get_osm_tags,
+    get_osm_geometries_from_xml,
+    cleanup_osm_df,
+    OsmDataError,
+)
 
 
 def test_get_osm_tags():
@@ -41,3 +49,8 @@ def test_get_osm_geometries_from_xml():
     filepath = "./mock_data/osm_export_xml.osm"
     df = get_osm_geometries_from_xml(filepath)
     assert df.shape == (18, 3)
+
+
+def test_cleanup_osm_df_empty_input_raises():
+    with pytest.raises(OsmDataError):
+        cleanup_osm_df(GeoDataFrame())

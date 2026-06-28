@@ -13,6 +13,7 @@ from utils import (
     slugify,
 )
 from prettymapp.geo import GeoCodingError, get_aoi
+from prettymapp.osm import OsmDataError
 from prettymapp.settings import STYLES
 
 st.set_page_config(
@@ -170,7 +171,17 @@ with st.spinner("Creating map... (may take up to a minute)"):
     except GeoCodingError as e:
         st.error(f"ERROR: {str(e)}")
         st.stop()
-    df = st_get_osm_geometries(aoi=aoi)
+    try:
+        df = st_get_osm_geometries(aoi=aoi)
+    except OsmDataError as e:
+        st.error(f"ERROR: {str(e)}")
+        st.stop()
+    except Exception:  # pylint: disable=broad-except
+        st.error(
+            "ERROR: Could not download OpenStreetMap data for this area. "
+            "The service may be busy or unavailable - please try again."
+        )
+        st.stop()
     config = {
         "aoi_bounds": aoi.bounds,
         "draw_settings": draw_settings,
@@ -188,7 +199,11 @@ with st.spinner("Creating map... (may take up to a minute)"):
         "bg_buffer": bg_buffer,
         "bg_color": bg_color,
     }
-    fig = st_plot_all(_df=df, **config)
+    try:
+        fig = st_plot_all(_df=df, **config)
+    except Exception:  # pylint: disable=broad-except
+        st.error("ERROR: Could not render the map for this area. Please try again.")
+        st.stop()
     st.pyplot(fig, pad_inches=0, bbox_inches="tight", transparent=True, dpi=300)
 
 st.markdown("</br>", unsafe_allow_html=True)
