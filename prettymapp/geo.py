@@ -1,5 +1,3 @@
-from typing import Tuple, Optional
-
 from osmnx.geocoder import geocode
 from geopandas import GeoDataFrame
 import pandas as pd
@@ -20,8 +18,8 @@ def validate_coordinates(lat: float, lon: float) -> None:
 
 
 def get_aoi(
-    address: Optional[str] = None,
-    coordinates: Optional[Tuple[float, float]] = None,
+    address: str | None = None,
+    coordinates: tuple[float, float] | None = None,
     radius: int = 1000,
     rectangular: bool = False,
 ) -> Polygon:
@@ -43,10 +41,19 @@ def get_aoi(
                 "Both address and latlon coordinates were provided, please "
                 "select only one!"
             )
+        if not address.strip():
+            raise GeoCodingError("No address provided, please enter a location.")
         try:
             lat, lon = geocode(address)
         except ValueError as e:
             raise GeoCodingError(f"Could not geocode address '{address}'") from e
+        except Exception as e:  # pylint: disable=broad-except
+            # osmnx/requests surface network, timeout and HTTP errors as a range of
+            # exception types; treat them all as a transient geocoding failure.
+            raise GeoCodingError(
+                f"Could not reach the geocoding service while looking up "
+                f"'{address}'. Please try again."
+            ) from e
     else:
         if coordinates is None:
             raise ValueError("Either 'address' or 'coordinates' must be provided.")

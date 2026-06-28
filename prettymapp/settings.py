@@ -1,4 +1,3 @@
-
 # Setting `True` will include all subclasses of the class, without having to specify them explicitly.
 LANDCOVER_CLASSES = {
     "urban": {"building": True, "landuse": ["construction", "commercial"]},
@@ -34,7 +33,7 @@ LANDCOVER_CLASSES = {
 
 # Contains drawing settings
 STYLES = {
-    "Peach": { # e.g. Macau
+    "Peach": {  # e.g. Macau
         "urban": {
             "cmap": ["#FFC857", "#E9724C", "#C5283D"],
             "ec": "#2F3737",
@@ -54,7 +53,7 @@ STYLES = {
         "streets": {"fc": "#2F3737", "zorder": 3},
         "other": {"fc": "#F2F4CB", "ec": "#2F3737", "lw": 1, "zorder": 3},
     },
-    "Auburn": { # e.g. Barcelona
+    "Auburn": {  # e.g. Barcelona
         "urban": {
             "cmap": ["#433633", "#FF5E5B", "#FF5E5B"],
             "ec": "#2F3737",
@@ -81,7 +80,7 @@ STYLES = {
         "streets": {"fc": "#2F3737", "zorder": 4},
         "other": {"fc": "#F2F4CB", "ec": "#2F3737", "lw": 1, "zorder": 3},
     },
-    "Citrus": { # e.g. Würzburg
+    "Citrus": {  # e.g. Würzburg
         "urban": {
             "cmap": ["#FFFF3F", "#F4D58D", "#F5CB5C"],
             "ec": "#2F3737",
@@ -106,7 +105,7 @@ STYLES = {
         "streets": {"fc": "#FFFFFF", "zorder": 4},
         "other": {"fc": "#EAE2B7", "ec": "#2F3737", "lw": 1, "zorder": 3},
     },
-    "Flannel": { # e.g. Heerhugowaard
+    "Flannel": {  # e.g. Heerhugowaard
         "urban": {
             "cmap": ["#433633", "#FF5E5B", "#FF5E5B"],
             "ec": "#2F3737",
@@ -130,7 +129,7 @@ STYLES = {
             "zorder": 1,
         },
         "woodland": {"fc": "#64B96A", "ec": "#2F3737", "lw": 1, "zorder": 2},
-        "streets": {"fc": "#2F3737", "zorder": 4, "ec": 475657},
+        "streets": {"fc": "#2F3737", "zorder": 4},
         "other": {"fc": "#F2F4CB", "ec": "#2F3737", "lw": 1, "zorder": 3},
     },
 }

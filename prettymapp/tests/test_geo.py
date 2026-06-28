@@ -96,6 +96,18 @@ def test_get_aoi_invalid_address_raises():
         get_aoi("not_an_address")
 
 
+def test_get_aoi_empty_address_raises():
+    with pytest.raises(GeoCodingError):
+        get_aoi("   ")
+
+
+@patch("prettymapp.geo.geocode")
+def test_get_aoi_geocode_network_error_raises(mock_geocode):
+    mock_geocode.side_effect = ConnectionError("boom")
+    with pytest.raises(GeoCodingError):
+        get_aoi("Unter den Linden 37, 10117 Berlin")
+
+
 def test_explode_multigeoemtries():
     poly1 = Polygon([[0, 0], [1, 0], [1, 1], [0, 1], [0, 0]])
     poly2 = Polygon([[0, 0], [2, 0], [2, 2], [0, 2], [0, 0]])

@@ -1,4 +1,3 @@
-from typing import Union
 from pathlib import Path
 
 from osmnx.features import features_from_polygon, features_from_xml
@@ -13,10 +12,14 @@ settings.use_cache = True
 settings.log_console = False
 
 
+class OsmDataError(Exception):
+    """Raised when no usable OSM features are available for the query."""
+
+
 def get_osm_tags(landcover_classes: dict = LANDCOVER_CLASSES):
     """
     Get relevant OSM tags for use with prettymapp
-    
+
     Args:
         landcover_classes: Landcover selection settings, defaults to prettymapp.settings.LANDCOVER_CLASSES
         E.g.
@@ -37,17 +40,26 @@ def get_osm_tags(landcover_classes: dict = LANDCOVER_CLASSES):
 
 
 def cleanup_osm_df(
-    df: GeoDataFrame, aoi: Union[Polygon, None] = None, landcover_classes: dict = LANDCOVER_CLASSES
+    df: GeoDataFrame,
+    aoi: Polygon | None = None,
+    landcover_classes: dict = LANDCOVER_CLASSES,
 ) -> GeoDataFrame:
     """
     Cleanup of queried osm geometries to relevant level for use with prettymapp
-    
+
     Args:
         df: GeoDataFrame with queried OSM geometries
         aoi: Optional geographic boundary to filter elements
         landcover_classes: Landcover selection settings, defaults to prettymapp.settings.LANDCOVER_CLASSES
+
+    Raises:
+        OsmDataError: If no usable OSM features remain after cleanup.
     """
-    df = df.droplevel(level=0)
+    if df.empty:
+        raise OsmDataError("No OSM features found for this area.")
+    # osmnx returns a (element_type, osmid) MultiIndex; drop the element_type level.
+    if df.index.nlevels > 1:
+        df = df.droplevel(level=0)
     df = df[~df.geometry.geom_type.isin(["Point", "MultiPoint"])]
     if aoi is not None:
         df = clip(df, aoi)
@@ -73,6 +85,12 @@ def cleanup_osm_df(
         df.columns.difference(["geometry", "landcover_class", "highway"]), axis=1
     )
 
+    if df.empty:
+        raise OsmDataError(
+            "No OSM features matching the prettymapp landcover classes were "
+            "found for this area."
+        )
+
     return df
 
 
@@ -93,7 +111,9 @@ def get_osm_geometries(
 
 
 def get_osm_geometries_from_xml(
-    filepath: Union[str, Path], aoi: Union[Polygon, None] = None, landcover_classes: dict = LANDCOVER_CLASSES
+    filepath: str | Path,
+    aoi: Polygon | None = None,
+    landcover_classes: dict = LANDCOVER_CLASSES,
 ) -> GeoDataFrame:
     """
     Query OSM features in an OSM-formatted XML file.

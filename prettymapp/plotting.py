@@ -1,9 +1,6 @@
 from pathlib import Path
 import colorsys
-from typing import Tuple, List
-from dataclasses import dataclass
-
-from dataclasses import field
+from dataclasses import dataclass, field
 from geopandas.plotting import _plot_polygon_collection, _plot_linestring_collection
 from geopandas import GeoDataFrame
 import numpy as np
@@ -20,17 +17,17 @@ from prettymapp.settings import STREETS_WIDTH, STYLES
 class Plot:
     """
     Main plotting class for prettymapp.
-    
+
     Args:
         df: GeoDataFrame with the geometries to plot
         aoi_bounds: List of minx, miny, maxx, maxy coordinates, specifying the map extent
         draw_settings: Dictionary of color & draw settings, see prettymapp.settings.STYLES
-        
+
         # Map layout
         shape: the map shape, "circle" or "rectangle"
         contour_width: width of the map contour, defaults to 0
         contour_color: color of the map contour, defaults to "#2F3537"
-        
+
         # Optional map text settings e.g. to display location name
         name_on: whether to display the location name, defaults to False
         name: the location name to display, defaults to "some name"
@@ -40,14 +37,15 @@ class Plot:
         text_y: y-coordinate of the location name, defaults to 0
         text_rotation: rotation of the location name, defaults to 0
         credits: Boolean whether to display the OSM&package credits, defaults to True
-        
+
         # Map background settings
         bg_shape: the map background shape, "circle" or "rectangle", defaults to "circle"
         bg_buffer: buffer around the map, defaults to 2
         bg_color: color of the map background, defaults to "#F2F4CB"
     """
+
     df: GeoDataFrame
-    aoi_bounds: List[
+    aoi_bounds: list[
         float
     ]  # Not df bounds as could lead to weird plot shapes with unequal geometry distribution.
     draw_settings: dict = field(default_factory=lambda: STYLES["Peach"])
@@ -157,7 +155,7 @@ class Plot:
                     geoms=df_class.geometry,
                     values=cmap_values,
                     cmap=cmap,
-                    **draw_settings_class
+                    **draw_settings_class,
                 )
             else:
                 _plot_polygon_collection(
@@ -242,11 +240,14 @@ class Plot:
             size=self.font_size,
         )
 
-    def set_credits(self, text: str = "© OpenStreetMap\n prettymapp | prettymaps", 
-                x: float | None = None, 
-                y: float | None = None, 
-                fontsize: int = 9, 
-                zorder: int = 6):
+    def set_credits(
+        self,
+        text: str = "© OpenStreetMap\n prettymapp | prettymaps",
+        x: float | None = None,
+        y: float | None = None,
+        fontsize: int = 9,
+        zorder: int = 6,
+    ):
         """
         Add OSM credits. Defaults to lower right corner of map.
         """
@@ -258,7 +259,7 @@ class Plot:
         text.set_path_effects([PathEffects.withStroke(linewidth=3, foreground="black")])
 
 
-def adjust_lightness(color: str, amount: float = 0.5) -> Tuple[float, float, float]:
+def adjust_lightness(color: str, amount: float = 0.5) -> tuple[float, float, float]:
     """
     In-/Decrease color brightness amount by factor.
 
