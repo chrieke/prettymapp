@@ -9,6 +9,21 @@ Update your installation to the latest version:
     pip install prettymapp --upgrade
     ```
 
+## 0.7.0
+**2026-07-08**
+
+- Adds `OsmDataError` and clearer error handling for empty areas and failed geocoding / OSM
+  downloads (raises instead of returning empty or crashing).
+- Replaces private `geopandas.plotting` functions with public matplotlib collections, and uses
+  the stable top-level `osmnx` API instead of submodule imports - avoids breakage on dependency
+  upgrades.
+- New `dpi` parameter on `Plot` (default 300, previously hardcoded 1200) for much faster, lower-
+  memory rendering.
+- Building colors are now seeded, so identical inputs render identical maps.
+- Fixes an invalid edge color in the `Flannel` streets style.
+- Other: osmnx 2.0 data handling, `osmnx<3` bound with `geopandas`/`shapely` as direct
+  dependencies, faster `explode_multigeometries`, and various test & tooling fixes.
+
 ## 0.6.0
 **December 25, 2025**
 
