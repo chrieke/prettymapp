@@ -10,7 +10,7 @@ Update your installation to the latest version:
     ```
 
 ## 0.7.0
-**unreleased**
+**2026-07-08**
 
 - Adds `OsmDataError` and clearer error handling for empty areas and failed geocoding / OSM
   downloads (raises instead of returning empty or crashing).
