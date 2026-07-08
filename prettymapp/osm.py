@@ -1,22 +1,29 @@
 from pathlib import Path
 
-from osmnx.features import features_from_polygon, features_from_xml
-from osmnx import settings
+import osmnx as ox
 from geopandas import clip, GeoDataFrame
 from shapely.geometry import Polygon
 
 from prettymapp.geo import explode_multigeometries
 from prettymapp.settings import LANDCOVER_CLASSES
 
-settings.use_cache = True
-settings.log_console = False
+try:
+    from osmnx._errors import InsufficientResponseError
+except ImportError:  # pragma: no cover - osmnx internals moved, fall back gracefully
+
+    class InsufficientResponseError(Exception):  # type: ignore[no-redef]
+        """Placeholder that never matches if osmnx renamed its exception."""
+
+
+ox.settings.use_cache = True
+ox.settings.log_console = False
 
 
 class OsmDataError(Exception):
     """Raised when no usable OSM features are available for the query."""
 
 
-def get_osm_tags(landcover_classes: dict = LANDCOVER_CLASSES):
+def get_osm_tags(landcover_classes: dict | None = None) -> dict:
     """
     Get relevant OSM tags for use with prettymapp
 
@@ -28,6 +35,8 @@ def get_osm_tags(landcover_classes: dict = LANDCOVER_CLASSES):
             "water": {"natural": ["water", "bay"]},
         }
     """
+    if landcover_classes is None:
+        landcover_classes = LANDCOVER_CLASSES
     tags: dict = {}
     for sub_classes_dict in landcover_classes.values():
         for sub_class_name, subsub_classes in sub_classes_dict.items():
@@ -42,7 +51,7 @@ def get_osm_tags(landcover_classes: dict = LANDCOVER_CLASSES):
 def cleanup_osm_df(
     df: GeoDataFrame,
     aoi: Polygon | None = None,
-    landcover_classes: dict = LANDCOVER_CLASSES,
+    landcover_classes: dict | None = None,
 ) -> GeoDataFrame:
     """
     Cleanup of queried osm geometries to relevant level for use with prettymapp
@@ -55,6 +64,8 @@ def cleanup_osm_df(
     Raises:
         OsmDataError: If no usable OSM features remain after cleanup.
     """
+    if landcover_classes is None:
+        landcover_classes = LANDCOVER_CLASSES
     if df.empty:
         raise OsmDataError("No OSM features found for this area.")
     # osmnx returns a (element_type, osmid) MultiIndex; drop the element_type level.
@@ -79,7 +90,8 @@ def cleanup_osm_df(
             mask_from_different_subtag = ~df[tag].isin(subtags) & df[tag].notna()
             mask_lc_class[mask_from_different_subtag] = False
         df.loc[mask_lc_class, "landcover_class"] = lc_class
-    # Drop not assigned elements (part of multiple classes)
+    # Drop elements not assigned to any class. Elements matching multiple
+    # classes keep the last matching class (landcover_classes order).
     df = df[~df["landcover_class"].isnull()]
     df = df.drop(
         df.columns.difference(["geometry", "landcover_class", "highway"]), axis=1
@@ -95,7 +107,7 @@ def cleanup_osm_df(
 
 
 def get_osm_geometries(
-    aoi: Polygon, landcover_classes: dict = LANDCOVER_CLASSES
+    aoi: Polygon, landcover_classes: dict | None = None
 ) -> GeoDataFrame:
     """
     Query OSM features within a polygon geometry.
@@ -103,9 +115,15 @@ def get_osm_geometries(
     Args:
         aoi: Polygon geometry query boundary.
         landcover_classes: Landcover selection settings, defaults to prettymapp.settings.LANDCOVER_CLASSES
+
+    Raises:
+        OsmDataError: If no usable OSM features are found for the query.
     """
     tags = get_osm_tags(landcover_classes=landcover_classes)
-    df = features_from_polygon(polygon=aoi, tags=tags)
+    try:
+        df = ox.features_from_polygon(polygon=aoi, tags=tags)
+    except InsufficientResponseError as e:
+        raise OsmDataError("No OSM features found for this area.") from e
     df = cleanup_osm_df(df, aoi, landcover_classes=landcover_classes)
     return df
 
@@ -113,7 +131,7 @@ def get_osm_geometries(
 def get_osm_geometries_from_xml(
     filepath: str | Path,
     aoi: Polygon | None = None,
-    landcover_classes: dict = LANDCOVER_CLASSES,
+    landcover_classes: dict | None = None,
 ) -> GeoDataFrame:
     """
     Query OSM features in an OSM-formatted XML file.
@@ -122,8 +140,14 @@ def get_osm_geometries_from_xml(
         filepath: path to file containing OSM XML data
         aoi: Optional geographic boundary to filter elements
         landcover_classes: Landcover selection settings, defaults to prettymapp.settings.LANDCOVER_CLASSES
+
+    Raises:
+        OsmDataError: If no usable OSM features are found in the file.
     """
     tags = get_osm_tags(landcover_classes=landcover_classes)
-    df = features_from_xml(filepath, polygon=aoi, tags=tags)
+    try:
+        df = ox.features_from_xml(filepath, polygon=aoi, tags=tags)
+    except InsufficientResponseError as e:
+        raise OsmDataError("No OSM features found in the provided file.") from e
     df = cleanup_osm_df(df, aoi, landcover_classes=landcover_classes)
     return df

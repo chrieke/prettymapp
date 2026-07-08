@@ -1,6 +1,5 @@
-from osmnx.geocoder import geocode
+import osmnx as ox
 from geopandas import GeoDataFrame
-import pandas as pd
 from pandas import DataFrame
 from shapely.geometry import Polygon, Point, box
 
@@ -44,7 +43,7 @@ def get_aoi(
         if not address.strip():
             raise GeoCodingError("No address provided, please enter a location.")
         try:
-            lat, lon = geocode(address)
+            lat, lon = ox.geocode(address)
         except ValueError as e:
             raise GeoCodingError(f"Could not geocode address '{address}'") from e
         except Exception as e:  # pylint: disable=broad-except
@@ -76,23 +75,10 @@ def get_aoi(
 
 def explode_multigeometries(df: GeoDataFrame) -> GeoDataFrame:
     """
-    Explode all multi geometries in a geodataframe into individual polygon geometries.
-    Adds exploded polygons as rows at the end of the geodataframe and resets its index.
+    Explode all multi-part geometries in a geodataframe into individual
+    single-part geometries, one row each, and reset the index.
+
     Args:
         df: Input GeoDataFrame
     """
-    mask = df.geom_type.isin(["MultiPolygon", "MultiLineString", "MultiPoint"])
-    outdf = df[~mask]
-    df_multi = df[mask]
-    for _, row in df_multi.iterrows():
-        df_temp = GeoDataFrame(
-            pd.DataFrame.from_records([row.to_dict()] * len(row.geometry.geoms)),
-            crs="EPSG:4326",
-        )
-        df_temp.geometry = list(row.geometry.geoms)
-        outdf = GeoDataFrame(
-            pd.concat([outdf, df_temp], ignore_index=True), crs="EPSG:4326"
-        )
-
-    outdf = outdf.reset_index(drop=True)
-    return outdf
+    return df.explode(index_parts=False).reset_index(drop=True)

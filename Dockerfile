@@ -4,11 +4,15 @@ RUN apt-get update && apt-get install -y \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
-COPY streamlit-prettymapp /app/streamlit-prettymapp/
-
 WORKDIR /app
 
-RUN pip3 install -r streamlit-prettymapp/requirements.txt
+# Install the prettymapp package from the local source (not PyPI) so the app
+# and the library can never drift apart, plus the webapp-only dependencies.
+COPY pyproject.toml README.md ./
+COPY prettymapp ./prettymapp/
+COPY streamlit-prettymapp ./streamlit-prettymapp/
+
+RUN pip3 install --no-cache-dir . streamlit==1.52.2 streamlit-image-select==0.6.0 pyogrio
 
 EXPOSE 8501
 

@@ -16,6 +16,7 @@ from prettymapp.geo import GeoCodingError, get_aoi
 from prettymapp.osm import OsmDataError
 from prettymapp.settings import STYLES
 
+
 st.set_page_config(
     page_title="prettymapp", page_icon="🖼️", initial_sidebar_state="collapsed"
 )
@@ -263,6 +264,7 @@ with ex1.expander("Export geometries as GeoJSON"):
         data=lambda: df.to_json().encode("utf-8"),
         file_name=f"{geojson_fname_base}.geojson",
         mime="application/geo+json",
+        on_click="ignore",
     )
 
 config = {"address": address, **config}

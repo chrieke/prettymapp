@@ -1,29 +1,24 @@
 test:
-	-rm -r .pytest_cache
-	black .
-	python -m pytest --pylint --pylint-rcfile=../../pylintrc --mypy --mypy-ignore-missing-imports --durations=3
+	uv run black .
+	uv run pytest prettymapp/tests --pylint --pylint-rcfile=pylintrc --mypy --mypy-ignore-missing-imports --durations=3
 
 test[live]:
-	-rm -r .pytest_cache
-	black .
-	python -m pytest --pylint --pylint-rcfile=../../pylintrc --mypy --mypy-ignore-missing-imports --runlive --durations=5
+	uv run black .
+	uv run pytest prettymapp/tests --pylint --pylint-rcfile=pylintrc --mypy --mypy-ignore-missing-imports --runlive --durations=5
 
 setup:
-	pip install -r requirements.txt
-	pip install -r streamlit-prettymapp/requirements.txt
+	uv sync --extra streamlit
 
-setup-dev:
-	pip install -r requirements.txt
-	pip install -r requirements-dev.txt
-	pip install -e .
-	pip install streamlit
+app:
+	uv run streamlit run streamlit-prettymapp/app.py
 
 package:
-	python setup.py sdist bdist_wheel
-	twine check dist/*
+	rm -rf dist
+	uv build
+	uvx twine check dist/*
 
 upload:
-	twine upload --skip-existing dist/*
+	uvx twine upload --skip-existing dist/*
 
 clean:
 	find . -name "__pycache__" -exec rm -rf {} +

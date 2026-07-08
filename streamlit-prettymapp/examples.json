@@ -7,7 +7,6 @@
         "shape": "circle",
         "contour_width": 1,
         "contour_color": "#2F3537",
-        "image": "macao.png",
         "name_on": true,
         "font_size": 25,
         "font_color": "#2F3737",
@@ -26,7 +25,6 @@
         "shape": "rectangle",
         "contour_width": 0,
         "contour_color": "#2F3538",
-        "image": "barcelona.png",
         "name_on": true,
         "font_size": 30,
         "font_color": "#2F3738",
@@ -45,7 +43,6 @@
         "shape": "circle",
         "contour_width": 15,
         "contour_color": "#FFFFFF",
-        "image": "edinburgh.png",
         "name_on": true,
         "font_size": 25,
         "font_color": "#FFFFFF",
@@ -64,7 +61,6 @@
         "shape": "rectangle",
         "contour_width": 0,
         "contour_color": "#2F3737",
-        "image": "heerhugowaard.png",
         "name_on": true,
         "font_size": 27,
         "font_color": "#2F3737",
@@ -83,7 +79,6 @@
         "shape": "circle",
         "contour_width": 0,
         "contour_color": "#2F3737",
-        "image": "edinburgh.png",
         "name_on": false,
         "font_size": 16,
         "font_color": "#2F3737",
@@ -93,6 +88,5 @@
         "bg_shape": "rectangle",
         "bg_buffer": 2,
         "bg_color": "#F2F4CB"
-    },
-    "Erbil": "erbil.png"
+    }
 }

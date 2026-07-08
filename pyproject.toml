@@ -14,7 +14,15 @@ classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
 ]
-dependencies = ["matplotlib>=3.10.8", "osmnx>=2.0.7", "pandas>=2.3.3"]
+# osmnx <3: major osmnx releases reorganize the API surface (1.x -> 2.x did),
+# geopandas & shapely are used directly, so declared directly.
+dependencies = [
+    "matplotlib>=3.10.8",
+    "osmnx>=2.0.7,<3",
+    "pandas>=2.3.3",
+    "geopandas>=1.0",
+    "shapely>=2.0",
+]
 
 [project.optional-dependencies]
 streamlit = ["streamlit", "streamlit-image-select"]
@@ -42,11 +50,12 @@ build-backend = "setuptools.build_meta"
 [tool.setuptools]
 package-dir = { "" = "." }
 include-package-data = false
-license-files = ["LICENSES/*.txt"]
+license-files = ["LICENSE"]
 
 [tool.setuptools.packages.find]
 where = ["."]
 include = ["prettymapp*"]
+exclude = ["prettymapp.tests*"]
 
 [tool.setuptools.package-data]
 prettymapp = ["fonts/PermanentMarker-Regular.ttf"]
