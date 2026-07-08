@@ -1,4 +1,8 @@
+import matplotlib
 import pytest
+
+# Non-interactive backend so plotting tests run headless (e.g. in CI)
+matplotlib.use("Agg")
 
 
 def pytest_addoption(parser):

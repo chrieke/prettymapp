@@ -1,7 +1,6 @@
 from mock import patch
 import pytest
 from shapely.geometry import Polygon, MultiPolygon
-import osmnx as ox
 import geopandas as gpd
 import pandas as pd
 
@@ -22,59 +21,71 @@ def test_validate_coordinates():
         validate_coordinates(lat=92.3, lon=-237.2)
 
 
-@patch.object(ox, "geocode")
+# Patch the name used inside prettymapp.geo (module attribute lookup at call
+# time), NOT osmnx directly - `from osmnx import geocode`-style bindings would
+# bypass a patch on the osmnx module and silently hit the live geocoder.
+@patch("prettymapp.geo.ox.geocode")
 def test_get_aoi_from_user_input_address(ox_geocode):
     ox_geocode.return_value = 52.52, 13.4
 
     poly = get_aoi("Unter den Linden 37, 10117 Berlin")
+    ox_geocode.assert_called_once()
     assert isinstance(poly, Polygon)
-    assert poly.bounds == (
-        13.373621926483281,
-        52.50770588495259,
-        13.40308384727806,
-        52.525679099870146,
+    assert poly.bounds == pytest.approx(
+        (
+            13.38526793559592,
+            52.511013338753465,
+            13.414732236942758,
+            52.52898664609029,
+        )
     )
-    assert poly.area == 0.000415427539857519
+    assert poly.area == pytest.approx(0.00041546027853784154)
 
 
-@patch.object(ox, "geocode")
+@patch("prettymapp.geo.ox.geocode")
 def test_get_aoi_from_user_input_coordinates(ox_geocode):
-    ox_geocode.return_value = 52.52, 13.4
-
     poly = get_aoi(coordinates=(52.52, 13.4))
+    ox_geocode.assert_not_called()
     assert isinstance(poly, Polygon)
-    assert poly.bounds == (
-        13.38526793559592,
-        52.511013338753465,
-        13.414732236942758,
-        52.52898664609029,
+    assert poly.bounds == pytest.approx(
+        (
+            13.38526793559592,
+            52.511013338753465,
+            13.414732236942758,
+            52.52898664609029,
+        )
     )
 
 
-@patch.object(ox, "geocode")
+@patch("prettymapp.geo.ox.geocode")
 def test_get_aoi_from_user_input_rectangle(ox_geocode):
     ox_geocode.return_value = 52.52, 13.4
 
     poly = get_aoi("Unter den Linden 37, 10117 Berlin", rectangular=True)
+    ox_geocode.assert_called_once()
     assert isinstance(poly, Polygon)
-    assert poly.bounds == (
-        13.373621926483281,
-        52.50770588495259,
-        13.40308384727806,
-        52.525679099870146,
+    assert poly.bounds == pytest.approx(
+        (
+            13.38526793559592,
+            52.511013338753465,
+            13.414732236942758,
+            52.52898664609029,
+        )
     )
-    assert poly.area == 0.0005295254343284959
+    assert poly.area == pytest.approx(0.0005295709435715184)
 
 
 @pytest.mark.live
 def test_get_aoi_from_user_input_address_live():
     poly = get_aoi("Unter den Linden 37, 10117 Berlin")
     assert isinstance(poly, Polygon)
-    assert poly.bounds == (
-        13.373621926483281,
-        52.507705884952586,
-        13.403083847278062,
-        52.52567909987013,
+    assert poly.bounds == pytest.approx(
+        (
+            13.373621926483281,
+            52.507705884952586,
+            13.403083847278062,
+            52.52567909987013,
+        )
     )
 
 
@@ -82,11 +93,13 @@ def test_get_aoi_from_user_input_address_live():
 def test_get_aoi_from_user_input_coordinates_live():
     poly = get_aoi(coordinates=(52.52, 13.4))
     assert isinstance(poly, Polygon)
-    assert poly.bounds == (
-        13.38526793559592,
-        52.51101333875345,
-        13.414732236942758,
-        52.52898664609028,
+    assert poly.bounds == pytest.approx(
+        (
+            13.38526793559592,
+            52.51101333875345,
+            13.414732236942758,
+            52.52898664609028,
+        )
     )
 
 
@@ -101,7 +114,7 @@ def test_get_aoi_empty_address_raises():
         get_aoi("   ")
 
 
-@patch("prettymapp.geo.geocode")
+@patch("prettymapp.geo.ox.geocode")
 def test_get_aoi_geocode_network_error_raises(mock_geocode):
     mock_geocode.side_effect = ConnectionError("boom")
     with pytest.raises(GeoCodingError):

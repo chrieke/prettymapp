@@ -1,16 +1,53 @@
 from pathlib import Path
 import colorsys
 from dataclasses import dataclass, field
-from geopandas.plotting import _plot_polygon_collection, _plot_linestring_collection
 from geopandas import GeoDataFrame
 import numpy as np
+from matplotlib.collections import LineCollection, PatchCollection
 from matplotlib.colors import ListedColormap, cnames, to_rgb
+from matplotlib.path import Path as MplPath
 from matplotlib.pyplot import subplots, Rectangle
 import matplotlib.font_manager as fm
-from matplotlib.patches import Ellipse
+from matplotlib.patches import Ellipse, PathPatch
 import matplotlib.patheffects as PathEffects
 
 from prettymapp.settings import STREETS_WIDTH, STYLES
+
+
+def plot_polygon_collection(
+    ax, geoms, values=None, cmap=None, **kwargs
+) -> PatchCollection:
+    """
+    Plot shapely Polygons as a single matplotlib PatchCollection (honors holes).
+
+    Faster than geodataframe.plot() as it does not use plt.draw(), the figure is
+    rendered only once e.g. in st.pyplot.
+    """
+    patches = [
+        PathPatch(
+            MplPath.make_compound_path(
+                MplPath(np.asarray(poly.exterior.coords)[:, :2]),
+                *[MplPath(np.asarray(ring.coords)[:, :2]) for ring in poly.interiors],
+            )
+        )
+        for poly in geoms
+    ]
+    collection = PatchCollection(patches, cmap=cmap, **kwargs)
+    if values is not None:
+        collection.set_array(np.asarray(values))
+    ax.add_collection(collection, autolim=True)
+    return collection
+
+
+def plot_linestring_collection(ax, geoms, **kwargs) -> LineCollection:
+    """
+    Plot shapely LineStrings as a single matplotlib LineCollection.
+    """
+    collection = LineCollection(
+        [np.asarray(line.coords)[:, :2] for line in geoms], **kwargs
+    )
+    ax.add_collection(collection, autolim=True)
+    return collection
 
 
 @dataclass
@@ -39,9 +76,12 @@ class Plot:
         credits: Boolean whether to display the OSM&package credits, defaults to True
 
         # Map background settings
-        bg_shape: the map background shape, "circle" or "rectangle", defaults to "circle"
+        bg_shape: the map background shape, "circle" or "rectangle", defaults to "rectangle"
         bg_buffer: buffer around the map, defaults to 2
         bg_color: color of the map background, defaults to "#F2F4CB"
+
+        # Figure settings
+        dpi: figure resolution in dots per inch, defaults to 300
     """
 
     df: GeoDataFrame
@@ -66,6 +106,8 @@ class Plot:
     bg_shape: str = "rectangle"
     bg_buffer: int = 2
     bg_color: str = "#F2F4CB"
+    # Figure settings
+    dpi: int = 300
 
     def __post_init__(self):
         (
@@ -84,7 +126,7 @@ class Plot:
         self.bg_buffer_y = (self.bg_buffer / 100) * self.ydif
 
         self.fig, self.ax = subplots(
-            1, 1, figsize=(12, 12), constrained_layout=True, dpi=1200
+            1, 1, figsize=(12, 12), constrained_layout=True, dpi=self.dpi
         )
         self.ax.set_aspect(1 / np.cos(self.ymid * np.pi / 180))
 
@@ -110,6 +152,8 @@ class Plot:
         Avoids using geodataframe.plot() as this uses plt.draw(), but for the app, the figure needs to be rendered
         only in st.pyplot. Shaves off 1 sec.
         """
+        # Seeded rng so identical inputs render identical (reproducible) maps.
+        rng = np.random.default_rng(42)
         for lc_class in self.df["landcover_class"].unique():
             df_class = self.df[self.df["landcover_class"] == lc_class]
             try:
@@ -124,11 +168,10 @@ class Plot:
                     df_class["highway"].map(STREETS_WIDTH).fillna(1)
                 )
                 draw_settings_class["ec"] = draw_settings_class.pop("fc")
-                linecollection = _plot_linestring_collection(
+                linecollection = plot_linestring_collection(
                     ax=self.ax, geoms=df_class.geometry, **draw_settings_class
                 )
                 linecollection.set_linewidth(linewidth_values)
-                self.ax.add_collection(linecollection, autolim=True)
                 continue
             else:
                 df_class = df_class[df_class.geom_type == "Polygon"]
@@ -136,7 +179,7 @@ class Plot:
             if "hatch_c" in draw_settings_class:
                 # Matplotlib hatch color is set via ec. hatch_c is used as the edge color here by plotting the outlines
                 # again above.
-                _plot_polygon_collection(
+                plot_polygon_collection(
                     ax=self.ax,
                     geoms=df_class.geometry,
                     fc="None",
@@ -147,18 +190,17 @@ class Plot:
                 draw_settings_class.pop("hatch_c")
 
             if "cmap" in draw_settings_class:
-                cmap = ListedColormap(draw_settings_class["cmap"])
-                draw_settings_class.pop("cmap")
-                cmap_values = np.random.randint(0, 3, df_class.shape[0])
-                _plot_polygon_collection(
+                cmap_colors = draw_settings_class.pop("cmap")
+                cmap_values = rng.integers(0, len(cmap_colors), df_class.shape[0])
+                plot_polygon_collection(
                     ax=self.ax,
                     geoms=df_class.geometry,
                     values=cmap_values,
-                    cmap=cmap,
+                    cmap=ListedColormap(cmap_colors),
                     **draw_settings_class,
                 )
             else:
-                _plot_polygon_collection(
+                plot_polygon_collection(
                     ax=self.ax, geoms=df_class.geometry, **draw_settings_class
                 )
 

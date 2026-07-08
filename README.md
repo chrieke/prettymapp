@@ -115,9 +115,11 @@ default settings or create your own dictionary! See [settings.py](prettymapp/set
 from prettymapp.settings import LANDCOVER_CLASSES
 
 custom_lc_classes = LANDCOVER_CLASSES.copy()
-custom_lc_classes["urban"]["building"] = False # drops all building subclasses
-custom_lc_classes["grassland"]["leisure"] = True # Include all leisure subclasses
-custom_lc_classes["grassland"]["natural"] = ["island"] # Selects only specific natural subclasses
+custom_lc_classes["urban"] = {"building": False} # drops all building subclasses
+custom_lc_classes["grassland"] = {
+    "leisure": True,  # Include all leisure subclasses
+    "natural": ["island"],  # Selects only specific natural subclasses
+}
 
 df = get_osm_geometries(aoi=aoi, landcover_classes=custom_lc_classes)
 ```

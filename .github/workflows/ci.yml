@@ -1,0 +1,21 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - name: Install dependencies
+        run: uv sync --extra streamlit
+      - name: Check formatting
+        run: uv run black --check prettymapp streamlit-prettymapp
+      - name: Run tests (offline)
+        run: uv run pytest prettymapp/tests --pylint --pylint-rcfile=pylintrc --mypy --mypy-ignore-missing-imports
+      - name: Build package
+        run: uv build
