@@ -132,6 +132,52 @@ STYLES = {
         "streets": {"fc": "#2F3737", "zorder": 4},
         "other": {"fc": "#F2F4CB", "ec": "#2F3737", "lw": 1, "zorder": 3},
     },
+    "Monochrome": {
+        "urban": {
+            "cmap": [
+                "#DED7CC",  # light stone
+                "#CBC4B9",  # medium stone
+                "#B2AEA6",  # dark stone
+            ],
+            "ec": "#4A4C48",
+            "lw": 0.45,
+            "zorder": 5,
+        },
+        "water": {
+            "fc": "#B5C2C7",
+            "ec": "#68767A",
+            "hatch_c": "#7F8C90",
+            "hatch": "...",
+            "lw": 0.7,
+            "zorder": 3,
+        },
+        "grassland": {
+            "fc": "#DDDCCD",
+            "ec": "#A8AA9F",
+            "hatch_c": "#B7B8AE",
+            "hatch": "...",
+            "lw": 0.55,
+            "zorder": 1,
+        },
+        "woodland": {
+            "fc": "#C9CCBE",
+            "ec": "#8F9488",
+            "hatch_c": "#A4A99C",
+            "hatch": "///",
+            "lw": 0.55,
+            "zorder": 2,
+        },
+        "streets": {
+            "fc": "#555752",
+            "zorder": 4,
+        },
+        "other": {
+            "fc": "#F3ECE2",
+            "ec": "#C6BFB4",
+            "lw": 0.4,
+            "zorder": 0,
+        },
+    },
 }
 
 STREETS_WIDTH = {
@@ -150,4 +196,37 @@ STREETS_WIDTH = {
     "unclassified": 1.5,
     "pedestrian": 1.5,
     "footway": 0.7,
+}
+
+# Topography/elevation style presets
+TOPOGRAPHY_STYLES = {
+    "Contours": {
+        "show_contours": True,
+        "show_hillshading": False,
+        "contour_interval": None,  # Auto-calculate
+        "contour_color": "#1a1a1a",
+        "contour_linewidth": 0.7,
+        "contour_zorder": 5,
+    },
+    "Hillshade": {
+        "show_contours": False,
+        "show_hillshading": True,
+        "hillshade_alpha": 0.3,
+        "hillshade_azimuth": 315,
+        "hillshade_altitude": 45,
+        "hillshade_cmap": "gray",
+    },
+    "Topographic": {
+        "show_contours": True,
+        "show_hillshading": True,
+        "contour_interval": 100,
+        "contour_color": "#8B7355",
+        "contour_linewidth": 0.5,
+        "major_contour_interval": 500,
+        "major_contour_linewidth": 1.5,
+        "hillshade_alpha": 0.25,
+        "hillshade_azimuth": 315,
+        "hillshade_altitude": 45,
+        "hillshade_cmap": "gray",
+    },
 }
